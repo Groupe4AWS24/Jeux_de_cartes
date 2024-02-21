@@ -1,5 +1,0 @@
-[[redirects]]
-  from = "/*"
-  to = "/"
-  status = 200
-# ça marche pas mais c'est censé rediriger vers le liens principal si on met un lien faux.
