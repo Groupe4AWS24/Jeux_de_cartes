@@ -1,24 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import react,{ useState } from 'react'
 import './App.css'
+import Page1 from './pages/one_page'
 
 function App() {
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div> 
         <Component text="je sais pas"/>
       </div>
-      <div class="card-container">
-        <div className="card" id="card1"></div>
-        <div className="card" id="card2"></div>
+      <div>
+        <Page1/>
       </div>
     </>
   )

@@ -1,0 +1,6 @@
+.board {
+    background-image: url('assets/Fond.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
