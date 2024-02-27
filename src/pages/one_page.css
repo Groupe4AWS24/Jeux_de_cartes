@@ -1,6 +1,85 @@
-.board {
-    background-image: url('assets/Fond.png');
+.board{
+    height: 100vh;
+    /*background-image: url('src/assets/Fond.png');*/
     background-size: cover;
-    background-position: center;
     background-repeat: no-repeat;
+
+}
+
+
+.hands{
+    height: 100vh;
+}
+
+/*
+.handback_ip{
+    display: flex;
+    justify-content : center;
+    transform: rotate(180deg);
+    
+}
+
+.handback_pp{
+    display: flex;
+    justify-content : center;
+    transform: rotate(180deg);
+    
+}*/
+
+.flex-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+.divs {
+  margin: 3px;
+  background-color: yellow;
+  overflow: hidden;
+
+
+}
+.divmid {
+	flex:6;
+    background-color: red;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/*Pour la partie gauche*/
+.divleft {
+	flex:2;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+
+.divright {
+    flex:2;
+	background-color: blue;
+}
+
+.divrowtop, .divrowbottom{
+    flex:2;
+    background-color: blue;
+}
+
+.divrowmid{
+    flex:6;
+}
+
+.hands12 {
+    /*transform-origin: left center;
+    transform: rotate(90deg);
+    display: flex;
+    align-items: flex-end;*/
+    margin-left: -50px;
+    transform: rotate(90deg);
+    background-color: green;
+}
+
+.back{    
+    margin-right: -50px;
 }

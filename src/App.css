@@ -1,25 +1,8 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.App {
+  height: 100vh;
 }
 
-.card-container {
-  display: flex;
-}
-
-.card {
-  width: 106px; /* Ajustez la largeur selon vos besoins */
-  height: 167px; /* Ajustez la hauteur selon vos besoins */
-  background-size: cover;
-  margin-right: -50px;
-}
-
-#card1 {
-  background-image: url('assets/purple_1.png');
-}
-
-#card2 {
-  background-image: url('assets/purple_1.png');
+* {
+  margin: 0;
+  padding: 0;
 }

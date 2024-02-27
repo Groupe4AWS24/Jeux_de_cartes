@@ -5,14 +5,14 @@ import Page1 from './pages/one_page'
 function App() {
 
   return (
-    <>
-      <div> 
+      /* <div> 
         <Component text="je sais pas"/>
-      </div>
-      <div>
+      </div>*/
+
+      <div className='App'>
         <Page1/>
       </div>
-    </>
+
   )
 }
 
