@@ -94,3 +94,6 @@ Maquette pour les cartes:
 
 Maquette pour l'interface du jeu: 
 ![jeu](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20de%20l'interface%20du%20jeu.png)
+
+Schéma des division pour l'affichage:  
+![schemadiv](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/schemadiv.png)
