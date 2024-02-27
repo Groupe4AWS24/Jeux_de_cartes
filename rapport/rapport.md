@@ -79,7 +79,7 @@ Du 03/04 au 10/04 :
 - Chercheuse : Maya
 
 
-# Technologies qui sera utilisées
+# Technologies qui seront utilisées
 
   Pour la communication client-serveur, on a opté pour Socket.io, une bibliothèque facilitant les communications en temps réel, mais elle fournit également des fonctionnalités supplémentaires comme la reconnexion automatique, la diffusion à plusieurs clients, et le support des rooms, des points importants pour un jeu multijoueur contrairement aux Websockets natifs (gère aussi mieux la compatibilité avec d'autres navigateurs). Socket.io sera integré à React pour communiquer avec le serveur Node.js (Socket.IO et Node.js sont utilisés ensemble), cela va établir une connexion WebSocket entre le navigateur de l'utilisateur et le serveur. Exemple simple de l'utilisation de Socket.io : quand un joueur joue une carte, l'action est envoyée au serveur via Socket.IO, le serveur va traiter cette action (comme vérifier si le mouvement est valide, mettre à jour l'état du jeu, etc...), puis diffuse l'état du jeu mis à jour à tous les joueurs connectés en utilisant Socket.IO.
 
