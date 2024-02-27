@@ -2,20 +2,20 @@
 
 ## Description de l'application
 
-Nous avons décidé de créer une plateforme qui permettra de jouer en multijoueur à un jeu similaire à UNO qui différe sur certaines règles (on peut enchainer plusieurs fois la même carte, pas de régle d'échange de carte...).  
+Nous avons décidé de créer une plateforme qui permettra de jouer en multijoueur à un jeu similaire à UNO qui diffère sur certaines règles (on peut enchainer plusieurs fois la même carte, pas de régle d'échange de carte...).  
 
-Il sera également possible de communiquer via un tchat. un système d'authentification sera mis en place pour identifier un joueur de façon relativement sécurisé.
+Il sera également possible de communiquer via un tchat. Un système d'authentification sera mis en place pour identifier un joueur de façon relativement sécurisé.
 
 ## Progrès Réalisés 
-  Nous avons commencé par choisir les technologies sur lequel on va réaliser le projet, pour le coté du front-end (interface du site), on a décidé d'utiliser le framework React étant un des framework les plus populaires, donc celui qui a le plus de documentation, pour la gestion du projet il sera utilisé avec Vite au lieu du CRA, principalement pour le temps qui nous fait gagner (temps de démérage et application des modifications).  
+  Nous avons commencé par choisir les technologies sur lesquel on va réaliser le projet, pour le coté du front-end (interface du site), on a décidé d'utiliser le framework React étant un des framework les plus populaires, donc celui qui a le plus de documentation, pour la gestion du projet il sera utilisé avec Vite au lieu du CRA, principalement pour le temps qu'il nous fait gagner (temps de démarrage et application des modifications).  
 
-  Pour gérer la base de donnés du système d'authentification, on utilisera du NOSQL via MangoDB, on priviligie cette approche par rapport à un hebergemet via firebase à cause de la limitation du nombre de requête par jour pour la version gratuit.
+  Pour gérer la base de donnés du système d'authentification, on utilisera du NOSQL via MangoDB, on privilégie cette approche par rapport à un hébergemet via firebase à cause de la limitation du nombre de requête par jour pour la version gratuite.
 
-  Pour le coté du serveur, on passera par Node.js et son framework express.js pour facilité la créations des serveurs et du gestion des requetes HTTP.
+  Pour le coté du serveur, on passera par Node.js et son framework express.js pour faciliter la créations des serveurs et du gestion des requetes HTTP.
   
-  Dans un premier temps,  on a développé la direction artisque de notre jeu, en réalisant plusieurs proposition pour les cartes, et une maquette du jeu, l'objectif était d'avoir une maquette assez simpliste qui nous permettra de l'intégré le plus rapidement possible (cf l'apendix).
+  Dans un premier temps,  on a développé la direction artistique de notre jeu, en réalisant plusieurs propositions pour les cartes, et une maquette du jeu, l'objectif était d'avoir une maquette assez simpliste qui nous permettra de l'intégrer le plus rapidement possible (cf l'apendix).
 
-  Puis pour l'intégration du projet, on a décidé de principalement se concentré sur la logique du jeu et réalisé toutes les fonctions essentiels. Cependant on a également commencé a réaliser l'intégration de la maquette via React, par des fonctions qui gérer la création de cartes, et de la main, et sur la réflexion de la stratégie à mettre en place pour la dispositons des differents élements.
+  Puis pour l'intégration du projet, on a décidé de principalement se concentrer sur la logique du jeu et réaliser toutes les fonctions essentiels. Cependant on a également commencé à réaliser l'intégration de la maquette via React, par des fonctions qui gèrent la création de cartes, de la main, et sur la réflexion de la stratégie à mettre en place pour la dispositons des différents élements.
 
 # Réferences
 
@@ -29,7 +29,7 @@ https://www.youtube.com/watch?v=C3A7NBVyM1o (je pense faut pas mettre)
 https://www.youtube.com/watch?v=HPbMh1QAxb4 (je pense faut pas mettre)  
 
 
-# Problème rencontrée
+# Problèmes rencontrés
 1. __Organisation des Classes et Méthodes :__  
 L'une des premières difficultés a été de définir clairement les responsabilités de chaque classe et les méthodes nécessaires. La conception du jeu Uno impliquait de gérer plusieurs entités (cartes, joueurs, deck) et établir des liens logiques entre elles. La répartition des tâches entre les classes et la détermination des méthodes clés ont demandé une réflexion approfondie pour garantir une structure logique et compréhensible.
 2. __Gestion de l'Ordre des Joueurs et des Actions Spéciales :__  
@@ -44,7 +44,7 @@ La disposition des éléments sur l'écran à était un défi complexe du à not
 
 ## Calendrier intial:
 Objectif à partir de la date jusqu'à la date de la prochaine séance d'AWS.
-- 14/02: Implementer le jeu + Création du design + Implémenter le site
+- 14/02: Implémenter le jeu + Création du design + Implémenter le site
 - 28/02: Finir le jeu + Création de compte (Implémentation d'un système d'authentification)
 - 13/03: Finir la création de compte (Intégration de la base de données) + développer le tchat + les intéractions du jeu + gestion des serveurs
 - 03/04: Finir la gestion des serrveurs + si tous accomplis intégré d'autre jeu de cartes
@@ -52,7 +52,7 @@ Objectif à partir de la date jusqu'à la date de la prochaine séance d'AWS.
 ## Calendrier ajusté:
 Objectif à partir de la date jusqu'à la date de la prochaine séance d'AWS.
 - 14/02: Implementer le jeu + Création du design + Implémenter le site
-- 28/02: Finir le jeu + Création de compte (Implémentation d'un système d'authentification) + continuer l'implementation du site
+- 28/02: Finir le jeu + Création de compte (Implémentation d'un système d'authentification) + continuer l'implémentation du site
 - 13/03: Finir la création de compte (Intégration de la base de données) + développer le tchat + les intéractions du jeu + gestion des serveurs + Finir l'implementation du site + rajouter de la musique d'ambiance
 - 03/04: Finir la gestion des serrveurs + si tous accomplis intégré d'autre jeu de cartes
 
