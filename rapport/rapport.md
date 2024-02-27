@@ -85,6 +85,10 @@ Du 03/04 au 10/04 :
 
 # Apendix
 ## Maquette
+Maquette conception du jeu:  
+![jeuschema](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20jeux.png)  
+![jeucouleur](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20jeux%20couleur.png)  
+
 Maquette pour les cartes:  
 ![carte](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20cartes.png)  
 
