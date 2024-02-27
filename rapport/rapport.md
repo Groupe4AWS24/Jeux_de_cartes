@@ -46,8 +46,8 @@ La disposition des éléments sur l'écran à était un défi complexe du à not
 Objectif à partir de la date jusqu'à la date de la prochaine séance d'AWS.
 - 14/02: Implémenter le jeu + Création du design + Implémenter le site
 - 28/02: Finir le jeu + Création de compte (Implémentation d'un système d'authentification)
-- 13/03: Finir la création de compte (Intégration de la base de données) + développer le tchat + les intéractions du jeu + gestion des serveurs
-- 03/04: Finir la gestion des serrveurs + si tous accomplis intégré d'autre jeu de cartes
+- 13/03: Finir la création de compte (Intégration de la base de données) + développer le tchat + les intéractions du jeu + gestion des serveurs +possible intégration de bots.
+- 03/04: Finir la gestion des serveurs + si tout est accomplit, intégrer d'autre jeux de cartes + gérer le responsive.
 
 ## Calendrier ajusté:
 Objectif à partir de la date jusqu'à la date de la prochaine séance d'AWS.
