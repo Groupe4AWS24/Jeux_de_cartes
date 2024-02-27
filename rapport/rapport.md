@@ -9,7 +9,7 @@ Il sera également possible de communiquer via un tchat. Un système d'authentif
 ## Progrès Réalisés 
   Nous avons commencé par choisir les technologies sur lesquel on va réaliser le projet, pour le coté du front-end (interface du site), on a décidé d'utiliser le framework React étant un des framework les plus populaires, donc celui qui a le plus de documentation, pour la gestion du projet il sera utilisé avec Vite au lieu du CRA, principalement pour le temps qu'il nous fait gagner (temps de démarrage et application des modifications).  
 
-  Pour gérer la base de donnés du système d'authentification, on utilisera du NOSQL via MangoDB, on privilégie cette approche par rapport à un hébergemet via firebase à cause de la limitation du nombre de requête par jour pour la version gratuite.
+  Pour gérer la base de données du système d'authentification, on utilisera du NOSQL via MangoDB, on privilégie cette approche par rapport à un hébergemet via firebase à cause de la limitation du nombre de requête par jour pour la version gratuite.
 
   Pour le coté du serveur, on passera par Node.js et son framework express.js pour faciliter la créations des serveurs et du gestion des requetes HTTP.
   
