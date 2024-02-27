@@ -1,6 +1,6 @@
 .board{
     height: 100vh;
-    /*background-image: url('src/assets/Fond.png');*/
+    background-image: url('src/assets/Fond.png');
     background-size: cover;
     background-repeat: no-repeat;
 
@@ -27,20 +27,20 @@
 }*/
 
 .flex-container {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
 }
+
 .divs {
-  margin: 3px;
-  background-color: yellow;
-  overflow: hidden;
-
-
+    margin: 3px;
+    /*background-color: yellow;*/
+    overflow: hidden;
 }
+
 .divmid {
-	flex:6;
-    background-color: red;
+	flex:9;
+    /*background-color: red;*/
     display: flex;
     flex-direction: column;
 }
@@ -51,35 +51,78 @@
 	flex:2;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    /*justify-content: flex-end;*/
     align-items: center;
 }
 
 
 .divright {
     flex:2;
-	background-color: blue;
+	/*background-color: blue;*/
 }
 
+
+/*Et la div prendra un ratio de 2 par rapport au autres div row, Centre le contenu */
 .divrowtop, .divrowbottom{
     flex:2;
-    background-color: blue;
+    /*background-color: blue;*/
+    display: flex;
+    justify-content: center;
 }
 
+/*Aligne le contenu vers le bas de la flexbox (ici ça position en y)*/
+.divrowtop{
+    align-items: flex-start;
+}
+
+/*Aligne le contenu vers le haut de la flexbox (ici ça position en y)*/
+.divrowbottom{
+    align-items: flex-end;
+}
+
+
+/*Et la div prendra un ratio de 2 par rapport au autres div row, Centre le contenu */
 .divrowmid{
-    flex:6;
+    flex:2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10%
 }
 
+/*
 .hands12 {
     /*transform-origin: left center;
     transform: rotate(90deg);
     display: flex;
-    align-items: flex-end;*/
+    align-items: flex-end;/
     margin-left: -50px;
     transform: rotate(90deg);
     background-color: green;
+}*/
+
+.lastcard{
+    margin-right: 50px;
 }
 
+.draw{
+    margin-right: 50px;
+}
+
+/*Sera mit dans le fichier card.css*/
 .back{    
     margin-right: -50px;
+}
+
+.card{    
+    margin-right: -50px;
+}
+
+.circle{
+    width: 100px;
+    height: 100px;
+    /*couleur sera directement géré sur le fichier jsx*/
+    background-color: #3498db;
+    /*Rajouter un contour*/
+    border-radius: 50%;
 }
