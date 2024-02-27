@@ -25,8 +25,7 @@ https://flexboxfroggy.com/#fr Pour apprendre les différentes usages des Flexbox
 https://flukeout.github.io/ Pour apprendre le CSS (jeu intéractif)  
 https://www.platoapp.com/: Plato a été notre inspiration pour notre jeu Uno.  
 https://socket.io/fr/docs/v4/ Pour la documentation sur la bibliothèque et ses intérêts  
-https://www.youtube.com/watch?v=C3A7NBVyM1o (je pense faut pas mettre)  
-https://www.youtube.com/watch?v=HPbMh1QAxb4 (je pense faut pas mettre)  
+https://www.youtube.com/watch?v=EdB_lK7ICYc: Vidéo comparative entre Vite et CRA 
 
 
 # Problèmes rencontrés
