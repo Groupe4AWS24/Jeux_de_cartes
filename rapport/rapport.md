@@ -86,4 +86,8 @@ Du 03/04 au 10/04 :
 
 # Apendix
 ## Maquette
-Maquette pour les cartes:
+Maquette pour les cartes:  
+![carte](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20cartes.png)  
+
+Maquette pour l'interface du jeu: 
+![jeu](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20de%20l'interface%20du%20jeu.png)
