@@ -59,7 +59,7 @@ Objectif à partir de la date jusqu'à la date de la prochaine séance d'AWS.
 
 Rôle de la semaine:  
 - Responsable : Thanu/Maya
-- Codeurs : Thanu/Maya et Daoud
+- Codeurs : Thanu et Daoud
 - Chercheuse : Zeyneb
 
 Rôle des prochaines semaines:  
