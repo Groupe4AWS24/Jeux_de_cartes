@@ -36,6 +36,9 @@ module.exports = class ManageGame {
 
         // Set the initial last played card to null
         this.lastCard = null;
+
+        // Variable to track the total penalty cards to take from the deck in the game
+        this.sumPinition = 0;
     }
     
     /**
@@ -135,7 +138,7 @@ module.exports = class ManageGame {
     */
     play(cards) {
         // Retrieve the array of playable cards for the current player
-        const playableCards = this.getPlayableCards();
+        const playableCards = this.getPlayableCards();        //we can do this logique outside when we create the methode of play ...
 
         // Flag to track if a card with the same value has been played
         let playedSameValue = false;
@@ -145,7 +148,10 @@ module.exports = class ManageGame {
             // Check if the card is playable
             if (playableCards.includes(card)) {
                 // Check conditions for playing a card with the same color
-                if (!playedSameValue && card.getColor() == this.lastCard.color) {
+                if (!playedSameValue && card.getColor() == this.lastCard.color && card.getValue() != this.lastCard.value) {
+                    if (this.card.isPlus2Card()) {
+                        sumPinition +=2;
+                    }
                     // Play the card, update lastCard, and exit the loop
                     this.currentPlayer.removeFromHand(card);
                     this.lastCard = card;
@@ -158,10 +164,16 @@ module.exports = class ManageGame {
                     } else {
                         if (!playedSameValue && card.isPlus4Card()) {
                             this.currentPlayer.removeFromHand(card);
+                            sumPinition += 4;
                             this.lastCard = card;
                         } else {
                             // Check conditions for playing a card with the same value
                             if (card.getValue() === this.lastCard.value) {
+                                if (this.card.isPlus4Card()) {
+                                    sumPinition += 4;
+                                } else if(this.card.isPlus2Card() ) {
+                                        sumPinition +=2;
+                                }
                                 this.currentPlayer.removeFromHand(card);
                                 this.lastCard = card;
                                 playedSameValue = true;
@@ -186,6 +198,10 @@ module.exports = class ManageGame {
             } else {
                 if(this.lastCard.isReverseCard()) {
                     this.reverseGameDirection();
+                } else if(this.lastCard.isPlus4Card()) {
+                    this.plus4Card();
+                } else if(this.lastCard.isPlus2Card()) {
+                    this.plus2Card();
                 }
             }
         }
@@ -214,12 +230,39 @@ module.exports = class ManageGame {
     }
 
     /**
-     * plus4Card - Handles the effect of playing a Plus 4 card in the Uno game.
-     * Deals 4 cards from the Uno deck to the next player in the game.
+     * plus2Card - Handles the effect of playing a Plus 2 card in the Uno game.
+     * Moves to the next player and enforces the penalty of dealing 2 cards from the Uno deck.
+     * If the player has playable cards, display them and allow the player to choose.
+     * If the player has no playable cards, deal 2 cards from the Uno deck to the next player, reset the penalty to zero, and move to the next player.
      */
     plus4Card() {
-        // Deal 4 cards from the Uno deck to the next player in the game
-        this.UnoDeck.dealCards(this.currentPlayer.nextPlayer, 4);
+        // Move to the next player
+        this.moveToNextPlayer();
+
+        // Get playable cards for the current player
+        const playableCards = this.getPlayableCards();
+
+        // Check if the player has playable cards
+        if (playableCards.length > 0) {
+            // Display playable cards to the player and allow them to choose
+            console.log("Playable cards: ", playableCards);
+
+            // Here, we have to add logic to allow the player to choose cards to play
+            const cardsToPlay = /* logic to get cards chosen by the player */
+
+            // Play the chosen cards, and add the logic to sum the penalty
+            this.play(cardsToPlay);
+        } else {
+            // If the player has no playable cards
+            // Deal 4 cards from the Uno deck to the next player
+            this.UnoDeck.dealCards(this.currentPlayer.nextPlayer, sumPinition);
+
+            // Reset the total penalty to zero
+            sumPinition = 0;
+
+            // Move to the next player
+            this.moveToNextPlayer();
+        }
     }
 
     /**
@@ -227,8 +270,33 @@ module.exports = class ManageGame {
      * Deals 2 cards from the Uno deck to the next player in the game.
      */
     plus2Card() {
-        // Deal 2 cards from the Uno deck to the next player in the game
-        this.UnoDeck.dealCards(this.currentPlayer.nextPlayer, 2);
+        // Move to the next player
+        this.moveToNextPlayer();
+    
+        // Get playable cards for the current player
+        const playableCards = this.getPlayableCards();
+    
+        // Check if the player has playable cards
+        if (playableCards.length > 0) {
+            // Display playable cards to the player and allow them to choose
+            console.log("Playable cards: ", playableCards);
+
+            // Here, we have to add logic to allow the player to choose cards to play
+            const cardsToPlay = /* logic to get cards chosen by the player */
+    
+            // Play the chosen cards
+            this.play(cardsToPlay);      // we have to add the logique of sum the penality
+        } else {
+            // If the player has no playable cards
+            // Deal 2 cards from the Uno deck to the next player
+            this.UnoDeck.dealCards(this.currentPlayer, sumPinition);
+    
+            // Reset the total penalty to zero
+            sumPinition = 0;
+    
+            // Move to the next player
+            this.moveToNextPlayer();
+        }
     }
 
     /**
