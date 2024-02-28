@@ -120,14 +120,9 @@ module.exports = class ManageGame {
             // Check if the value of the card matches the value of the last played card
             card.value === this.lastCard.value || 
         
-            // Check if the card is a Change Color card and the last card is not a Change Color card
-            (card.isChangeColorCard() && !this.lastCard.isChangeColorCard()) || 
-        
             // Check if the card is a Change Color card and the last card is not a Plus 4 card
-            (card.isChangeColorCard() && !this.lastCard.isPlus4Card()) ||
+            (card.isChangeColorCard() && !this.lastCard.isPlus4Card()) 
         
-            // Check if the card is a Plus 4 card and the last card is not a Change Color card
-            (card.isPlus4Card() && !this.lastCard.isChangeColorCard())
         );
     }
 
