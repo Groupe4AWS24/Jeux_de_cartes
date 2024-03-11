@@ -8,12 +8,11 @@ Il sera également possible de communiquer via un tchat. Un système d'authentif
 
 ## Déjà Réalises 
 
-Dans un premier temps, nous avons développé la direction artistique de notre jeu.
-Enfin, pour l'intégration du projet, nous avons commencé pla logique du jeu. En outre, nous avons également commencé à réaliser l'intégration de la maquette via React.
+Dans un premier temps, nous avons développé la direction artistique de notre jeu. Ensuite, pour l'intégration du projet, nous avons entamé le développement de la logique du jeu. De plus, nous avons également débuté l'intégration de la maquette en utilisant React.
 
 ## Progrès Réalisés 
 
-Cette semaine nous avons terminé la logique du jeu + l'authentification du compte et l'inscription ce qui sera peaufiné la semaine prochaine. Nous avons continué le front en corrigeant des erreurs que l'on avait rencontrés.
+Cette semaine nous avons terminé la logique du jeu et nous avons réécrits des fonctions qui nou sposaient problèmes. + l'authentification du compte et l'inscription ce qui sera peaufiné la semaine prochaine. Nous avons continué le front en corrigeant des erreurs que l'on avait rencontrés.
 
   
 # Réferences
@@ -32,7 +31,7 @@ Sources: Chagpt nous a principalement été utile pour l'explication de certains
 
 # Problèmes rencontrés
 1. __Disponibilités de chacun  :__  
-L'une des difficultés de cette semaine a été de s'adapter au calendrier de chacun car une partie du groupe était en déplacement à l'étranger dans le cadre d'un Hackaton, ces contre temps nous ont conduit à se referer strictement au calendrier prévu à cet effet et ne nous ont pas permis d'apporter des améliorations.
+Une des difficultés rencontrées cette semaine a été de s'adapter aux différents emplois du temps, puisqu'une partie du groupe était en déplacement à l'étranger pour un Hackathon. Ces imprévus nous ont obligés à nous en tenir strictement au calendrier préétabli, ne laissant pas de marge pour des améliorations.
 2. __Gestion asynchrone :__  
 La nécessité de récupérer les cartes choisies par chaque joueur introduit une interaction utilisateur essentielle. Cependant, cette étape a posé des problèmes de gestion du flux de contrôle, car le programme devait attendre que chaque joueur fasse son choix avant de passer au tour suivant. La gestion de cette interaction utilisateur tout en maintenant la continuité du jeu a exigé une approche asynchrone.
 L'introduction de mécanismes d'attente asynchrone a été une solution clé. Cette approche permet au programme de suspendre temporairement son exécution pour attendre les choix des joueurs sans bloquer complètement le déroulement du jeu.
