@@ -34,12 +34,10 @@ class Signin {
 		const errorMessage = field.parentElement.querySelector(".error-message");
 		if (status == "success" && errorMessage) {
 			errorMessage.innerText = "";
-			//field.classList.remove("input-error");
 		}
 
 		if (status == "error") {
 			errorMessage.innerText = message;
-			//field.classList.add("input-error");
 		}
 	}
 }
