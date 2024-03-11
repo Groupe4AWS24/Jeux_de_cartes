@@ -5,10 +5,26 @@ import React from 'react';
  *
  * @return {JSX.Element} La face de la carte.
  */
-export function BackCard() {
-    return (
-        <img className="back" src="src/assets/back.png"/>
-    )
+export function BackCard(props) {
+    const joueur = props.joueur;
+    switch (joueur) {
+        case 1: return (
+            <img className="back leftside" src="src/assets/back.png"/>
+        )
+
+        case 2: return (
+            <img className="back topside" src="src/assets/back.png"/>
+        )
+
+        case 3: return (
+            <img className="back rightside" src="src/assets/back.png"/>
+        )
+
+        default : return (
+            <img className="back" src="src/assets/back.png"/>
+        )
+    }
+    
 }
 
 /**

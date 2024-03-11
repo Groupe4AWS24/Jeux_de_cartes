@@ -33,7 +33,7 @@
 }
 
 .divs {
-    margin: 3px;
+    /*margin: 3px;*/
     /*background-color: yellow;*/
     overflow: hidden;
 }
@@ -51,13 +51,16 @@
 	flex:2;
     display: flex;
     flex-direction: row;
-    /*justify-content: flex-end;*/
     align-items: center;
 }
 
 
 .divright {
     flex:2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
 	/*background-color: blue;*/
 }
 
@@ -87,30 +90,59 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10%
+    gap: 5%
 }
 
-/*
-.hands12 {
-    /*transform-origin: left center;
-    transform: rotate(90deg);
+
+.hand_1 {
     display: flex;
-    align-items: flex-end;/
-    margin-left: -50px;
-    transform: rotate(90deg);
-    background-color: green;
-}*/
+    flex-direction: column;
+    transform: translate(30%, 0);
+    margin-left: 3%;
+}
+
+.hand_2 {
+    margin-top: 1%;
+}
+
+.hand_0 {
+    margin-top: 1%;
+}
+
+.hand_3 {
+    
+    display: flex;
+    flex-direction: column;
+    transform: translate(-28%, 0);
+    margin-right: 3%;
+}
 
 .lastcard{
     margin-right: 50px;
 }
 
 .draw{
-    margin-right: 50px;
+
 }
 
 /*Sera mit dans le fichier card.css*/
 .back{    
+    
+}
+
+.leftside{    
+    transform: rotate(90deg);
+    margin-bottom: -50px;
+    margin-top: -50px;
+}
+
+.rightside{    
+    transform: rotate(-90deg);
+    margin-bottom: -50px;
+    margin-top: -50px;
+}
+
+.topside{
     margin-right: -50px;
 }
 
@@ -119,8 +151,8 @@
 }
 
 .circle{
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
     /*couleur sera directement géré sur le fichier jsx*/
     background-color: #3498db;
     /*Rajouter un contour*/

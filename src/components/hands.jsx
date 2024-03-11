@@ -19,7 +19,7 @@ export function PlayersHands({playersDeck, currentUser, currentColor, lastCard, 
                     {length >= 2 && mains[1]}
                 </div>
                 <div className="divmid divs">
-                    <div className='divrowtop'>sub1
+                    <div className='divrowtop'>
                         {length >= 3 && mains[2]}
                     </div>
                     <div className='divrowmid'>
@@ -34,7 +34,7 @@ export function PlayersHands({playersDeck, currentUser, currentColor, lastCard, 
                             }/>
                         }</div>
                     </div>
-                    <div className='divrowbottom'>sub3
+                    <div className='divrowbottom'>
                         {length >= 1 && mains[0]}
                     </div>
                 </div>
@@ -62,15 +62,13 @@ export function PlayersHands({playersDeck, currentUser, currentColor, lastCard, 
                 <div key={i} className={`hand_${i}`}>
                     {player_name === currentUser ? (
                         <>  {console.log(`hand_${i}`)}
-                            {main.map((carte,i) => (<Card key={i} valeur={carte}/>))}                     
+                            {main.map((carte,j) => (<Card key={j} valeur={carte}/>))}                     
                         </>  
                     ) : (
-                        <div className={`hand_${i}`}>
-                            <>  
-                                {console.log(`hand_${i}`)}
-                                {main.map((carte,i) => (<BackCard key={i}/>))}
-                            </>
-                        </div>
+                        <>  
+                            {console.log(`hand_${i}`)}
+                            {main.map((carte,j) => (<BackCard key={j} joueur={i}/>))}
+                        </>
                     )}
                 </div>
             )
