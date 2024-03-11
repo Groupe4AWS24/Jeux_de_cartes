@@ -21,13 +21,13 @@ Globalement, le projet a évolué plus doucement qu'au début car des problèmes
   
 # Réferences
 
-https://cyber.gouv.fr/bonnes-pratiques-protegez-vous#:~:text=Cr%C3%A9ez%20un%20mot%20de%20passe,chiffres%20et%20des%20caract%C3%A8res%20sp%C3%A9ciaux
-https://cyber.gouv.fr/publications/recommandations-relatives-lauthentification-multifacteur-et-aux-mots-de-passe
-https://fr.wikipedia.org/wiki/Bcrypt
-https://www.iubenda.com/fr/help/57465-consent-database-documentation-js
-https://stytch.com/blog/argon2-vs-bcrypt-vs-scrypt/
-https://www.platoapp.com/: Plato a été notre inspiration pour notre jeu Uno. 
-https://nordvpn.com/fr/blog/what-is-bcrypt/
+https://cyber.gouv.fr/bonnes-pratiques-protegez-vous#:~:text=Cr%C3%A9ez%20un%20mot%20de%20passe,chiffres%20et%20des%20caract%C3%A8res%20sp%C3%A9ciaux  
+https://cyber.gouv.fr/publications/recommandations-relatives-lauthentification-multifacteur-et-aux-mots-de-passe  
+https://fr.wikipedia.org/wiki/Bcrypt  
+https://www.iubenda.com/fr/help/57465-consent-database-documentation-js  
+https://stytch.com/blog/argon2-vs-bcrypt-vs-scrypt/  
+https://www.platoapp.com/: Plato a été notre inspiration pour notre jeu Uno.  
+https://nordvpn.com/fr/blog/what-is-bcrypt/  
 https://socket.io/fr/docs/v4/ Pour la documentation sur la bibliothèque et ses intérêts  
 Sources: Chagpt nous a principalement été utile pour l'explication de certains termes compliqués et le début de piste de recherche.
 
