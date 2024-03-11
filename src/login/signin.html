@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script defer src="/js/signin.js"></script>
+</head>
+<body class="Signin">
+    <div class="container">
+        <h2 class="text-center">Sign in</h2>
+        <br>
+        <form action="/dashboard.html" class="signinForm">
+            <div class="input-group">
+                <label for="username" class="label">Username</label>
+                <input type="text" id="username" class="input">
+                <span class="error-message"></span>
+            </div>
+            <br>
+            <div class="input-group">
+                <label for="password" class="label">Password</label>
+                <input type="password" id="password" class="input">
+                <span class="error-message"></span>
+            </div>
+            <br>
+            <button class="button" type="submit">Sign in</button>
+        </form>
+        <a class="link" href = "/index.html">Don't have an account? Sign up here!</a>
+    </div>
+</body>
+</html>
