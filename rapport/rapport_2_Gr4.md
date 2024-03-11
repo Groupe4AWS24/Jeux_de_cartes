@@ -18,6 +18,13 @@ Nous avons également continué le front en corrigeant des erreurs rencontrées.
 
 Globalement, le projet a évolué plus doucement qu'au début car des problèmes personnels ont été rencontrés pour plusieurs personnes, mais les objectifs prévus ont tout de même été atteints. Les prochaines semaines seront plus chargées.
 
+## Organisation
+
+L'organisation pour cette semaine a été la suivante :
+- Daoud s'est occupé de finir l'implémentation de la logique du jeu en back-end
+- Maya s'est occupée de l'authentification
+- Thanushan s'est occupé des recherches et de modifier les maquettes déjà faites
+- Zeyneb s'est occupée de suivre chacun des membres
   
 # Réferences
 
