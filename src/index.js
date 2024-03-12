@@ -1,8 +1,8 @@
 const Card = require("./Card");
-const Deck = require("./Deck");
+const Deck = require("./UnoDeck");
 const ManageGame = require("./ManageGame");
 const Player = require("./Player");
-const SpecialCards = require("./SpecialCards");
+
 
 var player1 = new Player("Daoud");
 var player2 = new Player("Aissa");
@@ -18,7 +18,7 @@ var manageGame = new ManageGame(players);
 //console.log(manageGame);
 
 
-manageGame.GameStart();
+manageGame.executeGame();
 
 //console.log(player1.nextPlayer.name);
 //console.log(player1.previousPlayer.name);

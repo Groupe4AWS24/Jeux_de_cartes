@@ -52,13 +52,13 @@ module.exports = class ManageGame {
         // Loop through all players to establish references
         for (let i = 0; i < numPlayers; i++) {
             // The current player for which we are establishing references
-            const currentPlayer = this.players[i];
+            let currentPlayer = this.players[i];
 
             // The next player, which will be the player at the next index in the array
-            const nextPlayer = this.players[(i + 1) % numPlayers];
+            let nextPlayer = this.players[(i + 1) % numPlayers];
 
             // The previous player, which will be the player at the previous index in the array
-            const previousPlayer = this.players[(i - 1 + numPlayers) % numPlayers];
+            let previousPlayer = this.players[(i - 1 + numPlayers) % numPlayers];
 
             // Establish the reference from the current player to the next player
             currentPlayer.nextPlayer = nextPlayer;
@@ -103,8 +103,9 @@ module.exports = class ManageGame {
         }
 
         // Display a message indicating the starting player's turn
-        console.log("Le joueur " + this.currentPlayer.name + " est ton tour, tu dois jouer une carte de la même couleur que " + this.lastCard.color);
+        console.log("Le joueur " + this.currentPlayer.name + " tu vas commencer à jouer");
     }
+    
 
     /**
      * canPlayOn - Determines if the given card can be played on the last played card.
@@ -119,10 +120,12 @@ module.exports = class ManageGame {
         
             // Check if the value of the card matches the value of the last played card
             card.value === this.lastCard.value || 
+              
+            // Check if the card is a Change Color card and the last card is not +4 or +2 and no one was pioched yet
+            (card.isChangeColorCard() && this.sumPinition == 0 ) ||      // attention sur le cas de ChangeColor sur +4 carte
         
-            // Check if the card is a Change Color card and the last card is not a Plus 4 card
-            (card.isChangeColorCard() && !this.lastCard.isPlus4Card()) 
-        
+            // Check if the card is a Plus 4 card 
+            (card.isPlus4Card() )
         );
     }
 
@@ -144,7 +147,7 @@ module.exports = class ManageGame {
             if (playableCards.includes(card)) {
                 // Check conditions for playing a card with the same color
                 if (!playedSameValue && card.getColor() == this.lastCard.color && card.getValue() != this.lastCard.value) {
-                    if (this.card.isPlus2Card()) {
+                    if (card.isPlus2Card()) {
                         sumPinition +=2;
                     }
                     // Play the card, update lastCard, and exit the loop
@@ -154,13 +157,15 @@ module.exports = class ManageGame {
                 } else {
                     // Check conditions for playing special cards
                     if (!playedSameValue && card.isChangeColorCard()) {
-                        this.currentPlayer.removeFromHand(card);
-                        this.lastCard = card;
+                            this.currentPlayer.removeFromHand(card);
+                            this.lastCard = card;
+                            playedSameValue = true;   
                     } else {
                         if (!playedSameValue && card.isPlus4Card()) {
                             this.currentPlayer.removeFromHand(card);
                             sumPinition += 4;
                             this.lastCard = card;
+                            playedSameValue = true;
                         } else {
                             // Check conditions for playing a card with the same value
                             if (card.getValue() === this.lastCard.value) {
@@ -179,6 +184,8 @@ module.exports = class ManageGame {
             } else {
                 // Inform the player that the card is not playable
                 console.log("Tu ne peux pas jouer cette carte " + card + " sur la carte " + this.lastCard + " !!");
+                //il faut rejouer autre cartes
+                //this.playTurn();
             }
         }
 
@@ -218,7 +225,7 @@ module.exports = class ManageGame {
      */
     reverseGameDirection() {
         // Loop through each player in the game
-        for (const currentPlayer of this.players) {
+        for (let currentPlayer of this.players) {
             // Swap the nextPlayer and previousPlayer references
             [currentPlayer.nextPlayer, currentPlayer.previousPlayer] = [currentPlayer.previousPlayer, currentPlayer.nextPlayer];
         }
@@ -312,6 +319,10 @@ module.exports = class ManageGame {
         console.log("Maintenant c'est ton tour " + this.currentPlayer.name);
     }
 
+    /*changeColor(color) {
+        
+    }*/
+
     /**
      * moveToNextPlayer - Moves the turn to the next player in the Uno game.
      * Updates the current player reference to be the player next in line.
@@ -319,6 +330,77 @@ module.exports = class ManageGame {
     moveToNextPlayer() {
         // Update the current player reference to be the player next in line
         this.currentPlayer = this.currentPlayer.nextPlayer;
+    }
+
+     /**
+     * playTurn - Simulates a player's turn in the Uno game.
+     * This method should be called each time a player takes a turn.
+     */
+    playTurn() {
+        // Display the current player's hand
+        console.log(`${this.currentPlayer.name}, voici ta main: `, this.currentPlayer.hand);
+
+        // Display the last played card
+        //console.log("Dernière carte jouée: ", this.lastCard);
+
+        // Get playable cards for the current player
+        const playableCards = this.getPlayableCards();
+
+        // Check if the player has playable cards
+        if (playableCards.length > 0) {
+            // Display playable cards to the player and allow them to choose
+            console.log("Cartes jouables: ", playableCards);
+
+            // Here, you need to add logic to allow the player to choose cards to play
+            let cardsToPlay = /* logique pour obtenir les cartes choisies par le joueur */
+
+            // Play the chosen cards, and add the logic to sum the penalty
+            this.play(cardsToPlay);
+        } else {
+            // If the player has no playable cards
+            // Deal cards from the Uno deck to the current player
+            this.UnoDeck.dealCards(this.currentPlayer, 1);
+
+            // Inform the player about the dealt card
+            console.log(`Tu as pioché une carte: ${this.currentPlayer.hand[this.currentPlayer.hand.length - 1]}`);
+
+            // Move to the next player
+            this.moveToNextPlayer();
+        }
+    }
+
+    /**
+     * executeGame - Main method to execute the Uno game.
+     * This method should be called to start and run the entire Uno game.
+     */
+    executeGame() {
+        // Start the Uno game
+        this.GameStart();
+
+        // Continue playing turns until the game ends
+        while (!this.isGameEnd()) {
+            // Display the current state of the game
+            console.log("-------------------------------------------------------------");
+            console.log("Tour actuel: ", this.currentPlayer.name);
+            console.log("Carte en jeu: ", this.lastCard);
+            console.log("-------------------------------------------------------------");
+
+            // Simulate a player's turn
+            this.playTurn();
+        }
+
+        // Display the winner of the game
+        console.log("Le jeu est terminé! Le joueur " + this.currentPlayer.name + " a gagné!");
+    }
+
+    /**
+     * isGameEnd - Checks if the Uno game has ended.
+     * This method should be called after each turn to determine if the game is over.
+     * @returns {boolean} - True if the game is over, false otherwise.
+     */
+    isGameEnd() {
+        // Check if any player has an empty hand
+        return this.currentPlayer.hand.length === 0;
     }
 
 }
