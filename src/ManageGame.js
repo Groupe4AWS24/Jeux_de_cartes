@@ -136,19 +136,21 @@ module.exports = class ManageGame {
     */
     play(cards) {
         // Retrieve the array of playable cards for the current player
-        const playableCards = this.getPlayableCards();        //we can do this logique outside when we create the methode of play ...
+        let playableCards = this.getPlayableCards();        
 
         // Flag to track if a card with the same value has been played
         let playedSameValue = false;
     
         // Loop through each card the player is attempting to play
-        for (const card of cards) {
+        for (let card of cards) {
             // Check if the card is playable
-            if (playableCards.includes(card)) {
+            let isPlayableCard = playableCards.some(playableCard => playableCard.color === card.color && playableCard.value === card.value);
+
+            if (isPlayableCard) {
                 // Check conditions for playing a card with the same color
                 if (!playedSameValue && card.getColor() == this.lastCard.color && card.getValue() != this.lastCard.value) {
                     if (card.isPlus2Card()) {
-                        sumPinition +=2;
+                        this.sumPinition +=2;
                     }
                     // Play the card, update lastCard, and exit the loop
                     this.currentPlayer.removeFromHand(card);
@@ -163,16 +165,16 @@ module.exports = class ManageGame {
                     } else {
                         if (!playedSameValue && card.isPlus4Card()) {
                             this.currentPlayer.removeFromHand(card);
-                            sumPinition += 4;
+                            this.sumPinition += 4;
                             this.lastCard = card;
                             playedSameValue = true;
                         } else {
                             // Check conditions for playing a card with the same value
                             if (card.getValue() === this.lastCard.value) {
-                                if (this.card.isPlus4Card()) {
-                                    sumPinition += 4;
-                                } else if(this.card.isPlus2Card() ) {
-                                        sumPinition +=2;
+                                if (card.isPlus4Card()) {
+                                    this.sumPinition += 4;
+                                } else if(card.isPlus2Card() ) {
+                                    this.sumPinition +=2;
                                 }
                                 this.currentPlayer.removeFromHand(card);
                                 this.lastCard = card;
@@ -229,6 +231,7 @@ module.exports = class ManageGame {
             // Swap the nextPlayer and previousPlayer references
             [currentPlayer.nextPlayer, currentPlayer.previousPlayer] = [currentPlayer.previousPlayer, currentPlayer.nextPlayer];
         }
+        this.moveToNextPlayer();
     }
 
     /**
