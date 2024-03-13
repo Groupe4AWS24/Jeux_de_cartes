@@ -1,6 +1,7 @@
 import react,{ useState } from 'react'
 import './App.css'
 import Page1 from './pages/one_page'
+import Login from './pages/login'
 
 function App() {
 
@@ -8,11 +9,14 @@ function App() {
       /* <div> 
         <Component text="je sais pas"/>
       </div>*/
-
+      
       <div className='App'>
         <Page1/>
       </div>
-
+    /*
+      <div className='App'>
+        <Login/>
+      </div>*/
   )
 }
 
