@@ -1,6 +1,7 @@
 const Card = require("./Card");
 const Player = require("./Player");
 const UnoDeck = require('./UnoDeck');
+const readline = require("readline");
 
 /**
  * Module exports a ManageGame class representing the game manager for Uno.
@@ -116,7 +117,7 @@ module.exports = class ManageGame {
     canPlayOn(card) {
         return (
             // Check if the color of the card matches the color of the last played card
-            card.color == this.lastCard.color || 
+            card.color == this.lastCard.color && this.sumPinition == 0 || 
         
             // Check if the value of the card matches the value of the last played card
             card.value === this.lastCard.value || 
@@ -187,7 +188,7 @@ module.exports = class ManageGame {
                 // Inform the player that the card is not playable
                 console.log("Tu ne peux pas jouer cette carte " + card + " sur la carte " + this.lastCard + " !!");
                 //il faut rejouer autre cartes
-                //this.playTurn();
+                this.playTurn();
             }
         }
 
@@ -231,6 +232,7 @@ module.exports = class ManageGame {
             // Swap the nextPlayer and previousPlayer references
             [currentPlayer.nextPlayer, currentPlayer.previousPlayer] = [currentPlayer.previousPlayer, currentPlayer.nextPlayer];
         }
+
         this.moveToNextPlayer();
     }
 
@@ -260,7 +262,7 @@ module.exports = class ManageGame {
         } else {
             // If the player has no playable cards
             // Deal 4 cards from the Uno deck to the next player
-            this.UnoDeck.dealCards(this.currentPlayer.nextPlayer, sumPinition);
+            this.UnoDeck.dealCards([this.currentPlayer.nextPlayer], this.sumPinition);
 
             // Reset the total penalty to zero
             sumPinition = 0;
@@ -294,7 +296,7 @@ module.exports = class ManageGame {
         } else {
             // If the player has no playable cards
             // Deal 2 cards from the Uno deck to the next player
-            this.UnoDeck.dealCards(this.currentPlayer, sumPinition);
+            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition);
     
             // Reset the total penalty to zero
             sumPinition = 0;
@@ -339,12 +341,12 @@ module.exports = class ManageGame {
      * playTurn - Simulates a player's turn in the Uno game.
      * This method should be called each time a player takes a turn.
      */
-    playTurn() {
+    async playTurn() {
         // Display the current player's hand
         console.log(`${this.currentPlayer.name}, voici ta main: `, this.currentPlayer.hand);
 
         // Display the last played card
-        //console.log("Dernière carte jouée: ", this.lastCard);
+        console.log("Carte en jeu: ", this.lastCard);
 
         // Get playable cards for the current player
         const playableCards = this.getPlayableCards();
@@ -355,14 +357,14 @@ module.exports = class ManageGame {
             console.log("Cartes jouables: ", playableCards);
 
             // Here, you need to add logic to allow the player to choose cards to play
-            let cardsToPlay = /* logique pour obtenir les cartes choisies par le joueur */
+            let cardsToPlay = await this.getCardsToPlay();
 
             // Play the chosen cards, and add the logic to sum the penalty
-            this.play(cardsToPlay);
+            await this.play(cardsToPlay);
         } else {
             // If the player has no playable cards
             // Deal cards from the Uno deck to the current player
-            this.UnoDeck.dealCards(this.currentPlayer, 1);
+            this.UnoDeck.dealCards([this.currentPlayer], 1);
 
             // Inform the player about the dealt card
             console.log(`Tu as pioché une carte: ${this.currentPlayer.hand[this.currentPlayer.hand.length - 1]}`);
@@ -372,11 +374,33 @@ module.exports = class ManageGame {
         }
     }
 
+    getCardsToPlay() {
+        return new Promise((resolve) => {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+
+            rl.question('choisissez les cartes à jouer :', (input) => {
+                rl.close();
+                
+                const cardStrings = input.split(',');
+
+                const cardsToPlay = cardStrings.map((cardString) => {
+                    let [color,value] = cardString.trim().split('/');
+                    return new Card(color,value); 
+                });
+                console.log(cardsToPlay);
+                resolve(cardsToPlay);
+            });
+        });
+    }
+
     /**
      * executeGame - Main method to execute the Uno game.
      * This method should be called to start and run the entire Uno game.
      */
-    executeGame() {
+    async executeGame() {
         // Start the Uno game
         this.GameStart();
 
@@ -389,7 +413,7 @@ module.exports = class ManageGame {
             console.log("-------------------------------------------------------------");
 
             // Simulate a player's turn
-            this.playTurn();
+            await this.playTurn();
         }
 
         // Display the winner of the game

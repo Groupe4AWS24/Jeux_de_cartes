@@ -25,4 +25,4 @@ manageGame.executeGame();
 
 //console.log(manageGame.lastCard);
 
-manageGame.skipNextPlayer();
+//manageGame.skipNextPlayer();

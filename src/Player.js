@@ -68,7 +68,7 @@ module.exports = class Player {
      */
     removeFromHand(card) {
         // Find the index of the card in the player's hand
-        const indexOfCard = this.hand.indexOf(card);
+        const indexOfCard = this.hand.findIndex(handCard => handCard.color === card.color && handCard.value === card.value);
 
         // If the card exists in the player's hand, remove it
         if (indexOfCard !== -1) {
