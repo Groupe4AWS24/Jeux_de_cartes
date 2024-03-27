@@ -430,6 +430,21 @@ module.exports = class ManageGame {
         return this.currentPlayer.hand.length === 0;
     }
 
+
+    generateUniqueLink() {
+        const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const linkLength = 10; // Longueur du lien
+        let uniqueLink = '';
+    
+        for (let i = 0; i < linkLength; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            uniqueLink += characters[randomIndex];
+        }
+    
+        return uniqueLink;
+    }
+    
+
 }
 
 
