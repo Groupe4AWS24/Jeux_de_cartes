@@ -98,13 +98,12 @@ Sources : Chagpt nous a principalement été utile pour l'explication de certain
 
 # Appendix
 ## Maquette
-Maquette conception du jeu:  
-![jeuschema](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20jeux.png)  
+Maquette pour l'interface du jeu: 
 ![jeucouleur](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20jeux%20couleur.png)  
 
 Maquette pour les cartes:  
 ![carte](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20cartes.png)  
 
-Maquette pour l'interface du jeu: 
-![jeu](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Maquette%20de%20l'interface%20du%20jeu.png)
+Maquette pour l'authentification: 
+![authentification](https://github.com/Groupe4AWS24/Jeux_de_cartes/blob/main/rapport/Login.png)
 
