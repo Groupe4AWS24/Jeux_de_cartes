@@ -18,7 +18,7 @@ Tout d'abord, l'authentification est finie et fonctionnelle. Le code fourni la s
 Désormais, notre code d'authentification est lié à une base de données MongoDB que l'on manipule avec Mongoose. Le mot de passe est haché avec l'algorithme Bcrypt avant d'être stocké dans la base de données, afin d'éviter un problème de fuite de données. L'implémentation de tokens, avec JWT (Json Web Token) a été choisie.  
 
 Ensuite, la gestion des serveurs a été un objectif clé à atteindre pour ces semaines. Deux aspects ont été explorés.  
-Le premier étant la possibilité d'accéder à une room à partir d'un lien, une room étant l'endroit où une partie de One se déroule. 
+Le premier étant la possibilité d'accéder à une room à partir d'un lien, une room étant l'endroit où une partie de One se déroule.   
 Le deuxième aspect a été la synchronisation de la communication des joueurs en temps réel. Socket.io a été primordial pour créer des rooms, et sera utile pour la communication dans le tchat. Nous avons maintenant un système où les joueurs peuvent rejoindre des parties, et leurs actions sont synchronisées avec tous les participants en temps réel. Un mécanisme de vérification de tokens a été également intégré, permettant ainsi d'assurer que seuls les utilisateurs authentifiés peuvent rejoindre les parties. Cela contribue à la sécurité et à l'intégrité de notre jeu.
 
 De plus, la logique du jeu étant presque finie, nous avons remarqué quelques cas auxquels nous n'avions pas pensé en faisant des tests, que nous avons donc du inclure dans le code. C'est le serveur qui gère la logique du jeu, ce qui permettra de garder face cachée les cartes des joueurs adverses avec de nouvelles fonctions à l'avenir.
