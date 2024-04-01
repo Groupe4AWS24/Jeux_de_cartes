@@ -1,24 +1,15 @@
-const io = require("socket.io-client");
-// Remplacez l'URL par l'adresse de votre serveur Socket.io
-const socket = io("http://localhost:3000");
+var app = require('http').createServer(handler),
+    io  = require('socket.io').listen(app)
 
-// Nom du joueur passé comme argument lors de l'exécution du script
-const playerName = process.argv[2] || "JoueurAnonyme";
+app.listen(3000);
 
-socket.on("connect", () => {
-    console.log(`Connecté au serveur en tant que ${playerName}`);
-    // Envoyer un événement pour rejoindre le jeu avec le nom du joueur
-    socket.emit("joinGame", playerName);
-});
+function handler (req, res) {
+  res.writeHead(200);
+  res.end("<html><script src=\"/socket.io/socket.io.js\"></script><script></html>");
+}
 
-// Écouter l'événement 'dealCards' pour recevoir la main du joueur
-socket.on("dealCards", (hand) => {
-    console.log(`${playerName}, voici ta main: `, hand.map(card => card.toString()));
-});
-
-// Écouter d'autres événements du jeu si nécessaire
-// Par exemple, recevoir une mise à jour du jeu, la carte jouée par un autre joueur, etc.
-
-socket.on("disconnect", () => {
-    console.log('Déconnecté du serveur.');
+io.sockets.on('connection', function (socket) {
+  socket.on('message', function (data) {
+    socket.broadcast.emit('message', data);
+  });
 });
