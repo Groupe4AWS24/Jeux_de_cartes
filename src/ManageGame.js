@@ -135,7 +135,7 @@ module.exports = class ManageGame {
      * Checks if the selected cards are playable, applies card effects, and updates game state accordingly.
      * @param {Card[]} cards - An array of cards the player is attempting to play.
     */
-    play(cards) {
+    async play(cards) {
         // Retrieve the array of playable cards for the current player
         let playableCards = this.getPlayableCards();        
 
@@ -209,6 +209,9 @@ module.exports = class ManageGame {
                     this.plus4Card();
                 } else if(this.lastCard.isPlus2Card()) {
                     this.plus2Card();
+                } else if(this.lastCard.isChangeColorCard()) {
+                    let color = await this.getColorChoice();
+                    this.changeColor(color);
                 }
             }
         }
@@ -331,9 +334,10 @@ module.exports = class ManageGame {
         console.log("Maintenant c'est ton tour " + this.currentPlayer.name);
     }
 
-    /*changeColor(color) {
-        
-    }*/
+    changeColor(color) {
+        this.lastCard.color = color;
+        this.moveToNextPlayer();
+    }
 
     /**
      * moveToNextPlayer - Moves the turn to the next player in the Uno game.
@@ -402,6 +406,27 @@ module.exports = class ManageGame {
             });
         });
     }
+
+    getColorChoice() {
+        return new Promise((resolve, reject) => {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+    
+            rl.question('Veuillez choisir une couleur (violet, bleu, rose, vert) : ', (color) => {
+                rl.close();
+    
+                const validColors = ['violet', 'bleu', 'rose', 'vert'];
+                if (validColors.includes(color)) {
+                    resolve(color); 
+                } else {
+                    reject(new Error('Couleur invalide ! Veuillez choisir parmi : rouge, bleu, vert, jaune.'));
+                }
+            });
+        });
+    }
+    
 
     /**
      * executeGame - Main method to execute the Uno game.
