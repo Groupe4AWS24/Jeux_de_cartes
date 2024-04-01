@@ -64,10 +64,65 @@ io.on('connection', (socket) => {
   });
   
   socket.on('playCard', (card) => {
-    // Logique pour retirer la carte de la main du joueur et mettre à jour le jeu
-    player.removeFromHand(card);
-    io.emit('updateGame', {/* données de mise à jour du jeu */});
+    // Identifier le joueur et la partie à partir des informations de la socket
+    const player = rooms[socket.id];
+    if (!player) {
+        socket.emit('error', { message: "Joueur non trouvé." });
+        return;
+    }
+
+    const game = games[player.room];
+    if (!game) {
+        socket.emit('error', { message: "Partie non trouvée." });
+        return;
+    }
+
+    // Vérifier si c'est le tour du joueur
+    if (game.getCurrentPlayer().id !== player.id) {
+        socket.emit('error', { message: "Ce n'est pas votre tour." });
+        return;
+    }
+
+    // Trouver la carte dans la main du joueur
+    const cardIndex = player.hand.findIndex(c => c.color === card.color && c.value === card.value);
+    if (cardIndex === -1) {
+        socket.emit('error', { message: "Carte non trouvée dans votre main." });
+        return;
+    }
+    const playedCard = player.hand[cardIndex];
+
+    // Vérifier si la carte peut être jouée
+    if (!game.canPlayCard(playedCard)) {
+        socket.emit('error', { message: "Mouvement invalide." });
+        return;
+    }
+
+    // Jouer la carte et l'appliquer à la logique du jeu
+    game.playCard(playedCard, player);
+
+    // Envoyer la mise à jour à tous les joueurs de la partie
+    const update = game.getGameState();
+    io.to(player.room).emit('gameStateUpdate', update);
+
+    // Retirer la carte de la main du joueur
+    player.removeFromHand(playedCard);
+
+    // Envoyer la nouvelle main du joueur après avoir joué la carte
+    socket.emit('handUpdate', player.getHand());
+
+    // Vérifier la condition de victoire
+    if (player.hand.length === 0) {
+        game.endGame(player);
+        io.to(player.room).emit('gameOver', { winner: player.name });
+        
+    } else {
+        // Passer au joueur suivant
+        game.nextTurn();
+        const nextPlayer = game.getCurrentPlayer();
+        io.to(player.room).emit('nextTurn', { nextPlayerName: nextPlayer.name });
+    }
 });
+
 
 
     socket.on('disconnect', () => {
