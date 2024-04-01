@@ -1,5 +1,6 @@
 const Card = require ("./Card");
 const Player = require("./Player");
+//const ManageGame = require("./ManageGame");
 
 /**
  * Module exports an UnoDeck class representing the deck of Uno cards.
@@ -92,10 +93,21 @@ module.exports = class UnoDeck {
                 // If the deck is not empty, add the drawn card to the player's hand
                 if (card) {
                     player.addToHand(card);
+                } else {
+                    let index;
+                    this.generateCards();
+                    this.shuffle();
+                    if(ManageGame.lastCard.isChangeColorCard) {
+                        index = this.cards.findIndex(card => card.isChangeColorCard());
+                    } else {
+                        index = this.cards.findIndex(card => card.color === ManageGame.lastCard.color && card.value === ManageGame.lastCard.value);
+                    }
+                    if (index !== -1) {
+                        this.cards.splice(index, 1);
+                    }
+                    card = this.DrawCard();
+                    player.addToHand(card);
                 }
-                /*
-                    on doit ajouter le cas ou le deck est vide ...
-                */
             });
         }
     }
