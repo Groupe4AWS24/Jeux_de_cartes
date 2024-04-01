@@ -145,13 +145,15 @@ module.exports = class ManageGame {
         // Loop through each card the player is attempting to play
         for (let card of cards) {
             // Check if the card is playable
-            let isPlayableCard = playableCards.some(playableCard => playableCard.color === card.color && playableCard.value === card.value);
+            let isPlayableCard = playableCards.some(playableCard => (playableCard.color === card.color && playableCard.value === card.value));
+            
+            
 
             if (isPlayableCard) {
                 // Check conditions for playing a card with the same color
                 if (!playedSameValue && card.getColor() == this.lastCard.color && card.getValue() != this.lastCard.value) {
                     if (card.isPlus2Card()) {
-                        this.sumPinition +=2;
+                        this.sumPinition += 2;
                     }
                     // Play the card, update lastCard, and exit the loop
                     this.currentPlayer.removeFromHand(card);
@@ -186,9 +188,9 @@ module.exports = class ManageGame {
                 }
             } else {
                 // Inform the player that the card is not playable
-                console.log("Tu ne peux pas jouer cette carte " + card + " sur la carte " + this.lastCard + " !!");
+                console.log("Tu ne peux pas jouer cette carte (" + card.color +" , " + card.value + " ) sur la carte (" + this.lastCard.color + " , " + this.lastCard.value + " ) !!");
                 //il faut rejouer autre cartes
-                this.playTurn();
+                //this.playTurn();
             }
         }
 
@@ -242,9 +244,11 @@ module.exports = class ManageGame {
      * If the player has playable cards, display them and allow the player to choose.
      * If the player has no playable cards, deal 2 cards from the Uno deck to the next player, reset the penalty to zero, and move to the next player.
      */
-    plus4Card() {
+    async plus4Card() {
         // Move to the next player
         this.moveToNextPlayer();
+
+        console.log(this.currentPlayer.name);
 
         // Get playable cards for the current player
         const playableCards = this.getPlayableCards();
@@ -255,17 +259,19 @@ module.exports = class ManageGame {
             console.log("Playable cards: ", playableCards);
 
             // Here, we have to add logic to allow the player to choose cards to play
-            const cardsToPlay = /* logic to get cards chosen by the player */
+            const cardsToPlay = await this.getCardsToPlay();
 
             // Play the chosen cards, and add the logic to sum the penalty
-            this.play(cardsToPlay);
+            await this.play(cardsToPlay);
         } else {
             // If the player has no playable cards
             // Deal 4 cards from the Uno deck to the next player
-            this.UnoDeck.dealCards([this.currentPlayer.nextPlayer], this.sumPinition);
+            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition);
+
+            console.log("tu as pioché " + this.sumPinition + "cartes");
 
             // Reset the total penalty to zero
-            sumPinition = 0;
+            this.sumPinition = 0;
 
             // Move to the next player
             this.moveToNextPlayer();
@@ -276,7 +282,7 @@ module.exports = class ManageGame {
      * plus2Card - Handles the effect of playing a Plus 2 card in the Uno game.
      * Deals 2 cards from the Uno deck to the next player in the game.
      */
-    plus2Card() {
+    async plus2Card() {
         // Move to the next player
         this.moveToNextPlayer();
     
@@ -289,17 +295,18 @@ module.exports = class ManageGame {
             console.log("Playable cards: ", playableCards);
 
             // Here, we have to add logic to allow the player to choose cards to play
-            const cardsToPlay = /* logic to get cards chosen by the player */
+            const cardsToPlay = await this.getCardsToPlay();
     
             // Play the chosen cards
-            this.play(cardsToPlay);      // we have to add the logique of sum the penality
+            await this.play(cardsToPlay);      // we have to add the logique of sum the penality
+
         } else {
             // If the player has no playable cards
             // Deal 2 cards from the Uno deck to the next player
             this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition);
     
             // Reset the total penalty to zero
-            sumPinition = 0;
+            this.sumPinition = 0;
     
             // Move to the next player
             this.moveToNextPlayer();

@@ -28,8 +28,10 @@ module.exports = class UnoDeck {
         colors.forEach((color) => {
             values.forEach((value) => {
                 // Exclude colors for special cards
-                if (value === 'changeColor' || value === '+4') {
-                    cards.push(new Card(null, value)); // Use null for color
+                if (value === 'changeColor' ) {                
+                    cards.push(new Card("allColors", value));
+                } else if(value === '+4') {
+                    cards.push(new Card("withoutColor", value));
                 } else {
                     cards.push(new Card(color, value));
                     // Duplicate cards for values other than '0', '+4', and 'changeColor'
