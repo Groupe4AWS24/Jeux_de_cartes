@@ -88,10 +88,10 @@ _Du 03/04 au 10/04_ :
 
 ## Réferences
 
-https://www.purestorage.com/fr/knowledge/what-is-mongodb.html#:~:text=Il%20s'agit%20d'une%20base%20de%20donn%C3%A9es%20orient%C3%A9e%20document,sous%20forme%20de%20documents%20JSON.
-https://fr.linkedin.com/pulse/sessions-vs-jwts-un-guide-complet-de-web-mohamed-ouattara
-https://www.synbioz.com/blog/tech/le-web-temps-reel-avec-socketio#:~:text=Pour%20la%20tester%2C%20enregistrez%20l%C3%A0,la%20console%20de%20ce%20dernier.
-https://github.com/eperezcosano/Uno
+https://www.purestorage.com/fr/knowledge/what-is-mongodb.html#:~:text=Il%20s'agit%20d'une%20base%20de%20donn%C3%A9es%20orient%C3%A9e%20document,sous%20forme%20de%20documents%20JSON.  
+https://fr.linkedin.com/pulse/sessions-vs-jwts-un-guide-complet-de-web-mohamed-ouattara  
+https://www.synbioz.com/blog/tech/le-web-temps-reel-avec-socketio#:~:text=Pour%20la%20tester%2C%20enregistrez%20l%C3%A0,la%20console%20de%20ce%20dernier.  
+https://github.com/eperezcosano/Uno  
 https://www.youtube.com/watch?v=XPC81RWOItI&t=2889s  
 Sources : Chagpt nous a principalement été utile pour l'explication de certains termes compliqués et le début de piste de recherche.
 
