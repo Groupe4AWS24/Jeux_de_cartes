@@ -41,7 +41,7 @@ De manière générale, la prise en compte de tous les cas particuliers a été 
 
 ## Améliorations
 Côté authentification, quelques ajouts seront faits dans les semaines à venir, tels qu'un lien _"Forgot password?"_, une option cliquable à côté du mot de passe pour pouvoir le visualiser lorsqu'il est tapé, ou encore la sécurisation du token et des routes.  
-Côté serveurs, la permission pour plusieurs jours de se connecter à une room, et également de pouvoir choisir combien de personnes réelles jouent, pour combler le reste avec des bots, ou bien qu'on puisse jouer à 2 comme à 3 ou 4 joueurs mais réels uniquement.  
+Côté serveurs, la permission pour plusieurs joueurs de se connecter à une room, et également de pouvoir choisir combien de personnes réelles jouent, pour combler le reste avec des bots, ou bien qu'on puisse jouer à 2 comme à 3 ou 4 joueurs mais réels uniquement.  
 Et de manière plus générale, un choix final de DA et un lien entre tous les codes sera fait.
 
 ## Organisation
