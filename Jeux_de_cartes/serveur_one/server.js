@@ -2,66 +2,119 @@ const http = require('http');
 const express = require('express');
 const socketIo = require('socket.io');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
+
 const ManageGame = require('../src/ManageGame');
 const Player = require('../src/Player');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 app.use(express.static('public'));
-// Remplacer 'your_jwt_secret' par la vraie clé secrète utilisée pour signer les JWT
-const jwtSecret = 'your_jwt_secret';
 
-app.get('/', (req, res) => {
-    res.send('Bienvenue sur notre jeu Uno');
-});
+// Remplacer 'your_jwt_secret' 
+const jwtSecret = 'your_jwt_secret';
 // Structure pour suivre les rooms et les jeux associés
 const rooms = {};
 const games = {};
+const playerDetails = {};
+
+app.use(express.static('public'));
+app.get('/', (req, res) => {
+   res.send('Bienvenue sur notre jeu Uno');
+});
+
 io.on('connection', (socket) => {
     console.log(`Nouveau joueur connecté: ${socket.id}`);
     socket.on('authenticate', (token) => {
-        jwt.verify(token, jwtSecret, (err, decoded) => {
-            if (err) {
-                socket.emit('authenticationFailed', 'Échec de l’authentification.');
-                socket.disconnect();
-            } else {
-                console.log(`Joueur authentifié : ${decoded.username} (ID: ${socket.id})`);
-                // Créer une nouvelle instance Player pour ce socket avec le nom d'utilisateur décodé du Token
-                const player = new Player(decoded.username);
-                player.socketId = socket.id; // Associez l'ID de socket au joueur pour les futurs références, permet de lier les actions du joueurs à sa connexion websocket
-                rooms[socket.id] = player;
-                socket.emit('authenticated', 'Vous êtes connecté.');
-            }
-        });
-    });
-    socket.on('joinRoom', (room) => {
-        if (!games[room]) {
-            games[room] = new ManageGame([]);
-            console.log(`Nouvelle room créée: ${room}`);
-        }
-        socket.join(room);
-        console.log(`${rooms[socket.id].username} a rejoint la room ${room}`);
-        io.to(room).emit('newPlayer', `${rooms[socket.id].username} a rejoint la room.`);
-    });
-    
-    socket.on('startGame', (room) => {
-      const game = games[room];
-      if (game) {
-          // Ajoute chaque joueur à la partie
-          Object.values(rooms).forEach(player => {
-              if (player.room === room) { // on s'assure que le joueur est dans la bonne room
-                  game.addPlayer(player);
-              }
-          });
-          if (game.players.length >= 2) { // Vérifie le nombre de joueurs
-              game.start();
-              io.to(room).emit('gameStarted', 'Le jeu a commencé.');
-              game.players.forEach(player => distributeCards(room, player.socketId)); // Distribue les cartes
+      jwt.verify(token, jwtSecret, (err, decoded) => {
+          if (!err) {
+              const player = new Player(decoded.username);
+              playerDetails[socket.id] = { player, isConnected: true };
+              socket.emit('authenticated');
           } else {
-              socket.emit('waitingForPlayers', 'En attente de plus de joueurs...');
+              socket.emit('authenticationFailed', 'Échec de l’authentification.');
+              socket.disconnect();
           }
-      }
+      });
   });
+
+  socket.on('createRoom', ({ token, maxPlayers }) => {
+    const userId = verifyToken(token); // Vérifie le token et on obtient l'ID de l'utilisateur
+    if (!userId) {
+        socket.emit('error', 'Token invalide');
+        return;
+    }
+
+    const roomId = uuidv4();// Génère un identifiant unique pour la room
+    const joinLink = `https://monjeu.com/rejoindre?roomId=${roomId}`;//ou bien utiliser un token temporaire pour plus de precaution
+    rooms[roomId] = {
+        id: roomId,
+        owner: userId,
+        players: [userId],
+        maxPlayers,
+        game: null // La partie n'a pas encore commencé
+    };
+
+    // Ajoute le joueur à la room
+    playerDetails[socket.id] = { roomId, player: new Player(userId) };
+
+    socket.join(roomId);
+    socket.emit('roomCreated', { roomId });
+});
+
+   
+   socket.on('joinRoom', ({ token, roomId }) => {
+    const userId = verifyToken(token);
+    if (!userId) {
+      socket.emit('error', 'Token invalide');
+      return;
+    }
+
+    const room = rooms[roomId];
+    if (!room) {
+        socket.emit('error', 'Room non trouvée');
+        return;
+    }
+
+    if (room.players.length >= room.maxPlayers) {
+        socket.emit('error', 'Room pleine');
+        return;
+    }
+
+    room.players.push(userId);
+    playerDetails[socket.id] = { roomId, player: new Player(userId) };
+    socket.join(roomId);
+
+    socket.emit('roomJoined', roomId);
+    socket.to(roomId).emit('playerJoined', userId); // Prévient les autres joueurs
+});
+
+
+    
+socket.on('startGame', ({ token, roomId }) => {
+  const userId = verifyToken(token);
+  const room = rooms[roomId];
+  
+  // Vérifie si l'utilisateur est le créateur de la room
+  if (room.owner !== userId) {
+      socket.emit('error', 'Seul le créateur peut démarrer le jeu');
+      return;
+  }
+
+  // Vérifie si le nombre de joueurs est suffisant
+  if (room.players.length < room.maxPlayers) {
+      socket.emit('error', 'Pas assez de joueurs');
+      return;
+  }
+
+  // Initialiser le jeu
+  const game = new ManageGame(room.players.map(id => playerDetails[id].player));
+  room.game = game;
+  game.startGame(); 
+
+  io.to(roomId).emit('gameStarted');
+});
+
   
   socket.on('playCard', (card) => {
     // Identifier le joueur et la partie à partir des informations de la socket
@@ -123,22 +176,13 @@ io.on('connection', (socket) => {
     }
 });
 
-
-
-    socket.on('disconnect', () => {
-        console.log(`Joueur déconnecté: ${socket.id}`);
-        // Retirer le joueur de sa room et de la partie
-        const playerName = rooms[socket.id] ? rooms[socket.id].username : 'Un joueur';
-        Object.keys(games).forEach(room => {
-            const game = games[room];
-            game.removePlayer(rooms[socket.id]);
-            io.to(room).emit('playerLeft', `${playerName} a quitté la room.`);
-        });
-        delete rooms[socket.id];
-    });
-});
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Serveur lancé sur le port ${PORT}`));
+function endGame(roomId) {
+  const room = rooms[roomId];
+  if (room) {
+      io.to(roomId).emit('gameEnded', { winner: room.game.getWinner() });
+      delete rooms[roomId]; // Supprime la room
+  }
+}
 
 function sendHandToAllPlayers() {
   gameState.players.forEach(player => {
@@ -175,6 +219,27 @@ function updateGameState(gameId) {
   });
 }
 
+socket.on('disconnect', () => {
+  const details = playerDetails[socket.id];
+  if (details) {
+      const { roomId } = details;
+      const room = rooms[roomId];
+      if (room) {
+          room.players = room.players.filter(id => id !== details.player.id);
+          if (room.players.length === 0) {
+              // Supprime la room si elle est vide
+              delete rooms[roomId];
+          } else {
+              io.to(roomId).emit('playerDisconnected', details.player.id);
+          }
+      }
+      delete playerDetails[socket.id];
+  }
+});
+
+
+
+
 
 /*//  un joueur pioche des cartes
 socket.on('drawCards', (data) => {
@@ -207,5 +272,8 @@ io.use((socket, next) => {
   } catch (e) {
     return next(new Error('Authentification échouée'));
   }
+});*/
 });
-*/
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => console.log(`Serveur lancé sur le port ${PORT}`));
