@@ -33,9 +33,15 @@ function Login() {
     });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   const handleforget = async () => {
     axios.post("/forgotpassword");
-  }
+  };
 
   // Rendu
   return (
@@ -61,26 +67,32 @@ function Login() {
               <label htmlFor="password" className="label">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                className="input"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-              />
+              <div className="BarrePwd">
+                <input
+                  type="password"
+                  id="password"
+                  className="input"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                />
+                <div className="eye-container">
+                  <img
+                    className="eye"
+                    src="src/assets/icones/oeil.png"
+                    onClick={togglePasswordVisibility}
+                  />
+                </div>
+              </div>
             </div>
             <span className="error-message">{formData.errorMsg}</span>
             <button className="button" type="submit">
               Log in
             </button>
           </form>
-          {/* <Link className="link" to="/register">
+          <Link className="link" to="/forget">
             Forgot your password?
-          </Link> */}
-          <a className="link" onClick={handleforget}>
-            Forgot your password?
-          </a>
+          </Link>
           <hr></hr>
           <Link className="link" to="/register">
             Don't have an account? Sign up here!

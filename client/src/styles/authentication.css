@@ -4,9 +4,6 @@
   box-sizing: border-box;
 }
 
-
-
-
 h1,
 h2,
 h3,
@@ -24,7 +21,7 @@ h6 {
   align-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #FEEFFF;
+  background-color: #feefff;
 }
 
 .container {
@@ -46,33 +43,32 @@ h6 {
   flex: 2;
   border-radius: 2.3rem 0 0 2.3rem;
   padding-bottom: 2rem;
-  min-width : 315px;
+  min-width: 315px;
 }
 
 .Right {
   flex: 2;
   border-radius: 0 2.3rem 2.3rem 0;
   padding-bottom: 2rem;
-  background-image: url('../assets/one_side.png'); /* Remplacez 'chemin/vers/mon_image.jpg' par le chemin réel de votre image */
+  background-image: url("../assets/one_side.png"); /* Remplacez 'chemin/vers/mon_image.jpg' par le chemin réel de votre image */
   background-size: cover; /* Pour couvrir toute la surface du conteneur */
   background-position: center;
-  min-width : 315px;
+  min-width: 315px;
 }
-
 
 .text-center {
   font-size: 2.7rem;
-  font-family: 'Inter';
+  font-family: "Inter";
   text-align: center;
   margin: 2rem;
 }
 
 .input-group {
-  margin-top: 0.80rem;
+  margin-top: 0.8rem;
 }
 
 .label {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-weight: bold;
   font-size: 18px;
 }
@@ -98,20 +94,33 @@ h6 {
   border: 1px solid red;
 }
 
-.input:focus {
+input:focus {
   outline: none;
-  border: 1px solid  #462852;
-  background-clip: padding-box;
 }
 
 .BarrePwd {
   display: flex;
   width: 88%;
+  margin: auto;
 }
 
 #password {
-  width: 84%;
-  margin: 0.65rem auto 0.65rem;
+  width: calc(100% - 25px);
+  margin: 0.65rem 0 0 auto;
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.eye-container {
+  height: 34px;
+  width: 34px;
+  align-self: flex-end;
+  display: flex;
+  border: 1px solid black;
+  border-left: none;
+  border-bottom-right-radius: 0.65rem;
+  border-top-right-radius: 0.65rem;
+  justify-content: center;
 }
 
 .eye {
@@ -126,19 +135,19 @@ h6 {
   height: 0.95rem;
   margin: 0.6rem;
   font-size: 0.85rem;
-  font-family: 'Inter';
+  font-family: "Inter";
   color: red;
 }
 
 .button {
-  background-color: #F2C6DE;
-  font-family: 'Inter';
+  background-color: #f2c6de;
+  font-family: "Inter";
   font-weight: bold;
   font-size: 1rem;
   text-align: center;
   color: #ffffff;
   width: 88%;
-  border: 2px solid #E5AECC;
+  border: 2px solid #e5aecc;
   border-radius: 0.45rem;
   padding: 1rem;
   cursor: pointer;
@@ -152,14 +161,15 @@ h6 {
   margin: 0.85rem;
   display: flex;
   justify-content: center;
-  color: #B844FF;
+  color: #b844ff;
+  cursor: pointer;
 }
 
-hr{
+hr {
   border: none;
   height: 1px;
   width: 90%;
-  background-color: #BEBEBE;
+  background-color: #bebebe;
 }
 
 @media screen and (max-width: 600px) {

@@ -113,11 +113,13 @@ function Register() {
                   onChange={handleChange}
                   placeholder="Enter your password"
                 />
-                <img
-                  className="eye"
-                  src="src/assets/icones/oeil.png"
-                  onClick={togglePasswordVisibility}
-                />
+                <div className="eye-container">
+                  <img
+                    className="eye"
+                    src="src/assets/icones/oeil.png"
+                    onClick={togglePasswordVisibility}
+                  />
+                </div>
               </div>
               <span className="errorReg-message">
                 {formData.password.errorMsg}

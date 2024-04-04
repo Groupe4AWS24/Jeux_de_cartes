@@ -125,12 +125,11 @@ const getProfile = (req, res) => {
 
 // forgotPassword Endpoint
 const forgotPassword = async (req, res) => {
-  const { email } = req.body;
   const expediteur = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: process.env.EMAIL,
-      pass: `UnmdpsansSaveur56#`, //process.env.PASSWORD,
+      pass: process.env.PASSWORD, //process.env.PASSWORD,
     },
   })
   const contenu = {
@@ -144,8 +143,6 @@ const forgotPassword = async (req, res) => {
   expediteur.sendMail(contenu, (err, info) => {
     if (err) {
       console.log(err);
-    } else {
-      console.log(info);
     }
   })
   return res.json();

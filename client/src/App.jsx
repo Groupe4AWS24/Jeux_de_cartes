@@ -9,6 +9,7 @@ import Dashboard from "./pages/dashboard";
 import axios from "axios";
 import { UserContextProvider } from "../context/userContext";
 import "./styles/authentication.css";
+import Forget from "./pages/forget";
 
 // Paramétrage pour l'envoi des requêtes
 axios.defaults.baseURL = "http://localhost:8000";
@@ -22,6 +23,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forget" element={<Forget />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </UserContextProvider>

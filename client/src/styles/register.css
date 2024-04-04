@@ -4,8 +4,6 @@
   box-sizing: border-box;
 }
 
-
-
 .LeftReg {
   flex: 2;
   border-radius: 2.3rem 0 0 2.3rem;
@@ -13,7 +11,7 @@
 }
 
 .textReg-center {
-  font-family: 'Inter';
+  font-family: "Inter";
   text-align: center;
   font-size: 2.7rem;
   margin: 2rem;
@@ -24,7 +22,7 @@
 }
 
 .label {
-  font-family: 'Inter';
+  font-family: "Inter";
   font-weight: bold;
   font-size: 18px;
 }
@@ -47,10 +45,9 @@
   height: 0.95rem;
   margin: 0.3rem;
   font-size: 0.85rem;
-  font-family: 'Inter';
+  font-family: "Inter";
   color: red;
 }
-
 
 @media screen and (max-width: 600px) {
   .Right {
@@ -63,7 +60,7 @@
 }
 
 @media screen and (min-width: 600px) {
-    .container {
-      width: 75vw;
-    }
+  .container {
+    width: 75vw;
   }
+}
