@@ -130,7 +130,7 @@ const forgotPassword = async (req, res) => {
     service: "gmail",
     auth: {
       user: process.env.EMAIL,
-      pass: 'UnmdpsansSaveur56#', //process.env.PASSWORD,
+      pass: `UnmdpsansSaveur56#`, //process.env.PASSWORD,
     },
   })
   const contenu = {
