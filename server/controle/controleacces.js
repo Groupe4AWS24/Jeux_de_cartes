@@ -70,7 +70,7 @@ const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Check si l'email existe dans la bdd
+    // Check si l'username existe dans la bdd
     const user = await User.findOne({ username });
     if (!user) {
       return res.json({

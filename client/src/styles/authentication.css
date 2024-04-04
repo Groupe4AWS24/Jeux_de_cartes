@@ -104,6 +104,24 @@ h6 {
   background-clip: padding-box;
 }
 
+.BarrePwd {
+  display: flex;
+  width: 88%;
+}
+
+#password {
+  width: 84%;
+  margin: 0.65rem auto 0.65rem;
+}
+
+.eye {
+  cursor: pointer;
+  width: 25px;
+  height: 25px;
+  align-self: center;
+  margin: 0.65rem 0 0 0;
+}
+
 .error-message {
   display: block;
   height: 0.95rem;

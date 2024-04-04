@@ -25,7 +25,6 @@ class Signup {
       }
     });
     if (error == 0) {
-      localStorage.setItem("auth", 1);
       const username = this.form.username.value;
       const email = this.form.email.value;
       const password = this.form.password.value;
@@ -36,7 +35,6 @@ class Signup {
           email,
           password,
         });
-        console.log(data);
         let errorform = { ...this.form };
         if (data.majerror) {
           if (data.errormail) {

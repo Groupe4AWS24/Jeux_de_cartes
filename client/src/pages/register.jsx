@@ -25,6 +25,12 @@ function Register() {
     },
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   /**
    * Fonction qui permet de valider le formulaire au click du bouton
    * correspondant.
@@ -98,14 +104,21 @@ function Register() {
               <label htmlFor="password" className="label">
                 Password
               </label>
-              <input
-                type="password"
-                id="password"
-                className="inputReg"
-                value={formData.password.value}
-                onChange={handleChange}
-                placeholder="Enter your password"
-              />
+              <div className="BarrePwd">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  className="inputReg"
+                  value={formData.password.value}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                />
+                <img
+                  className="eye"
+                  src="src/assets/icones/oeil.png"
+                  onClick={togglePasswordVisibility}
+                />
+              </div>
               <span className="errorReg-message">
                 {formData.password.errorMsg}
               </span>
