@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Signin from "../components/login.js";
+import axios from "axios";
 
 // Fonction Login
 function Login() {
@@ -31,6 +32,10 @@ function Login() {
       [id]: value,
     });
   };
+
+  const handleforget = async () => {
+    axios.post("/forgotpassword");
+  }
 
   // Rendu
   return (
@@ -70,9 +75,12 @@ function Login() {
               Log in
             </button>
           </form>
-          <Link className="link" to="/register">
+          {/* <Link className="link" to="/register">
             Forgot your password?
-          </Link>
+          </Link> */}
+          <a className="link" onClick={handleforget}>
+            Forgot your password?
+          </a>
           <hr></hr>
           <Link className="link" to="/register">
             Don't have an account? Sign up here!

@@ -2,6 +2,7 @@
 const User = require("../modeles/user");
 const { hashPassword, comparePassword } = require("../aide/hachage");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 
 // Register Endpoint
 /**
@@ -122,5 +123,32 @@ const getProfile = (req, res) => {
   }
 };
 
+// forgotPassword Endpoint
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  const expediteur = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL,
+      pass: 'UnmdpsansSaveur56#', //process.env.PASSWORD,
+    },
+  })
+  const contenu = {
+    from: process.env.EMAIL,
+    to: req.body.email,
+    subject: "Réinitialisation du mot de passe",
+    html: `<h1>Reinitialisation du mot de passe</h1>
+    <p>Cliquer sur ce lien pour reinitialiser votre mot de passe</p>`,
+  }
+
+  expediteur.sendMail(contenu, (err, info) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(info);
+    }
+  })
+  return res.json();
+}
 // Export
-module.exports = { registerUser, loginUser, getProfile };
+module.exports = { registerUser, loginUser, getProfile, forgotPassword };

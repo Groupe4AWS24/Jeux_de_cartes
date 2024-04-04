@@ -25,7 +25,7 @@ router.post("/disconnect", (req, res) => {
   res.clearCookie("token");
   return res.json(null);
 });
-//router.post('/forgotpassword', forgotPassword);
+router.post('/forgotpassword', forgotPassword);
 
 // Export
 module.exports = router;
