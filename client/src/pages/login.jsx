@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Signin from "../components/login.js";
-import axios from "axios";
 
 // Fonction Login
 function Login() {
@@ -39,10 +38,6 @@ function Login() {
     setShowPassword(!showPassword);
   };
 
-  const handleforget = async () => {
-    axios.post("/forgotpassword");
-  };
-
   // Rendu
   return (
     <div className="screen">
@@ -69,7 +64,7 @@ function Login() {
               </label>
               <div className="BarrePwd">
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   className="input"
                   value={formData.password}
@@ -85,7 +80,9 @@ function Login() {
                 </div>
               </div>
             </div>
-            <span className="error-message">{formData.errorMsg}</span>
+            <div className="errorcontainer">
+              <span className="error-message">{formData.errorMsg}</span>
+            </div>
             <button className="button" type="submit">
               Log in
             </button>

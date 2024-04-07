@@ -36,6 +36,9 @@ class Signup {
           password,
         });
         let errorform = { ...this.form };
+        Object.keys(errorform).forEach((key) => {
+          errorform[key].errorMsg = "";
+        });
         if (data.majerror) {
           if (data.errormail) {
             errorform["email"] = {

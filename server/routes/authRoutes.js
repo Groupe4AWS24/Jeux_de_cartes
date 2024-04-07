@@ -7,6 +7,8 @@ const {
   loginUser,
   getProfile,
   forgotPassword,
+  verifyToken,
+  resetPassword,
 } = require("../controle/controleacces");
 
 // Paramétrage du serveur, pour l'instant en local
@@ -26,6 +28,11 @@ router.post("/disconnect", (req, res) => {
   return res.json(null);
 });
 router.post('/forgotpassword', forgotPassword);
+router.post('/verifytoken', (req, res) => {
+  const {token} = req.body;
+  return res.json(verifyToken(token));
+});
+router.post('/reset', resetPassword)
 
 // Export
 module.exports = router;

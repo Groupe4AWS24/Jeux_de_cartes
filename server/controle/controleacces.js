@@ -78,7 +78,6 @@ const loginUser = async (req, res) => {
         error: "Wrong username or password",
       });
     }
-
     // Check si le mot de passe est le bon
     const match = await comparePassword(password, user.password);
     if (match) {
@@ -123,29 +122,99 @@ const getProfile = (req, res) => {
   }
 };
 
+const generateresetlink = (email) => {
+  const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
+    expiresIn: "10m",
+  });
+  return `http://localhost:5173/reset_password/${token}`;
+};
+
 // forgotPassword Endpoint
 const forgotPassword = async (req, res) => {
-  const expediteur = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD, //process.env.PASSWORD,
-    },
-  })
-  const contenu = {
-    from: process.env.EMAIL,
-    to: req.body.email,
-    subject: "Réinitialisation du mot de passe",
-    html: `<h1>Reinitialisation du mot de passe</h1>
-    <p>Cliquer sur ce lien pour reinitialiser votre mot de passe</p>`,
-  }
+  const { email } = req.body;
+  // Check si l'email existe dans la bdd
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.json({
+      error: "No user found with this email",
+    });
+  } else {
+    const link = generateresetlink(email);
+    const expediteur = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD,
+      },
+    });
 
-  expediteur.sendMail(contenu, (err, info) => {
-    if (err) {
-      console.log(err);
+    const contenu = {
+      from: process.env.EMAIL,
+      to: req.body.email,
+      subject: "Reset your password",
+      html: `<h1>Reset your password</h1>
+      <p>Click on this link to reset your password</p>
+      <a href=${link}>${link}</a>`,
+    };
+
+    expediteur.sendMail(contenu, (err, _) => {
+      if (err) {
+        return res.json({
+          error: "Something went wrong. Please try again later.",
+        });
+      }
+    });
+    return res.json({
+      message: "Password reset link sent to your email",
+    });
+  }
+};
+
+const verifyToken = (token) => {
+  try {
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    if (!user) {
+      return {
+        error: "Invalid token",
+      };
     }
-  })
-  return res.json();
-}
+    return { email: user.email };
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return {
+        errorexpire: "Token expired",
+      };
+    } else {
+      return {
+        error: "Invalid token",
+      };
+    }
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+  const hashedPassword = await hashPassword(newPassword);
+  User.findOneAndUpdate(
+    { email: email }, // Filtre l'utilisateur en utilisant son identifiant
+    { $set: { password: hashedPassword } }, // Définissez le nouveau mot de passe
+    { new: true } // Si vous voulez récupérer l'objet mis à jour, utilisez { new: true }
+  )
+    .then((_) => {
+      return res.json(null);
+    })
+    .catch((_) => {
+      return res.json({
+        error: "Something went wrong while updating the password",
+      });
+    });
+};
 // Export
-module.exports = { registerUser, loginUser, getProfile, forgotPassword };
+module.exports = {
+  registerUser,
+  loginUser,
+  getProfile,
+  forgotPassword,
+  verifyToken,
+  resetPassword,
+};
