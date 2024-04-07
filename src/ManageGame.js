@@ -40,6 +40,8 @@ module.exports = class ManageGame {
 
         // Variable to track the total penalty cards to take from the deck in the game
         this.sumPinition = 0;
+
+        this.lastColor = null;
     }
     
     /**
@@ -126,8 +128,12 @@ module.exports = class ManageGame {
             (card.isChangeColorCard() && this.sumPinition == 0 ) ||      // attention sur le cas de ChangeColor sur +4 carte
         
             // Check if the card is a Plus 4 card 
-            (card.isPlus4Card() )
-        );
+            (card.isPlus4Card() ) ||
+
+            (this.lastCard.isPlus4Card && card.color === this.lastColor) ||
+
+            (this.lastCard.isChangeColorCard && card.color === this.lastColor)
+        ); 
     }
 
     /**
@@ -146,9 +152,6 @@ module.exports = class ManageGame {
         for (let card of cards) {
             // Check if the card is playable
             let isPlayableCard = playableCards.some(playableCard => (playableCard.color === card.color && playableCard.value === card.value));
-            
-            
-
             if (isPlayableCard) {
                 // Check conditions for playing a card with the same color
                 if (!playedSameValue && card.getColor() == this.lastCard.color && card.getValue() != this.lastCard.value) {
@@ -164,7 +167,8 @@ module.exports = class ManageGame {
                     if (!playedSameValue && card.isChangeColorCard()) {
                             this.currentPlayer.removeFromHand(card);
                             this.lastCard = card;
-                            playedSameValue = true;   
+                            playedSameValue = true;
+                            break;   
                     } else {
                         if (!playedSameValue && card.isPlus4Card()) {
                             this.currentPlayer.removeFromHand(card);
@@ -206,6 +210,8 @@ module.exports = class ManageGame {
                 if(this.lastCard.isReverseCard()) {
                     this.reverseGameDirection();
                 } else if(this.lastCard.isPlus4Card()) {
+                    let color = await this.getColorChoice();
+                    this.changeColor(color);
                     this.plus4Card();
                 } else if(this.lastCard.isPlus2Card()) {
                     this.plus2Card();
@@ -301,7 +307,7 @@ module.exports = class ManageGame {
             const cardsToPlay = await this.getCardsToPlay();
     
             // Play the chosen cards
-            await this.play(cardsToPlay);      // we have to add the logique of sum the penality
+            await this.play(cardsToPlay);     
 
         } else {
             // If the player has no playable cards
@@ -335,7 +341,7 @@ module.exports = class ManageGame {
     }
 
     changeColor(color) {
-        this.lastCard.color = color;
+        this.lastColor = color;
         this.moveToNextPlayer();
     }
 
@@ -427,7 +433,7 @@ module.exports = class ManageGame {
         });
     }
     
-
+    
     /**
      * executeGame - Main method to execute the Uno game.
      * This method should be called to start and run the entire Uno game.
