@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const socketIo = require('socket.io');
 const jwt = require('jsonwebtoken');
+const cookie = require('cookie');
 const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
 
 const ManageGame = require('../src/ManageGame');
@@ -9,86 +10,91 @@ const Player = require('../src/Player');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
-app.use(express.static('public'));
 
-// Remplacer 'your_jwt_secret' 
-const jwtSecret = 'your_jwt_secret';
+
+require('dotenv').config({ path: '../server/.env' }); 
+const jwtSecret = process.env.JWT_SECRET;//dans les variables d'environment
+
+
 // Structure pour suivre les rooms et les jeux associés
 const rooms = {};
 const games = {};
-const playerDetails = {};
+const playerDetails = {};//va stocker les details sur les joueurs connectés
 
-app.use(express.static('public'));
+app.use(express.static('src'));//Remplacer par index.html
 app.get('/', (req, res) => {
-   res.send('Bienvenue sur notre jeu Uno');
+   res.send('Bienvenue sur notre jeu Uno');//remplacer par l'emplacemet du front
 });
+io.use((socket, next) => {
+  const cookies = socket.handshake.headers.cookie;
+  if (cookies) {
+      const parsedCookies = cookie.parse(cookies);
+      const token = parsedCookies.token;
 
+      if (token) {
+          jwt.verify(token, jwtSecret, (err, decoded) => {
+              if (err) {
+                  return next(new Error('Authentication error'));
+              }
+              socket.user = decoded;
+              next();
+          });
+      } else {
+          next(new Error('Authentication error: No token provided'));
+      }
+  } else {
+      next(new Error('Authentication error: No cookies found'));
+  }
+});
 io.on('connection', (socket) => {
-    console.log(`Nouveau joueur connecté: ${socket.id}`);
-    socket.on('authenticate', (token) => {
-      jwt.verify(token, jwtSecret, (err, decoded) => {
-          if (!err) {
-              const player = new Player(decoded.username);
-              playerDetails[socket.id] = { player, isConnected: true };
-              socket.emit('authenticated');
-          } else {
-              socket.emit('authenticationFailed', 'Échec de l’authentification.');
-              socket.disconnect();
-          }
-      });
+  console.log(`Nouveau joueur connecté: ${socket.id}`);
+
+  socket.on('createRoom', ({ maxPlayers }) => {
+      if (!socket.user) {
+          socket.emit('error', 'Authentication failed');
+          return;
+      }
+
+      const roomId = uuidv4();
+      const newRoom = {
+          id: roomId,
+          owner: socket.user.id,
+          players: [socket.user.id],
+          maxPlayers,
+          game: null,
+      };
+
+      rooms[roomId] = newRoom;
+      playerDetails[socket.id] = { roomId, player: new Player(socket.user.username) };
+
+      socket.join(roomId);
+      socket.emit('roomCreated', { roomId, newRoom });
   });
 
-  socket.on('createRoom', ({ token, maxPlayers }) => {
-    const userId = verifyToken(token); // Vérifie le token et on obtient l'ID de l'utilisateur
-    if (!userId) {
-        socket.emit('error', 'Token invalide');
-        return;
-    }
+  socket.on('joinRoom', ({ roomId }) => {
+      if (!socket.user) {
+          socket.emit('error', 'Authentication failed');
+          return;
+      }
 
-    const roomId = uuidv4();// Génère un identifiant unique pour la room
-    const joinLink = `https://monjeu.com/rejoindre?roomId=${roomId}`;//ou bien utiliser un token temporaire pour plus de precaution
-    rooms[roomId] = {
-        id: roomId,
-        owner: userId,
-        players: [userId],
-        maxPlayers,
-        game: null // La partie n'a pas encore commencé
-    };
+      const room = rooms[roomId];
+      if (!room) {
+          socket.emit('error', 'Room not found');
+          return;
+      }
 
-    // Ajoute le joueur à la room
-    playerDetails[socket.id] = { roomId, player: new Player(userId) };
+      if (room.players.length >= room.maxPlayers) {
+          socket.emit('error', 'Room is full');
+          return;
+      }
 
-    socket.join(roomId);
-    socket.emit('roomCreated', { roomId });
-});
+      room.players.push(socket.user.id);
+      playerDetails[socket.id] = { roomId, player: new Player(socket.user.username) };
+      socket.join(roomId);
 
-   
-   socket.on('joinRoom', ({ token, roomId }) => {
-    const userId = verifyToken(token);
-    if (!userId) {
-      socket.emit('error', 'Token invalide');
-      return;
-    }
-
-    const room = rooms[roomId];
-    if (!room) {
-        socket.emit('error', 'Room non trouvée');
-        return;
-    }
-
-    if (room.players.length >= room.maxPlayers) {
-        socket.emit('error', 'Room pleine');
-        return;
-    }
-
-    room.players.push(userId);
-    playerDetails[socket.id] = { roomId, player: new Player(userId) };
-    socket.join(roomId);
-
-    socket.emit('roomJoined', roomId);
-    socket.to(roomId).emit('playerJoined', userId); // Prévient les autres joueurs
-});
-
+      socket.emit('roomJoined', roomId);
+      io.to(roomId).emit('playerJoined', socket.user.username);
+  });
 
     
 socket.on('startGame', ({ token, roomId }) => {
@@ -110,7 +116,7 @@ socket.on('startGame', ({ token, roomId }) => {
   // Initialiser le jeu
   const game = new ManageGame(room.players.map(id => playerDetails[id].player));
   room.game = game;
-  game.startGame(); 
+  game.GameStart(); 
 
   io.to(roomId).emit('gameStarted');
 });
