@@ -3,7 +3,7 @@ const socketIo = require('socket.io');
 const http = require("http");
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
-
+const {authMiddleware} = require("./Middleware/Middleware.js")
 
 
 const app = express();
@@ -13,29 +13,7 @@ const io = socketIo(server);
 
 // Structure pour suivre les rooms et les jeux associés
 const rooms = {};
-const games = {};
 const playerDetails = {};
-
-function authMiddleware(req,res,next) {
-    const token = req.cookies;
-
-    if(!token) {
-        return res.status(401).json({message:'Token d\'authentification manquant'});
-    }
-    jwt.verify(token,process.env.JWT_SECRET,(err,decoded) => {
-        if(err) {
-            return res.status(401).json({ message: 'Échec de l\'authentification. Token invalide' });
-        }
-        req.user = decoded;
-        next();
-    });
-}
-
-app.get('/', authMiddleware,(req, res) => {
-   res.send('Bienvenue sur notre jeu Uno');
-});
-
-
 
 io.on('connection', (socket) => {
     console.log(`Nouveau joueur connecté: ${socket.id}`);

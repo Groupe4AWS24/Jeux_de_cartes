@@ -1,28 +1,27 @@
-const Card = require("./Card");
-const Deck = require("./UnoDeck");
-const ManageGame = require("./ManageGame");
-const Player = require("./Player");
+// Imports
+// Framework pour node.js
+const express = require("express");
+const dotenv = require("dotenv").config();
+const { mongoose } = require("mongoose");
+const cookieParser = require("cookie-parser");
 
+// Créer l'instance de l'application
+const app = express();
 
-var player1 = new Player("Daoud");
-var player2 = new Player("Aissa");
-var player3 = new Player("Rostom");
-var player4 = new Player("Ahmed");
+// Connexion à la base de données
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log("Connexion bdd reussie"))
+  .catch((err) => console.log("Connexion bdd echouée", err));
 
-//console.log(player1);
-//console.log(player2);
+// Paramètrage de l'application principale
+app.use(express.json());
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
 
-const players = [player1, player2 , player3 , player4];
+// Définit le chemin pour retrouver les modules du serveur
+app.use("/", require("./routes/authRoutes"));
 
-var manageGame = new ManageGame(players);
-//console.log(manageGame);
-
-
-manageGame.executeGame();
-
-//console.log(player1.nextPlayer.name);
-//console.log(player1.previousPlayer.name);
-
-//console.log(manageGame.lastCard);
-
-//manageGame.skipNextPlayer();
+// Choix du part et affichage
+const port = 8000;
+app.listen(port, () => console.log(`Server is running on port ${port}`));
