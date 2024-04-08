@@ -35,6 +35,7 @@ Le choix de la méthode à était crutial, l'objectif étant de garantir la séc
 
 ## Améliorations
 Côté authentification, quelques ajouts seront faits dans les semaines à venir, dans le _"Forgot password?"_ et le "Reset_Password" une option cliquable pour retourner dans le menu, un style css pour le tchat et continuer la DA pour voir comment l'intégrer, ou encore la sécurisation du token et des routes.  
+Faire en sorte, que le chat soit limité à la room.
 *****
 Côté serveurs, pour combler le reste avec des bots, ou bien qu'on puisse jouer à 2 comme à 3 ou 4 joueurs mais réels uniquement.
 *****
