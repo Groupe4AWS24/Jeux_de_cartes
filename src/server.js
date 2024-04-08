@@ -2,6 +2,7 @@ const express = require('express');
 const socketIo = require('socket.io');
 const http = require("http");
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
 
 
 
@@ -10,52 +11,27 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 
+// Structure pour suivre les rooms et les jeux associés
+const rooms = {};
+const games = {};
+const playerDetails = {};
+
 function authMiddleware(req,res,next) {
     const token = req.cookies;
 
     if(!token) {
         return res.status(401).json({message:'Token d\'authentification manquant'});
     }
-    jwt.verify(token,process.env.JWT_SECRET,(err,user) => {
+    jwt.verify(token,process.env.JWT_SECRET,(err,decoded) => {
         if(err) {
             return res.status(401).json({ message: 'Échec de l\'authentification. Token invalide' });
         }
-        res.json(user);
+        req.user = decoded;
         next();
     });
 }
 
-
-
-
-
-
-
-// Utilisation du middleware pour les routes protégées
-app.get('/api/ressource-protégée', authMiddleware, (req, res) => {
-    // La requête est authentifiée, vous pouvez accéder aux informations d'identification de l'utilisateur via req.userId
-    // Traiter la demande pour la ressource protégée ici
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//app.use(express.static('public'));
-app.get('/', (req, res) => {
+app.get('/', authMiddleware,(req, res) => {
    res.send('Bienvenue sur notre jeu Uno');
 });
 
@@ -78,90 +54,110 @@ io.on('connection', (socket) => {
 });  
 
 
+// Utilisation du middleware pour l'événement 'createRoom'
+socket.on('createRoom', (data) => {
+    authMiddleware(socket, (err) => {
+        if (err) {
+            // Gérer l'erreur d'authentification
+            socket.emit('authenticationFailed', err.message);
+            socket.disconnect();
+        } else {
+            // Le token JWT est valide, continuer avec la création de la salle
+            const { maxPlayers } = data;
+            const userId = socket.userId;
+            const roomId = uuidv4();
+            //const joinLink = `https://monjeu.com/rejoindre?roomId=${roomId}`;
 
+            rooms[roomId] = {
+                id: roomId,
+                owner: userId,
+                players: [userId],
+                maxPlayers,
+                game: null
+            };
 
+            playerDetails[socket.id] = { roomId, player: new Player(socket.username) };
+            socket.join(roomId);
+            socket.emit('roomCreated', { roomId });
+        }
+    });
+});
 
+// Utilisation du middleware pour l'événement 'joinRoom'
+socket.on('joinRoom', (data) => {
+    authMiddleware(socket, (err) => {
+        if (err) {
+            // Gérer l'erreur d'authentification
+            socket.emit('authenticationFailed', err.message);
+            socket.disconnect();
+        } else {
+            // Le token JWT est valide, continuer avec l'ajout du joueur à la salle
+            const { roomId } = data;
+            const userId = socket.userId;
 
+            const room = rooms[roomId];
+            if (!room) {
+                socket.emit('error', 'Room non trouvée');
+                return;
+            }
 
+            if (room.players.length >= room.maxPlayers) {
+                socket.emit('error', 'Room pleine');
+                return;
+            }
 
+            room.players.push(userId);
+            playerDetails[socket.id] = { roomId, player: new Player(userId) };
+            socket.join(roomId);
 
-
-socket.on('createRoom', ({ token, maxPlayers }) => {
-    const userId = verifyToken(token);                    // Vérifie le token et on obtient l'ID de l'utilisateur  verifyToken() ????
-    if (!userId) {
-        socket.emit('error', 'Token invalide');
-        return;
-    }
-
-    const roomId = uuidv4();       // Génère un identifiant unique pour la room
-    //const joinLink = `https://monjeu.com/rejoindre?roomId=${roomId}`;  //ou bien utiliser un token temporaire pour plus de precaution
-    rooms[roomId] = {
-        id: roomId,
-        owner: userId,
-        players: [userId],
-        maxPlayers,
-        game: null // La partie n'a pas encore commencé
-    };
-
-     // Ajoute le joueur à la room
-    playerDetails[socket.id] = { roomId, player: new Player(userId) };       //
-
-    socket.join(roomId);
-    socket.emit('roomCreated', { roomId });
+            socket.emit('roomJoined', roomId);
+            socket.to(roomId).emit('playerJoined', userId);
+        }
+    });
 });
 
 
-socket.on('joinRoom', ({ token, roomId }) => {
-    const userId = verifyToken(token);
-    if (!userId) {
-      socket.emit('error', 'Token invalide');
-      return;
-    }
-
-    const room = rooms[roomId];
-    if (!room) {
-        socket.emit('error', 'Room non trouvée');
-        return;
-    }
-
-    if (room.players.length >= room.maxPlayers) {
-        socket.emit('error', 'Room pleine');
-        return;
-    }
-
-    room.players.push(userId);
-    playerDetails[socket.id] = { roomId, player: new Player(userId) };
-    socket.join(roomId);
-
-    socket.emit('roomJoined', roomId);
-    socket.to(roomId).emit('playerJoined', userId); // Prévient les autres joueurs
-});
-
-socket.on('startGame', ({ token, roomId }) => {
-    const userId = verifyToken(token);
-    const room = rooms[roomId];
+socket.on('startGame', (data) => {
+    authMiddleware(socket, (err) => {
+        if (err) {
+            // Gérer l'erreur d'authentification
+            socket.emit('authenticationFailed', err.message);
+            socket.disconnect();
+        } else {
+            // Le token JWT est valide, continuer avec l'ajout du joueur à la salle
+            const { roomId } = data;
+            const userId = socket.userId;
+            const room = rooms[roomId];
     
-    // Vérifie si l'utilisateur est le créateur de la room
-    if (room.owner !== userId) {
-        socket.emit('error', 'Seul le créateur peut démarrer le jeu');
-        return;
-    }
+            // Vérifie si la salle existe
+            if (!room) {
+                socket.emit('error', 'Room non trouvée');
+                return;
+            }
+    
+            // Vérifie si l'utilisateur est le créateur de la room
+            if (room.owner !== userId) {
+                socket.emit('error', 'Seul le créateur peut démarrer le jeu');
+                return;
+            }
   
-    // Vérifie si le nombre de joueurs est suffisant     (ça il étais déjà fait au code de startGame)
-    if (room.players.length < room.maxPlayers) {
-        socket.emit('error', 'Pas assez de joueurs');
-        return;
-    }
+            // Vérifie si le nombre de joueurs est suffisant
+            if (room.players.length < room.maxPlayers) {
+                socket.emit('error', 'Pas assez de joueurs');
+                return;
+            }
   
-    // Initialiser le jeu
-    const game = new ManageGame(room.players.map(id => playerDetails[id].player));
-    room.game = game;
-    game.startGame(); 
+            // Initialiser le jeu
+            const game = new ManageGame(room.players.map(id => playerDetails[id].player));
+            room.game = game;
+            game.startGame(); 
   
-    io.to(roomId).emit('gameStarted');
-  });
+            io.to(roomId).emit('gameStarted');
+        }
+    });
+});
 
-  socket.on('disconnect', () => {
+socket.on('disconnect', () => {
     const details = playerDetails[socket.id];
     if (details) {
         const { roomId } = details;
@@ -178,4 +174,19 @@ socket.on('startGame', ({ token, roomId }) => {
         delete playerDetails[socket.id];
     }
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
