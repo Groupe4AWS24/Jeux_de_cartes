@@ -47,8 +47,8 @@ L'organisation pour ces dernières semaines a été la suivante :
 ## Calendrier
 
 ### Calendrier initial:
-Objectif à avoir accompli à la date indiquée.
-**10/04** : Finir la gestion des serveurs (Z & D) + développer le tchat (T & M) + Tout relier bien (T) + (Rendre visible le mdp avec le petit oeil, Oubli de mdp -> mail automatique ) (M & T)  
+Objectif à avoir accompli à la date indiquée.  
+**10/04** : Finir la gestion des serveurs (Z & D) + développer le tchat (T & M) + Tout relier bien (T) + (Rendre visible le mdp avec le petit oeil, Oubli de mdp -> mail automatique ) (M & T)    
 **24/04** : Gérer le responsive (T) + Sécuriser avec https et routes et token (M) + Ajout mode daltonien (T) + Hebergeur (Z & D) + Ajout d'une IA (possibilité d'avoir 1 jour réel, 3 bots etc) OU jeu maléable (peut etre joué a 2, 3 ou 4) (Z & D) + Avoir une plateforme uniforme sur la DA et jouable (T & M)   
 **08/05** : Avoir une plateforme uniforme sur la DA et jouable (T & M) + Implémenter & Rédiger paramètres (M) +
 Rapport et soutenance (M) + Ajouter de la musique d'ambiance (Z & D) + (Classement (Z & D)) 
