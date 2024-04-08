@@ -1,7 +1,7 @@
 // Imports
 import axios from "axios";
 import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const UserContext = createContext({});
 
@@ -13,13 +13,18 @@ export const UserContext = createContext({});
  */
 export function UserContextProvider({ children }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   useEffect(() => {
     if (!user) {
       axios.get("/profile").then(({ data }) => {
         setUser(data);
-        if (data) {
+        if (data && location.pathname !== '/chat') {
           navigate("/dashboard");
+        } else if (!data){
+          navigate("/");
+        } else {
+
         }
       });
     }

@@ -9,6 +9,7 @@ const {
   forgotPassword,
   verifyToken,
   resetPassword,
+  getToken,
 } = require("../controle/controleacces");
 
 // Paramétrage du serveur, pour l'instant en local
@@ -33,6 +34,7 @@ router.post('/verifytoken', (req, res) => {
   return res.json(verifyToken(token));
 });
 router.post('/reset', resetPassword)
+router.get('/token', getToken)
 
 // Export
 module.exports = router;

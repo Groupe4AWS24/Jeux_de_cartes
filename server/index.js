@@ -4,9 +4,12 @@ const express = require("express");
 const dotenv = require("dotenv").config();
 const { mongoose } = require("mongoose");
 const cookieParser = require("cookie-parser");
+const http = require("http");
+const { setupSocket } = require("./chat/tchat");
 
 // Créer l'instance de l'application
 const app = express();
+const server = http.createServer(app);
 
 // Connexion à la base de données
 mongoose
@@ -24,4 +27,6 @@ app.use("/", require("./routes/authRoutes"));
 
 // Choix du part et affichage
 const port = 8000;
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+server.listen(port, () => console.log(`Server is running on port ${port}`));
+
+setupSocket(server);
