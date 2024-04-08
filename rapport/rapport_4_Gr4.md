@@ -31,8 +31,8 @@ Le choix de la méthode a été crucial, l'objectif étant de garantir la sécur
 Côté authentification, quelques ajouts seront faits dans les semaines à venir, telles que : 
 - Dans le _"Forgot password?"_ et le "Reset_Password" une option cliquable pour retourner dans le menu
 - La sécurisation du token et des routes  
-- Faire en sorte que le tchat soit limité à la room.
-Coté serveur, on pourrait éventuellement combler une room avec des bots.
+- Faire en sorte que le tchat soit limité à la room.  
+Coté serveur, on pourrait éventuellement combler une room avec des bots.  
 Et de manière plus générale, un choix final de DA et un lien entre tous les codes sera fait.
 
 ## Organisation
