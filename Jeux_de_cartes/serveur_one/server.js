@@ -4,7 +4,6 @@ const socketIo = require('socket.io');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie');
 const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
-
 const ManageGame = require('../src/ManageGame');
 const Player = require('../src/Player');
 const app = express();
@@ -12,7 +11,8 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 
-require('dotenv').config({ path: '../server/.env' }); 
+require('dotenv').config({ path: '../../../server/.env' });//dépend de l'emplacement de.env
+
 const jwtSecret = process.env.JWT_SECRET;//dans les variables d'environment
 
 
@@ -25,12 +25,12 @@ app.use(express.static('src'));//Remplacer par index.html
 app.get('/', (req, res) => {
    res.send('Bienvenue sur notre jeu Uno');//remplacer par l'emplacemet du front
 });
+// Middleware pour vérifier les tokens JWT des connexions Socket.IO
 io.use((socket, next) => {
   const cookies = socket.handshake.headers.cookie;
   if (cookies) {
       const parsedCookies = cookie.parse(cookies);
       const token = parsedCookies.token;
-
       if (token) {
           jwt.verify(token, jwtSecret, (err, decoded) => {
               if (err) {
@@ -46,6 +46,7 @@ io.use((socket, next) => {
       next(new Error('Authentication error: No cookies found'));
   }
 });
+
 io.on('connection', (socket) => {
   console.log(`Nouveau joueur connecté: ${socket.id}`);
 
@@ -61,14 +62,14 @@ io.on('connection', (socket) => {
           owner: socket.user.id,
           players: [socket.user.id],
           maxPlayers,
-          game: null,
+          game: new ManageGame([]), // Initialise le jeu sans joueurs pour l'instant
       };
 
       rooms[roomId] = newRoom;
       playerDetails[socket.id] = { roomId, player: new Player(socket.user.username) };
 
       socket.join(roomId);
-      socket.emit('roomCreated', { roomId, newRoom });
+      socket.emit('roomCreated', { roomId, joinLink: `https://monjeu.com/rejoindre?roomId=${roomId}` });
   });
 
   socket.on('joinRoom', ({ roomId }) => {
@@ -97,29 +98,35 @@ io.on('connection', (socket) => {
   });
 
     
-socket.on('startGame', ({ token, roomId }) => {
-  const userId = verifyToken(token);
-  const room = rooms[roomId];
+  socket.on('startGame', ({ roomId }) => {
+    // Pas besoin de vérifier le token ici, car `socket.user` est déjà défini si l'utilisateur est authentifié.
+    if (!socket.user) {
+        socket.emit('error', 'Authentication failed');
+        return;
+    }
   
-  // Vérifie si l'utilisateur est le créateur de la room
-  if (room.owner !== userId) {
-      socket.emit('error', 'Seul le créateur peut démarrer le jeu');
-      return;
-  }
-
-  // Vérifie si le nombre de joueurs est suffisant
-  if (room.players.length < room.maxPlayers) {
-      socket.emit('error', 'Pas assez de joueurs');
-      return;
-  }
-
-  // Initialiser le jeu
-  const game = new ManageGame(room.players.map(id => playerDetails[id].player));
-  room.game = game;
-  game.GameStart(); 
-
-  io.to(roomId).emit('gameStarted');
+    const room = rooms[roomId];
+  
+    // Vérifiez si l'utilisateur est le créateur de la room
+    if (!room || room.owner !== socket.user.id) {
+        socket.emit('error', 'Seul le créateur peut démarrer le jeu');
+        return;
+    }
+  
+    // Vérifie si le nombre de joueurs est suffisant
+    if (room.players.length < room.maxPlayers) {
+        socket.emit('error', 'Pas assez de joueurs');
+        return;
+    }
+  
+    // Initialiser le jeu
+    const game = new ManageGame(room.players.map(id => playerDetails[id].player));
+    room.game = game;
+    game.GameStart();
+  
+    io.to(roomId).emit('gameStarted');
 });
+
 
   
   socket.on('playCard', (card) => {
@@ -202,6 +209,7 @@ function sendHandToAllPlayers() {
     io.to(player.id).emit('handUpdate', hand);
   });
 }
+
 function distributeCards(room, currentSocketId) {//utiliser composant react de Thanu !
   const game = games[room];
   if (game) {
@@ -225,60 +233,70 @@ function updateGameState(gameId) {
   });
 }
 
+//un joueur pioche des cartes
+socket.on('drawCards', (data) => {
+  const { room, numberOfCards } = data;
+  const game = games[room];
+  if (game) {
+      const player = rooms[socket.id];
+      // Logique pour faire piocher les cartes au joueur
+      // Après avoir mis à jour la main du joueur, redistribuer ses cartes
+      distributeCards(room, socket.id);
+  }
+});
+
 socket.on('disconnect', () => {
   const details = playerDetails[socket.id];
   if (details) {
-      const { roomId } = details;
-      const room = rooms[roomId];
-      if (room) {
-          room.players = room.players.filter(id => id !== details.player.id);
-          if (room.players.length === 0) {
-              // Supprime la room si elle est vide
-              delete rooms[roomId];
-          } else {
-              io.to(roomId).emit('playerDisconnected', details.player.id);
-          }
-      }
-      delete playerDetails[socket.id];
-  }
-});
+    // Marquer le joueur comme déconnecté
+    details.isDisconnected = true;
 
-
-
-
-
-/*//  un joueur pioche des cartes
-socket.on('drawCards', (data) => {
-    const { room, numberOfCards } = data;
-    const game = games[room];
-    if (game) {
-        const player = rooms[socket.id];
-        // Logique pour faire piocher les cartes au joueur
-        // Après avoir mis à jour la main du joueur, redistribuer ses cartes
-        distributeCards(room, socket.id);
+    // Informer les autres joueurs de la déconnexion
+    const room = rooms[details.roomId];
+    if (room) {
+      io.to(details.roomId).emit('playerDisconnected', { playerId: details.player.id, username: details.player.name });
+      if (room.players.length === 0) {
+        // Supprime la room si elle est vide
+        delete rooms[roomId];
+    } else {
+        io.to(roomId).emit('playerDisconnected', details.player.id);
     }
-});
-*/
-/*/  l'authentification des joueurs (à compléter avec la logique de vérification)
-app.post('/login', async (req, res) => {
-  // ... logique pour authentifier le joueur ...
-
-  // Générer et envoyer le JWT si authentifié
-  const token = jwt.sign({ playerId: player.id }, 'secret_key'); // Utilisez une clé secrète réelle
-  res.json({ token });
-});
-
-// Middleware Socket.IO pour vérifier le JWT
-io.use((socket, next) => {
-  const token = socket.handshake.auth.token;
-  try {
-    const decoded = jwt.verify(token, 'secret_key');
-    socket.playerId = decoded.playerId;
-    next();
-  } catch (e) {
-    return next(new Error('Authentification échouée'));
+}
+delete playerDetails[socket.id];
+  
+    
   }
-});*/
+});
+
+
+socket.on('reconnectPlayer', ({ userId, roomId }) => {
+  // Trouver le joueur déconnecté correspondant
+  const disconnectedPlayerDetails = Object.values(playerDetails).find(details => details.player.id === userId && details.roomId === roomId && details.isDisconnected);
+
+  if (disconnectedPlayerDetails) {
+    // Remettre à jour le socket.id pour le joueur qui se reconnecte
+    playerDetails[socket.id] = { ...disconnectedPlayerDetails, isDisconnected: false };
+    delete playerDetails[disconnectedPlayerDetails.socketId]; // Supprimer l'ancienne entrée
+
+    disconnectedPlayerDetails.socketId = socket.id; // Mettre à jour avec le nouveau socket.id
+
+    // Faire rejoindre le joueur à sa room
+    socket.join(roomId);
+
+    // Informer le joueur qu'il est reconnecté
+    socket.emit('reconnected', { roomId, userId });
+
+    // Informer les autres joueurs de la reconnexion
+    io.to(roomId).emit('playerReconnected', { playerId: userId, username: disconnectedPlayerDetails.player.name });
+  } else {
+    // Gérer le cas où la reconnexion n'est pas possible (par exemple, le joueur n'existe pas)
+    socket.emit('reconnectFailed', { message: "Reconnexion échouée. Le joueur ou la salle n'existe pas." });
+  }
+});
+
+  
+
+
 });
 
 const PORT = process.env.PORT || 3000;
