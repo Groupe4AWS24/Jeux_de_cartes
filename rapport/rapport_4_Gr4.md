@@ -19,11 +19,8 @@ Le lien redirige vers une page pour réinitialiser son mot de passe, qui s'appli
 
 Ensuite, pour consolider la gestions des serveurs, nous avons implémenter un tchat en utilisant les fonctionnialité de socket.io (au lieu de WebSocket pour sa facilité d'utilisation), permettant aux joueurs de pouvoir communiquer entre eux.
 
-*******
-Ensuite, la gestion des serveurs a été un objectif clé à atteindre pour ces semaines. Deux aspects ont été explorés.  
-Le premier étant la possibilité d'accéder à une room à partir d'un lien, une room étant l'endroit où une partie de One se déroule.
-Le deuxième aspect a été la synchronisation de la communication des joueurs en temps réel. Socket.io a été primordial pour créer des rooms, et sera utile pour la communication dans le tchat. Nous avons maintenant un système où les joueurs peuvent rejoindre des parties, et leurs actions sont synchronisées avec tous les participants en temps réel. Un mécanisme de vérification de tokens a été également intégré, permettant ainsi d'assurer que seuls les utilisateurs authentifiés peuvent rejoindre les parties. Cela contribue à la sécurité et à l'intégrité de notre jeu.
-*******
+Ensuite, la finition de gestion des serveurs a été un objectif à atteindre pour cette semaine. On a ajouter un middleware d'authentification pour vérifier si le client est déjà authentifié avant d'exécuter toute action sur la plateforme. Sinon, une erreur d'autorisation sera renvoyée. Outre la gestion des déconnexions, un mécanisme de reconnexion a été élaboré pour permettre aux joueurs de rejoindre à nouveau la partie en cas de coupure Internet ou de fermeture accidentelle du navigateur. Ce système nécessite de garder une trace des joueurs actifs et déconnectés pour permettre une reprise fluide du jeu sans pénaliser les autres participants.Cela impliquait de marquer les joueurs comme "déconnectés" sans les retirer immédiatement de la partie, permettant ainsi leur reconnexion dans un intervalle de temps donné. Ce mécanisme complexe a nécessité une gestion fine des états des joueurs et des parties, ainsi qu'une modification de la logique de communication via Socket.IO pour gérer les événements de déconnexion et de reconnexion.
+
 
 En résumé, un joueur peut changer son mot de passe, peut communiquer avec les autres joueurs, rejoindre des rooms spécifiques, pour de nouveau rejoindre la room en cas de déconnexion soudaines, et démarrer des parties de Uno, et que ses actions dans le jeu impactent tous les joueurs.
 
@@ -36,9 +33,7 @@ Le choix de la méthode à était crutial, l'objectif étant de garantir la séc
 ## Améliorations
 Côté authentification, quelques ajouts seront faits dans les semaines à venir, dans le _"Forgot password?"_ et le "Reset_Password" une option cliquable pour retourner dans le menu, un style css pour le tchat et continuer la DA pour voir comment l'intégrer, ou encore la sécurisation du token et des routes.  
 Faire en sorte, que le chat soit limité à la room.
-*****
-Côté serveurs, pour combler le reste avec des bots, ou bien qu'on puisse jouer à 2 comme à 3 ou 4 joueurs mais réels uniquement.
-*****
+Coté serveur, on pourrait éventuellement combler une room avec des bots.
 Et de manière plus générale, un choix final de DA et un lien entre tous les codes sera fait.
 
 ## Organisation
