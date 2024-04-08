@@ -23,8 +23,8 @@ function Page1() {
         if (Object.keys(playersDeck).length === 0) {
             // Effectuer les actions nécessaires seulement si playersDeck est vide
             setPlayersDeck({ 
-                "thanu": ["purple_1", "purple_1","purple_1", "purple_1"],
-                "inconnu": ["purple_1", "purple_1"],
+                "thanu": ["purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1"],
+                "inconnu": ["purple_1", "purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1" ,"purple_1", "purple_1","purple_1", "purple_1",,"purple_1", "purple_1","purple_1", "purple_1"],
                 "versatile": ["purple_1", "purple_1"],
                 "pastèque épicée": ["purple_1", "purple_1"]
             });

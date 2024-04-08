@@ -1,7 +1,6 @@
 import react,{ useState } from 'react'
 import './App.css'
 import Page1 from './pages/one_page'
-import Login from './pages/login'
 
 function App() {
 

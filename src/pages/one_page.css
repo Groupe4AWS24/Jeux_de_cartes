@@ -1,7 +1,8 @@
 .board{
     height: 100vh;
-    background-image: url('src/assets/Fond.png');
+    background-image: url('src/assets/board/Fond.png');
     background-size: cover;
+    background-position: center;
     background-repeat: no-repeat;
 
 }
@@ -36,6 +37,7 @@
     /*margin: 3px;*/
     /*background-color: yellow;*/
     overflow: hidden;
+    min-width: 170px;
 }
 
 .divmid {
@@ -48,10 +50,9 @@
 
 /*Pour la partie gauche*/
 .divleft {
-	flex:2;
+	flex: 2;
     display: flex;
     flex-direction: row;
-    align-items: center;
 }
 
 
@@ -97,23 +98,30 @@
 .hand_1 {
     display: flex;
     flex-direction: column;
-    transform: translate(30%, 0);
-    margin-left: 3%;
+    margin-left: 95px;
+    flex-wrap: wrap;
+    max-height: 95vh;
+    justify-content: center;
 }
 
 .hand_2 {
-    margin-top: 1%;
+    margin-bottom: 100px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .hand_0 {
-    margin-top: 1%;
+    margin-bottom: 95px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-right: 50px;
 }
 
 .hand_3 {
-    
     display: flex;
     flex-direction: column;
-    transform: translate(-28%, 0);
     margin-right: 3%;
 }
 
@@ -131,13 +139,12 @@
 }
 
 .leftside{    
-    transform: rotate(90deg);
     margin-bottom: -50px;
-    margin-top: -50px;
+    margin-left: -80px;
 }
 
 .rightside{    
-    transform: rotate(-90deg);
+    transform: rotate(-180deg);
     margin-bottom: -50px;
     margin-top: -50px;
 }
@@ -148,6 +155,7 @@
 
 .card{    
     margin-right: -50px;
+    margin-bottom: -80px;
 }
 
 .circle{

@@ -9,7 +9,7 @@ export function BackCard(props) {
     const joueur = props.joueur;
     switch (joueur) {
         case 1: return (
-            <img className="back leftside" src="src/assets/back.png"/>
+            <img className="back leftside" src="src/assets/back left.png"/>
         )
 
         case 2: return (
@@ -17,7 +17,7 @@ export function BackCard(props) {
         )
 
         case 3: return (
-            <img className="back rightside" src="src/assets/back.png"/>
+            <img className="back rightside" src="src/assets/back left.png"/>
         )
 
         default : return (
