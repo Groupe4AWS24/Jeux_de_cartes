@@ -1,168 +1,133 @@
-.board{
-    height: 100vh;
-    background-image: url('src/assets/board/Fond.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-
+.board {
+  height: 100vh;
+  background-image: url("src/assets/board/Fond.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
-
-.hands{
-    height: 100vh;
+.hands {
+  height: 100vh;
 }
-
-/*
-.handback_ip{
-    display: flex;
-    justify-content : center;
-    transform: rotate(180deg);
-    
-}
-
-.handback_pp{
-    display: flex;
-    justify-content : center;
-    transform: rotate(180deg);
-    
-}*/
 
 .flex-container {
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .divs {
-    /*margin: 3px;*/
-    /*background-color: yellow;*/
-    overflow: hidden;
-    min-width: 170px;
+  overflow: hidden;
+  min-width: 170px;
 }
 
 .divmid {
-	flex:9;
-    /*background-color: red;*/
-    display: flex;
-    flex-direction: column;
+  flex: 9;
+  display: flex;
+  flex-direction: column;
 }
-
 
 /*Pour la partie gauche*/
 .divleft {
-	flex: 2;
-    display: flex;
-    flex-direction: row;
+  flex: 2;
+  display: flex;
+  flex-direction: row;
 }
-
 
 .divright {
-    flex:2;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
-	/*background-color: blue;*/
+  flex: 2;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
 }
-
 
 /*Et la div prendra un ratio de 2 par rapport au autres div row, Centre le contenu */
-.divrowtop, .divrowbottom{
-    flex:2;
-    /*background-color: blue;*/
-    display: flex;
-    justify-content: center;
+.divrowtop,
+.divrowbottom {
+  flex: 2;
+  display: flex;
+  justify-content: center;
 }
 
-/*Aligne le contenu vers le bas de la flexbox (ici ça position en y)*/
-.divrowtop{
-    align-items: flex-start;
+/*Aligne le contenu vers le bas de la flexbox*/
+.divrowtop {
+  align-items: flex-start;
 }
 
-/*Aligne le contenu vers le haut de la flexbox (ici ça position en y)*/
-.divrowbottom{
-    align-items: flex-end;
+/*Aligne le contenu vers le haut de la flexbox*/
+.divrowbottom {
+  align-items: flex-end;
 }
-
 
 /*Et la div prendra un ratio de 2 par rapport au autres div row, Centre le contenu */
-.divrowmid{
-    flex:2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5%
+.divrowmid {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5%;
 }
-
 
 .hand_1 {
-    display: flex;
-    flex-direction: column;
-    margin-left: 95px;
-    flex-wrap: wrap;
-    max-height: 95vh;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  margin-left: 95px;
+  flex-wrap: wrap;
+  max-height: 95vh;
+  justify-content: center;
 }
 
 .hand_2 {
-    margin-bottom: 100px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  /*margin-bottom: 100px;*/
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .hand_0 {
-    margin-bottom: 95px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-right: 50px;
+  margin-bottom: 95px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-right: 50px;
 }
 
 .hand_3 {
-    display: flex;
-    flex-direction: column;
-    margin-right: 3%;
+  display: flex;
+  flex-direction: column;
+  margin-right: 3%;
 }
 
-.lastcard{
-    margin-right: 50px;
+.lastcard {
+  padding-right: 50px;
+  padding-bottom: 80px;
 }
 
-.draw{
-
+.leftside {
+  margin-bottom: -50px;
+  margin-left: -80px;
 }
 
-/*Sera mit dans le fichier card.css*/
-.back{    
-    
+.rightside {
+  transform: rotate(-180deg);
+  margin-bottom: -50px;
+  margin-top: -50px;
 }
 
-.leftside{    
-    margin-bottom: -50px;
-    margin-left: -80px;
+.topside {
+  margin-right: -50px;
 }
 
-.rightside{    
-    transform: rotate(-180deg);
-    margin-bottom: -50px;
-    margin-top: -50px;
+.card {
+  margin-right: -50px;
+  margin-bottom: -80px;
 }
 
-.topside{
-    margin-right: -50px;
-}
-
-.card{    
-    margin-right: -50px;
-    margin-bottom: -80px;
-}
-
-.circle{
-    width: 70px;
-    height: 70px;
-    /*couleur sera directement géré sur le fichier jsx*/
-    background-color: #3498db;
-    /*Rajouter un contour*/
-    border-radius: 50%;
+.circle {
+  width: 60px;
+  height: 60px;
+  background-color: #c8b3dd;
+  border-radius: 50%;
+  border: 4px solid black;
 }
