@@ -7,45 +7,59 @@ import { useParams } from "react-router-dom";
 
 // Fonction Login
 function Reset() {
+  // recupère le token du lien
   const { token } = useParams();
-  const [email, setEmail] = useState("");
   const navigate = useNavigate();
+
+  // Variables permettant de gérer les entrées des utlisateurs, et envoyé
+  // des messages d'erreurs ou de succès correspondant à la situation.
+  const [email, setEmail] = useState("");
   const [resetStatus, setResetStatus] = useState("");
   const [newPassword, setNewPassword] = useState({
     password: "",
     confirmPassword: "",
   });
-
   const [errorMsg, setErrorMsg] = useState({
     password: "",
     confirmPassword: "",
   });
-
   const [successMsg, setSuccessMsg] = useState("");
-
   const [showPassword, setShowPassword] = useState({
     password: false,
     confirmPassword: false,
   });
 
+  /**
+   * Permet de vérifier la validité du token et gérer la réponse.
+   * Si expiré change le resetStatus en expirer pour afficher un message
+   * d'erreur dans le react.
+   * Si invalide retourne à la page Home
+   * Sinon change le resetStatus en valid pour afficher la page correspondant
+   * au reset password.
+   *
+   * @param {string} token - Le token à vérifier.
+   */
   useEffect(() => {
-    axios
-      .post("/verifytoken", { token: token })
-      .then(({ data }) => {
-        if (data.errorexpire) {
-          console.log("token expired");
-          setResetStatus("expired");
-        } else if (data.error) {
-          navigate("/login");
-        } else {
-          setResetStatus("valid");
-          setEmail(data.email);
-        }
-      })
+    axios.post("/verifytoken", { token: token }).then(({ data }) => {
+      if (data.errorexpire) {
+        setResetStatus("expired");
+      } else if (data.error) {
+        navigate("/");
+      } else {
+        setResetStatus("valid");
+        setEmail(data.email);
+      }
+    });
   }, [token]);
 
-
+  /**
+   * Fonction pour gérer la page pour la réinitialisation du mot de passe
+   * quand le token est valide.
+   */
   const validtoken = () => {
+    /**
+     * Modifie la valeur d'un champ lors de la saisie.
+     */
     const handleChange = (e) => {
       const { id, value } = e.target;
       setNewPassword({
@@ -54,6 +68,9 @@ function Reset() {
       });
     };
 
+    /**
+     * Modifie la valeur du showPassword, pour permettre d'afficher le mot de passe ou non.
+     */
     const togglePasswordVisibility = (field) => {
       setShowPassword({
         ...showPassword,
@@ -61,6 +78,9 @@ function Reset() {
       });
     };
 
+    /**
+     * Met à jour la valeur du message d'erreur.
+     */
     const updateErrormsg = (field, msg) => {
       setErrorMsg((prevErrorMsg) => ({
         ...prevErrorMsg,
@@ -68,6 +88,10 @@ function Reset() {
       }));
     };
 
+    /**
+     * Verifie si le mot de passe est valide. Code repris du login.js adapté pour
+     * la logique avec react, sans passer par une classe.
+     */
     const verifpassword = () => {
       const majusculeRegex = /[A-Z]/;
       const chiffreRegex = /\d/;
@@ -103,6 +127,9 @@ function Reset() {
       }
     };
 
+    /**
+     * Verifie si les deux mots de passe données sont identiques
+     */
     const samepassword = () => {
       console;
       if (newPassword.password === newPassword.confirmPassword) {
@@ -112,19 +139,25 @@ function Reset() {
         updateErrormsg("confirmPassword", `Passwords do not match`);
       }
     };
-    
-    const handleReset = () => {
-      console.log(newPassword.password);
+
+    /**
+     * Envoyer une demande de réinitialisation de mot de passe si
+     * le mot de passe est valide et s'il correspond au confirmPassword.
+     * Afficher les messages d'erreur renvoyés par le serveur ou un message de succes.
+     *
+     */
+    const sumbitReset = () => {
       if (verifpassword() && samepassword()) {
-        console.log("ça fonctionne bien");
         //coté back
-        axios.post("/reset", {email :email, newPassword: newPassword.password}).then (({ data }) => {
-          if (!data) {
-            setSuccessMsg("Password updated successfully. Return to log-in");
-          } else {
-            setErrorMsg(data.error);
-          }
-        })
+        axios
+          .post("/reset", { email: email, newPassword: newPassword.password })
+          .then(({ data }) => {
+            if (!data) {
+              setSuccessMsg("Password updated successfully. Return to log-in");
+            } else {
+              setErrorMsg(data.error);
+            }
+          });
       }
     };
 
@@ -185,7 +218,7 @@ function Reset() {
               <span className="error-message">{errorMsg.confirmPassword}</span>
               <span className="success-message">{successMsg}</span>
             </div>
-            <button className="button" onClick={() => handleReset()}>
+            <button className="button" onClick={() => sumbitReset()}>
               Reset
             </button>
           </div>
@@ -195,15 +228,20 @@ function Reset() {
     );
   };
 
+  // CSS pour pas devoir faire une fonction CSS pour un cas particulier.
   const style = {
     margin: "14.3rem 0",
-  }
+  };
+
+  // affiche le rendu selon si le token est valide ou pas.
   if (resetStatus === "expired") {
     return (
       <div className="screen">
         <div className="container">
           <div className="Left side">
-            <h2 className="text-center expired" style={style}>Link Expired</h2>
+            <h2 className="text-center expired" style={style}>
+              Link Expired
+            </h2>
           </div>
           <div className="Right side" />
         </div>

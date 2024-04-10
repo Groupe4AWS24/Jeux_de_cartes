@@ -122,6 +122,14 @@ const getProfile = (req, res) => {
   }
 };
 
+/**
+ * Fonction qui permet de renvoyer le token de l'utilisateur.
+ * A supprimer.
+ *
+ * @param {string} email - email de l'utilisateur
+ * @return {string}      - lien de reset du mot de passe contenant
+ *                         un token unique avec temps limité
+ */
 const generateresetlink = (email) => {
   const token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
     expiresIn: "10m",
@@ -129,7 +137,14 @@ const generateresetlink = (email) => {
   return `http://localhost:5173/reset_password/${token}`;
 };
 
-// forgotPassword Endpoint
+/**
+ * Fonction asynchrone qui verifie si le mail entrée par l'utilisateur
+ * est enregistre dans la base de données, si c'est le cas envoie un
+ * un mail à l'utilisateur contenant un lien de récupération de mot de passe.
+ *
+ * @param {Object} req - requête contenant le mail saisi par l'utilisateur
+ * @param {Object} res - reponse du serveur
+ */
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   // Check si l'email existe dans la bdd
@@ -170,6 +185,13 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+/**
+ * Fonction qui verifie si un token est valide dans le contexte du reset password,
+ * c'est à dire qu'il n'a pas expire, et que ça soit un token créer par notre site.
+ *
+ * @param   token - token contenue dans l'url du mail pour reset le mot de passe.
+ * @return  {object} - {error : string} ou {email : string}
+ */
 const verifyToken = (token) => {
   try {
     const user = jwt.verify(token, process.env.JWT_SECRET);
@@ -192,6 +214,13 @@ const verifyToken = (token) => {
   }
 };
 
+/**
+ * Fonction asynchrone qui permet de modifier le mot de passe d'un utilisateur
+ * dans la base de données.
+ *
+ * @param {Object} req - requête contenant le nouveau mot de passe et l'email de l'utilisateur.
+ * @param {Object} res - reponse du serveur
+ */
 const resetPassword = async (req, res) => {
   const { email, newPassword } = req.body;
   const hashedPassword = await hashPassword(newPassword);
@@ -210,11 +239,18 @@ const resetPassword = async (req, res) => {
     });
 };
 
+/**
+ * Fonction qui permet de renvoyer le token de l'utilisateur.
+ * A supprimer.
+ *
+ * @param {Object} req - requête contenant le token
+ * @param {Object} res - reponse du serveur
+ */
 const getToken = (req, res) => {
   const { token } = req.cookies;
-  console.log(token)
-  return res.json({token : token})
-}
+  console.log(token);
+  return res.json({ token: token });
+};
 
 // Export
 module.exports = {

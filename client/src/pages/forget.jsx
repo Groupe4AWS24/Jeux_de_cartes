@@ -6,14 +6,19 @@ import "../styles/forget.css";
 
 // Fonction Login
 function Forget() {
+  // utiliser plus tard pour rediriger vers le Home à implémenter.
   const navigate = useNavigate();
+
+  // Variables permettant de gérer les entrées des utlisateurs, et envoyé
+  // des messages d'erreurs ou de succès correspondant à la situation.
   const [emailEntry, setEmailEntry] = useState({
     email: "",
   });
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  /** Modifie la valeur d'un champ lors de la saisie.
+  /**
+   * Modifie la valeur d'un champ lors de la saisie.
    */
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -22,7 +27,12 @@ function Forget() {
     });
   };
 
-  const handleforget = async () => {
+  /**
+   * Une fonction asynchrone qui soumet une demande de réinitialisation de
+   * mot de passe oublié au serveur.
+   * Affiche des messages d'erreurs et de success.
+   */
+  const sumbitForget = async () => {
     axios
       .post("/forgotpassword", { email: emailEntry.email })
       .then(({ data }) => {
@@ -60,7 +70,7 @@ function Forget() {
             <span className="error-message">{errorMsg}</span>
             <span className="success-message">{successMsg}</span>
           </div>
-          <button className="button forgetbutton" onClick={handleforget}>
+          <button className="button forgetbutton" onClick={sumbitForget}>
             Send
           </button>
         </div>

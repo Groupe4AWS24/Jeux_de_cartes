@@ -24,10 +24,10 @@ function Dashboard() {
 
   // Rendu
   return (
-    <div class="container" style={style}>
+    <div className="container" style={style}>
       <h1 className="text-center">Welcome to the Dashboard</h1>
-      <p class="text-center">
-        <a href="#" class="logout" onClick={disconnect}>
+      <p className="text-center">
+        <a href="#" className="logout" onClick={disconnect}>
           Log Out
         </a>
       </p>

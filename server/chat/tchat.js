@@ -1,7 +1,6 @@
 const socketIo = require("socket.io");
 
 function setupSocket(server) {
-
   // Paramétrage socket.io pour le serveur hebergé en local
   const io = socketIo(server, {
     cors: {
@@ -20,7 +19,7 @@ function setupSocket(server) {
     // Pour le débugage
     console.log(`Nouveau joueur connecté: ${socket.id}`);
 
-    // Lorsque le serveur écoute qu'un joueur s'est connecté et qu'il est authentifié (en envoyant sur username), 
+    // Lorsque le serveur écoute qu'un joueur s'est connecté et qu'il est authentifié (en envoyant sur username),
     // va modifier les informations du joueurs pour retenir son username. Et envoyer que ce dernier est bien connecté.
     socket.on("authenticate", (username) => {
       if (username) {
@@ -61,7 +60,9 @@ function setupSocket(server) {
 
     // Permet à un joueur d'envoyer un message au sein de sa room.
     socket.on("message", (newMsg) => {
-      console.log(`L'ancien ${newMsg.player} debite dans la room ${newMsg.room}: ${newMsg.message}`);
+      console.log(
+        `L'ancien ${newMsg.player} debite dans la room ${newMsg.room}: ${newMsg.message}`
+      );
       io.to(newMsg.room).emit("message", newMsg);
     });
 

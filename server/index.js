@@ -29,4 +29,5 @@ app.use("/", require("./routes/authRoutes"));
 const port = 8000;
 server.listen(port, () => console.log(`Server is running on port ${port}`));
 
+// Lance le code relié à la gestions du seveurs via socket.io
 setupSocket(server);

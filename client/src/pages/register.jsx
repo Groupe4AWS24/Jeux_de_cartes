@@ -24,9 +24,12 @@ function Register() {
       errorMsg: "",
     },
   });
-
+  // variable pour afficher le mot de passe ou non
   const [showPassword, setShowPassword] = useState(false);
 
+  /**
+   * Modifie la valeur du showPassword, pour permettre d'afficher le mot de passe ou non.
+   */
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
