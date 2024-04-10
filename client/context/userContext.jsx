@@ -19,6 +19,7 @@ export function UserContextProvider({ children }) {
     if (!user) {
       axios.get("/profile").then(({ data }) => {
         setUser(data);
+        // Si pas de token sera toujours renvoyé a la page d'accueil
         if (data && location.pathname !== '/chat') {
           navigate("/dashboard");
         } else if (!data){

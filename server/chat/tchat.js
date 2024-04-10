@@ -1,103 +1,102 @@
-const jwt = require("jsonwebtoken");
-const { v4: uuidv4 } = require("uuid");
 const socketIo = require("socket.io");
 
+function setupSocket(server) {
 
-function setupSocket(server) {    
-    const io = socketIo(server,  {
-        cors: {
-          origin: "http://localhost:5173",
-          methods: ["GET", "POST"]
-        }
-      });
-    const jwtSecret = "your_jwt_secret";
-    const rooms = {};
-    const playerDetails = {};
-    io.on("connection", (socket) => {
-        console.log(`Nouveau joueur connecté: ${socket.id}`);
+  // Paramétrage socket.io pour le serveur hebergé en local
+  const io = socketIo(server, {
+    cors: {
+      origin: "http://localhost:5173",
+      methods: ["GET", "POST"],
+    },
+  });
 
-        socket.on("authenticate", (username) => {
-            if (username) {
-                console.log(username)
-                // const player = new Player(username);
-                // playerDetails[socket.id] = { player, isConnected: true };
-                io.emit("authenticated", "Authentification reussie");
-            };
-        });
+  // Déclaration de plusieurs variables pour la gestion du jeu
+  let roomId = 1;
+  const rooms = {};
+  const playerDetails = {};
 
-        socket.on("message", (newMsg) => {
-            console.log(`L'ancien ${newMsg.player} debite : ${newMsg.message}`);
-            io.emit("message", newMsg);
-        });
-    
-        socket.on("disconnect", () => {
-            console.log(`Joueur ${socket.id} deconnecté`);
-        })
-        
+  // Le serveur via socket.io, va écouter si un joueur se connecte et initialise les fonctions internes.
+  io.on("connection", (socket) => {
+    // Pour le débugage
+    console.log(`Nouveau joueur connecté: ${socket.id}`);
+
+    // Lorsque le serveur écoute qu'un joueur s'est connecté et qu'il est authentifié (en envoyant sur username), 
+    // va modifier les informations du joueurs pour retenir son username. Et envoyer que ce dernier est bien connecté.
+    socket.on("authenticate", (username) => {
+      if (username) {
+        socket.user = username;
+        console.log(socket.id, socket.user);
+        // Pour la connexion avec le front et le back
+        // const player = new Player(username);
+        // playerDetails[socket.id] = { player, isConnected: true };
+        io.emit("authenticated", "Authentification reussie");
+      }
     });
 
-    // socket.on("createRoom", ({ token, maxPlayers }) => {
-    //     const userId = verifyToken(token);
-    //     const roomId = uuidv4();
-    //     rooms[roomId] = {
-    //     id: roomId,
-    //     owner: userId,
-    //     players: [userId],
-    //     maxPlayers,
-    //     game: null,
-    //     };
+    // Permet à un joueur de créer une nouvelle room, en choisiant le nombre de joueurs maximum.
+    socket.on("createRoom", ({ maxPlayers }) => {
+      const newRoom = {
+        id: roomId,
+        owner: socket.user,
+        players: [socket.user],
+        maxPlayers,
+        //game: new ManageGame([]), // Initialise le jeu sans joueurs pour l'instant
+      };
 
-    //     playerDetails[socket.id] = { roomId, player: new Player(userId) };
+      rooms[roomId] = newRoom;
+      playerDetails[socket.id] = {
+        roomId,
+        //player: new Player(socket.user.username),
+      };
 
-    //     socket.join(roomId);
-    //     socket.emit("roomCreated", { roomId });
-    // });
+      // Permet au joueur de rejoindre une room
+      socket.join(roomId);
+      // Lui envoi l'informations de quelle room il a crée
+      socket.emit("roomCreated", {
+        roomId,
+      });
+      // augmente le compteur de roomId, pour avoir que des rooms différentes
+      roomId += 1;
+    });
 
-    // socket.on("joinRoom", ({ token, roomId }) => {
-    //     const userId = verifyToken(token);
-    //     if (!userId) {
-    //     socket.emit("error", "Token invalide");
-    //     return;
-    //     }
+    // Permet à un joueur d'envoyer un message au sein de sa room.
+    socket.on("message", (newMsg) => {
+      console.log(`L'ancien ${newMsg.player} debite dans la room ${newMsg.room}: ${newMsg.message}`);
+      io.to(newMsg.room).emit("message", newMsg);
+    });
 
-    //     const room = rooms[roomId];
-    //     if (!room) {
-    //     socket.emit("error", "Room non trouvée");
-    //     return;
-    //     }
+    // Permet au joueur de se déconnecter
+    socket.on("disconnect", () => {
+      console.log(`Joueur ${socket.id} deconnecté`);
+    });
 
-    //     if (room.players.length >= room.maxPlayers) {
-    //     socket.emit("error", "Room pleine");
-    //     return;
-    //     }
+    // Permet à un joueur de rejoindre une room précise, tant que cette dernière existe et non remplie.
+    socket.on("joinRoom", ({ roomId }) => {
+      const room = rooms[roomId];
+      // verifie que la room existe dans la liste de liste crée.
+      if (!room) {
+        socket.emit("error", "Room not found");
+        return;
+      }
 
-    //     room.players.push(userId);
-    //     playerDetails[socket.id] = { roomId, player: new Player(userId) };
-    //     socket.join(roomId);
+      // verifie que la room n'est pas remplie
+      if (room.players.length >= room.maxPlayers) {
+        socket.emit("error", "Room is full");
+        return;
+      }
 
-    //     socket.emit("roomJoined", roomId);
-    //     socket.to(roomId).emit("playerJoined", userId);
-    // });
-
-    // // D'autres événements peuvent être gérés ici selon vos besoins
-
-    // socket.on("disconnect", () => {
-    //     const details = playerDetails[socket.id];
-    //     if (details) {
-    //     const { roomId } = details;
-    //     const room = rooms[roomId];
-    //     if (room) {
-    //         room.players = room.players.filter((id) => id !== details.player.id);
-    //         if (room.players.length === 0) {
-    //         delete rooms[roomId];
-    //         } else {
-    //         io.to(roomId).emit("playerDisconnected", details.player.id);
-    //         }
-    //     }
-    //     delete playerDetails[socket.id];
-    //     }
-    // });
-    // });
+      // Ajoute le joueur à la liste des joueurs de la room
+      room.players.push(socket.user.id);
+      playerDetails[socket.id] = {
+        roomId,
+        //player: new Player(socket.user.username),
+      };
+      // rejoins la room
+      socket.join(room.id);
+      socket.emit("roomJoined", room.id);
+      io.to(roomId).emit("playerJoined", socket.user);
+    });
+  });
 }
 
 module.exports = { setupSocket };
