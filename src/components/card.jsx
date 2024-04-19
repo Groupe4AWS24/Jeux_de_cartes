@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 /**
  * Crée la face d'une carte. Sera utilisé pour génerer les cartes des adversaires selon la vue du joueur.
@@ -6,20 +6,25 @@ import React from "react";
  * @return {JSX.Element} La face de la carte.
  */
 export function BackCard(props) {
-  const joueur = props.joueur;
-  switch (joueur) {
-    case 1:
-      return <img className="back leftside" src="src/assets/back left.png" />;
+    const joueur = props.joueur;
+    switch (joueur) {
+        case 1: return (
+            <img className="back leftside" src="src/assets/back left.png"/>
+        )
 
-    case 2:
-      return <img className="back topside" src="src/assets/back.png" />;
+        case 2: return (
+            <img className="back topside" src="src/assets/back.png"/>
+        )
 
-    case 3:
-      return <img className="back rightside" src="src/assets/back left.png" />;
+        case 3: return (
+            <img className="back rightside" src="src/assets/back left.png"/>
+        )
 
-    default:
-      return <img className="back" src="src/assets/back.png" />;
-  }
+        default : return (
+            <img className="back drawcard" src="src/assets/back.png"/>
+        )
+    }
+    
 }
 
 /**
@@ -29,23 +34,20 @@ export function BackCard(props) {
  * @return {JSX.Element} La face de la carte. On retourne une balise image.
  */
 export function Card(props) {
-  /**
-   * Une fonction qui sera utilisé si une carte est cliquée.
-   * Elle veriféra si la carte est jouable et la joue si oui.
-   * A gérer.
-   *
-   */
-  const handleCardClick = () => {
-    null;
-  };
 
-  // Valeur de la carte pour l'affichage, contenant sa couleur et la valeur, ex: "purple_1"
-  const valeur = props.valeur;
-  return (
-    <img
-      className="card"
-      src={`src/assets/${valeur}.png`}
-      onClick={handleCardClick}
-    />
-  );
+    /**
+     * Une fonction qui sera utilisé si une carte est cliquée. 
+     * Elle veriféra si la carte est jouable et la joue si oui.
+     * A gérer.
+     * 
+     */
+    const handleCardClick = () => { 
+        null
+    };
+
+    // Valeur de la carte pour l'affichage, contenant sa couleur et la valeur, ex: "purple_1"
+    const valeur = props.valeur;
+    return (
+        <img className="card" src={`src/assets/${valeur}.png`} onClick={handleCardClick}/>
+    )
 }
