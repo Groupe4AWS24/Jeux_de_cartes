@@ -38,12 +38,11 @@
     /*margin: 3px;*/
     /*background-color: yellow;*/
     overflow: hidden;
-    min-width: 170px;
 }
 
 .container_otherplayer {
     background-color: red;
-    flex: 6;
+    flex: 4;
     display: flex;
 }
 
@@ -81,7 +80,7 @@
 }
 
 .divtoptest {
-    flex: 3;
+    flex: 2;
     background-color: brown;
     display: flex;
     flex-direction: column;
@@ -157,7 +156,7 @@
     display: flex;
     flex-direction: column;
     margin-left: -50px;
-    padding-bottom: 50px;
+    padding-bottom: 65px;
 }
 
 .hand_2 {
@@ -165,7 +164,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    padding-right: 50px;
+    padding-right: 65px;
 }
 
 .hand_0 {
@@ -181,7 +180,7 @@
     display: flex;
     flex-direction: column;
     margin-right: -50px;
-    padding-top: 30px;
+    padding-top: 65px;
 }
 
 .lastcard{
@@ -205,17 +204,17 @@
 }
 
 .leftside{    
-    margin-bottom: -50px;
+    margin-bottom: -65px;
 }
 
 .rightside{    
     transform: rotate(-180deg);
-    margin-top: -30px;
+    margin-top: -65px;
     
 }
 
 .topside{
-    margin-right: -50px;
+    margin-right: -65px;
     height: 120px;
     width: auto;
 }
