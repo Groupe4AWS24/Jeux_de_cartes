@@ -12,6 +12,8 @@ import axios from "axios";
 import { UserContextProvider } from "../context/userContext";
 import "./styles/authentication.css";
 import Chat from "./components/chat";
+import Room from "./pages/room";
+import Page1 from "./pages/one_page";
 
 // Paramétrage pour l'envoi des requêtes
 axios.defaults.baseURL = "http://localhost:8000";
@@ -29,6 +31,8 @@ function App() {
         <Route path="/reset_password/:token" element={<Reset />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/room/:roomId" element={<Room />} />
+        <Route path="/game/:roomId" element={<Page1 />} />
       </Routes>
     </UserContextProvider>
   );

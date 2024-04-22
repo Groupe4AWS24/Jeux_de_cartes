@@ -1,17 +1,30 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
+import { resetTchat } from "./tchat";
+import { UserContext } from "../../context/userContext";
 
 const Chat = () => {
+  // Recuperation de l'id de la room dans l'url si on utilise un lien partagé
+  const navigate = useNavigate();
+  const {user} = useContext(UserContext);
+  const setSocketglobal = useContext(UserContext).setSocket;
+  const existingSocket = useContext(UserContext).socket;
+
   // Différentes variables utilisées dans l'application, pour gérer l'état coté client.
   const [socket, setSocket] = useState(null);
-  const [newMsg, setNewMsg] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [username, setUsername] = useState("");
-  const [room, setRoom] = useState(null);
   const [maxPlayer, setMaxPlayer] = useState(0);
   const [valRoom, setValRoom] = useState("");
   const [errorJoin, setErrorJoin] = useState("");
+
+  useEffect (() => {
+    // Déconnecter le socket existant lorsque le composant est monté
+    return () => {
+      if (existingSocket) {
+        existingSocket.disconnect();
+      }
+    };
+  }, []);
 
   /**
    * Définit le nouveau socket et s'authentifie avec Socket.IO.
@@ -28,54 +41,27 @@ const Chat = () => {
    * @param {Object} socket - L'objet socket Socket.IO.
    * @param {string} username - Le nom d'utilisateur pour l'authentification.
    */
-  const authenticateWithSocketIO = async (socket) => {
-    const { data } = await axios.get("/profile");
-    const { username } = data; // Remplacez par votre token JWT
-    setUsername(username);
-    console.log(username, socket);
-    socket.emit("authenticate", username);
+  const authenticateWithSocketIO = (socket) => {
+    console.log("userrrrrrrr",user.username)
+    socket.emit("authenticate", user.username);
     socket.on("authenticated", (data) => {
       //console.log(data);
     });
-  };
-  /*
-   *Un hook pour chaque changment sur le socket affiche et recupère ses modifications.
-   */
-  useEffect(() => {
-    if (socket) {
-      // Écoute l'événement "message"
-      socket.on("message", (data) => {
-        setMessages((prevMessages) => [...prevMessages, data]);
-        console.log(data);
-      });
-    }
-  }, [socket]);
-
-  /**
-   * Envoie le message du joueur au serveur avec et le numéro de la room et le nom d'utilisateur.
-   */
-  const sendMessage = () => {
-    if (socket) {
-      socket.emit("message", {
-        player: username,
-        message: newMsg,
-        room: parseInt(valRoom),
-      });
-      setNewMsg("");
-    }
+    setSocketglobal(socket);
   };
 
   /*
+   * Plus utilisé mais sera implémenter pr le button déco
    * Fonction pour se désconnecter du serveur Socket.IO.
    */
   const disconnectFromSocketIO = () => {
     if (socket) {
       socket.disconnect();
       setSocket(null);
+      setSocketglobal(null);
     }
   };
 
-  
   /**
    * Fonction pour se connecter au serveur Socket.Io, lorqu'on clique sur le bouton se connecter.
    */
@@ -86,41 +72,31 @@ const Chat = () => {
   };
 
   /**
+   * actuellement plus utilisé
    * Fonction pour se déconnecter au serveur Socket.Io, lorqu'on clique sur le bouton se déconnecter.
    */
   const handleDisconnectClick = () => {
     if (socket) {
       disconnectFromSocketIO();
+      setValRoom("");
+      setMaxPlayer(0);
+      resetTchat();
+      setErrorJoin("");
     }
   };
 
-  /*
-   * Fonction pour afficher les messages.
-  */
-  const renderMessages = () => {
-    console.log(messages);
-    return messages.map((msg, index) => (
-      <div key={index}>
-        <strong>{msg.player}: </strong>
-        {msg.message}
-      </div>
-    ));
-  };
   /**
    * Fonction pour creer une nouvelle room, avec un nombre limité de joueurs.
    */
   const createRoom = () => {
-    if (maxPlayer <= 4) {
-      console.log("maxPlayer: ", maxPlayer);
-      if (socket) {
-        setRoom(true);
-        console.log("room: ", room);
-        socket.emit("createRoom", { maxPlayers: maxPlayer });
-        socket.on("roomCreated", (data) => {
-          console.log("roomID: ", data);
-          setValRoom(data.roomId);
-        });
-      }
+    if (maxPlayer <= 4 && socket) {
+      socket.emit("createRoom", { maxPlayers: maxPlayer });
+      socket.on("roomCreated", (data) => {
+        //console.log("roomID: ", data);
+        setValRoom(data.roomId);
+        navigate(`/room/${data.roomId}?owner=${true}`);
+      });
+      setMaxPlayer(0);
     }
   };
 
@@ -129,11 +105,11 @@ const Chat = () => {
    */
   const join = () => {
     if (socket) {
-      console.log("room: ", valRoom);
+      //console.log("room: ", valRoom);
       socket.emit("joinRoom", { roomId: valRoom });
-      socket.on("roomJoined", (data) => {
-        console.log("roomID: ", data);
-        setRoom(true);
+      socket.on("roomJoined", () => {
+        setErrorJoin("");
+        navigate(`/room/${valRoom}?owner=${false}`);
       });
       socket.on("error", (data) => {
         console.log("roomID: ", data);
@@ -148,36 +124,23 @@ const Chat = () => {
       {!socket && <button onClick={handleConnectClick}>Connecter</button>}
       {socket && (
         <div>
-          {room ? (
-            <div>
-              <h2>{`Room n°${valRoom}`}</h2>
-              <input
-                type="text"
-                value={newMsg}
-                onChange={(e) => setNewMsg(e.target.value)}
-              />
-              <button onClick={sendMessage}>Envoyer</button>
-            </div>
-          ) : (
-            <div>
-              <input
-                type="text"
-                value={maxPlayer}
-                onChange={(e) => setMaxPlayer(e.target.value)}
-              />
-              <button onClick={createRoom}>Create la room</button>
-              <br />
-              <input
-                type="text"
-                value={valRoom}
-                onChange={(e) => setValRoom(e.target.value)}
-              />
-              <button onClick={join}>Join la room</button>
-              <span>{errorJoin}</span>
-            </div>
-          )}
+          <div>
+            <input
+              type="text"
+              value={maxPlayer}
+              onChange={(e) => setMaxPlayer(e.target.value)}
+            />
+            <button onClick={createRoom}>Create la room</button>
+            <br />
+            <input
+              type="text"
+              value={valRoom}
+              onChange={(e) => setValRoom(e.target.value)}
+            />
+            <button onClick={join}>Join la room</button>
+            <span>{errorJoin}</span>
+          </div>
           <button onClick={handleDisconnectClick}>Déconnecter</button>
-          <div>{renderMessages()}</div>
         </div>
       )}
     </div>
