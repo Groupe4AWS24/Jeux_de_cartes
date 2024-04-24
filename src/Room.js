@@ -128,7 +128,7 @@ socket.on('startGame', (data) => {
             // Initialiser le jeu
             const game = new ManageGame(room.players.map(id => playerDetails[id].player));
             room.game = game;
-            game.startGame(); 
+            game.executeGame(); 
   
             io.to(roomId).emit('gameStarted');
         }

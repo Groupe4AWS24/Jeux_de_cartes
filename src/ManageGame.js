@@ -1,6 +1,7 @@
 const Card = require("./Card");
 const Player = require("./Player");
 const UnoDeck = require('./UnoDeck');
+const Bot = require('./Bot');
 const readline = require("readline");
 
 /**
@@ -216,7 +217,15 @@ module.exports = class ManageGame {
                 } else if(this.lastCard.isPlus2Card()) {
                     this.plus2Card();
                 } else if(this.lastCard.isChangeColorCard()) {
-                    let color = await this.getColorChoice();
+                    let color;
+                    /*
+                        le cas si le joueurs est un rebot 
+                    */
+                    if(this.currentPlayer instanceof Bot) {
+                        color = this.getColorChoiceBot();
+                    } else {
+                        color = await this.getColorChoice();
+                    }
                     this.changeColor(color);
                 }
             }
@@ -373,11 +382,16 @@ module.exports = class ManageGame {
             // Display playable cards to the player and allow them to choose
             console.log("Cartes jouables: ", playableCards);
 
-            // Here, you need to add logic to allow the player to choose cards to play
-            let cardsToPlay = await this.getCardsToPlay();
+            if(this.currentPlayer.isBot()) {
+                await this.playBot(playableCards);
+            } else {
+                  // Here, you need to add logic to allow the player to choose cards to play
+                let cardsToPlay = await this.getCardsToPlay();
 
-            // Play the chosen cards, and add the logic to sum the penalty
-            await this.play(cardsToPlay);
+                // Play the chosen cards, and add the logic to sum the penalty
+                await this.play(cardsToPlay);
+            }
+
         } else {
             // If the player has no playable cards
             // Deal cards from the Uno deck to the current player
@@ -468,20 +482,206 @@ module.exports = class ManageGame {
         return this.currentPlayer.hand.length === 0;
     }
 
-
-    generateUniqueLink() {
-        const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        const linkLength = 10; // Longueur du lien
-        let uniqueLink = '';
-    
-        for (let i = 0; i < linkLength; i++) {
-            const randomIndex = Math.floor(Math.random() * characters.length);
-            uniqueLink += characters[randomIndex];
-        }
-    
-        return uniqueLink;
+    isBot() {
+        return this.currentPlayer instanceof Bot;
     }
     
+
+    async playBot(playableCards) {
+        if (playableCards.length === 1) {
+            await this.play(playableCards);
+            return;
+        }
+    
+        const cardAnalysis = this.analyzeCards(playableCards);
+        await this.decideAndPlay(playableCards, cardAnalysis);
+    }
+
+    analyzeCards(cards) {
+        // Analyser les cartes pour déterminer les actions possibles
+        const cardAnalysis = {
+            hasReverseCard: false,
+            hasSkipCard: false,
+            hasPlus4card: false,
+            hasPlus2card: false,
+            hasChangeColorCard: false,
+            hasSameValue: true,
+        };
+
+        // Analyser chaque carte
+        for (const card of cards) {
+            if (!cardAnalysis.hasReverseCard && card.isReverseCard()) {
+                cardAnalysis.hasReverseCard = true;
+            }
+            if (!cardAnalysis.hasSkipCard && card.isSkipCard()) {
+                cardAnalysis.hasSkipCard = true;
+            }
+            if (!cardAnalysis.hasPlus4card && card.isPlus4Card()) {
+                cardAnalysis.hasPlus4card = true;
+            }
+            if (!cardAnalysis.hasPlus2card && card.plus2Card()) {
+                cardAnalysis.hasPlus2card = true;
+            }
+            if (!cardAnalysis.hasChangeColorCard && card.isChangeColorCard()) {
+                cardAnalysis.hasChangeColorCard = true;
+            }
+            if (card.getValue() !== cards[0].getValue()) {
+                cardAnalysis.hasSameValue = false;
+            }
+        }
+
+        return cardAnalysis;
+    }
+
+
+    async decideAndPlay(playableCards, cardAnalysis) {
+        if (this.currentPlayer.getPlayerHand().length === playableCards.length && cardAnalysis.hasSameValue) {
+            await this.play(playableCards);
+        } else if (this.currentPlayer.nextPlayer.stayCardHasSamevalue() || this.currentPlayer.nextPlayer.getPlayerHand().length === 1) {
+            await this.decideForNextPlayer(playableCards, cardAnalysis);
+        } else {
+           
+            /*
+               if (colors.length != 0)
+            */   
+            let cardsToPlay = [];
+            if (cardAnalysis.hasPlus4card) {
+                cardsToPlay = playableCards.filter(card => card.isPlus4Card());
+                await this.play(cardsToPlay);
+            } else if (cardAnalysis.hasPlus2card) {
+                cardsToPlay = playableCards.filter(card => card.isPlus2Card());
+                await this.play(cardsToPlay);
+            } else {
+                cardsToPlay = this.findBestNumberCardsToPlay(playableCards);
+                let colors = this.getColorWichBothasAndDontHasNextPlayer(cardsToPlay);
+                /*if(colors.length == 0) {
+                    await this.play(cardsToPlay);
+                } else {
+                    
+                }*/
+                   
+            }
+        }
+    }
+
+    identifyCardGroups(playableCards) {
+        let groups = [];
+        // Tri des cartes jouables par valeur
+        playableCards.sort((a, b) => a.getValue() - b.getValue());
+        // Identifier les différents groupes de cartes avec la même valeur
+        for (let i = 0; i < playableCards.length; i++) {
+            if (i === 0 || playableCards[i].getValue() !== playableCards[i - 1].getValue()) {
+                let group = [playableCards[i]];
+                for (let j = i + 1; j < playableCards.length; j++) {
+                    if (playableCards[j].getValue() === group[0].getValue()) {
+                        group.push(playableCards[j]);
+                    } else {
+                        break;
+                    }
+                }
+                // Ajouter le groupe identifié à la liste des groupes
+                groups.push(group);
+            }
+        }
+        return groups;
+    }
+
+    findBestNumberCardsToPlay(playableCards) {
+        let groups = this.identifyCardGroups(playableCards);
+        const bestGroup = groups[0];
+        for(let group of groups) {
+            if(group.length > bestGroup.length && !group[0].isSpecialCard()) {
+                bestGroup = group;
+            }
+        }
+        return bestGroup;
+    }
+
+
+
+
+
+
+
+    async decideForNextPlayer(cardAnalysis) {
+        if (cardAnalysis.hasPlus4card) {
+            let cardsToPlay = playableCards.filter(card => card.isPlus4Card());
+            await this.play(cardsToPlay);
+        } else if (cardAnalysis.hasPlus2card) {
+            let cardsToPlay = playableCards.filter(card => card.isPlus2Card());
+            await this.play(cardsToPlay);
+        } else if (cardAnalysis.hasChangeColorCard && !this.isNextplayerHasAllColors && !this.isNextplayerHasChangeColorCard) {
+            let cardsToPlay = playableCards.filter(card => card.isChangeColorCard());
+            await this.play(cardsToPlay[0]);
+        }
+    }
+
+    
+    getColorChoiceBot() {
+        // Obtenez la main du prochain joueur
+        const nextPlayerHand = this.nextPlayer.getPlayerHand();
+    
+        // Extrayez les couleurs des cartes de sa main
+        const colorsNextPlayer = nextPlayerHand.map(card => card.getColor());
+    
+        const colors = ['bleu', 'violet', 'rose', 'vert'];
+    
+        const colorsNotInHand = colors.filter(color => !colorsNextPlayer.includes(color));
+    
+        if (colorsNotInHand.length === 1) {
+            return colorsNotInHand[0];
+        } else {
+            // Générez un index aléatoire pour choisir une couleur parmi celles qui ne sont pas dans la main
+            const randomIndex = Math.floor(Math.random() * colorsNotInHand.length);
+            return colorsNotInHand[randomIndex];
+        }
+    }
+
+
+        
+    getColorWichBothasAndDontHasNextPlayer(playableCards) {
+        // Obtenez la main du prochain joueur
+        const nextPlayerHand = this.nextPlayer.getPlayerHand();
+    
+        // Extrayez les couleurs des cartes de sa main
+        const colorsNextPlayer = nextPlayerHand.map(card => card.getColor());
+    
+        // Extrayez les couleurs des cartes jouables
+        const colorsBotCanPlay = playableCards.map(card => card.getColor());
+    
+        // Filtrer les couleurs que le joueur suivant ne possède pas
+        const colorsNotInHand = colorsBotCanPlay.filter(color => !colorsNextPlayer.includes(color));
+            
+        return colorsNotInHand;
+    }
+    
+
+    isNextplayerHasAllColors() {
+         // Obtenez la main du prochain joueur
+         const nextPlayerHand = this.nextPlayer.getPlayerHand();
+    
+         // Extrayez les couleurs des cartes de sa main
+         const colorsNextPlayer = nextPlayerHand.map(card => card.getColor());
+     
+         const colors = ['bleu', 'violet', 'rose', 'vert'];
+
+         // Vérifiez si toutes les couleurs sont présentes dans la main du joueur suivant
+        const hasAllColors = colors.every(color => colorsNextPlayer.includes(color));
+
+        return hasAllColors;
+    }
+    
+    isNextplayerHasChangeColorCard() {
+        // Obtenez la main du prochain joueur
+        const nextPlayerHand = this.nextPlayer.getPlayerHand();
+
+        for (let card of nextPlayerHand) {
+            if(card.isChangeColorCard) {
+                return true;
+            }
+        }
+        return false;
+    }    
 
 }
 

@@ -75,5 +75,15 @@ module.exports = class Player {
             this.hand.splice(indexOfCard, 1);
         }
     }
+
+    stayCardHasSamevalue() {
+        let firstcardValue = this.hand[0];
+        for(let card of this.hand) {
+            if(card.value != firstcardValue) {
+                return false;
+            } 
+        }
+        return true;
+    }
 }
 
