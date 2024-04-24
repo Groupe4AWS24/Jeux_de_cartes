@@ -12,10 +12,10 @@ export function BackCard(props) {
   const { joueur } = props;
   switch (joueur) {
     case 1:
-      return <img className="back leftside" src={back_left} />;
+      return <img className="back topside" src={back} />;
 
     case 2:
-      return <img className="back topside" src={back} />;
+      return <img className="back leftside" src={back_left} />;
 
     case 3:
       return <img className="back rightside" src={back_left} />;
@@ -32,14 +32,15 @@ export function BackCard(props) {
  * @return {JSX.Element} La face de la carte. On retourne une balise image.
  */
 export function Card({ valeur }) {
+  const val = "purple_1";
   const [imagePath, setImagePath] = useState("");
   useEffect(() => {
-    import(`../assets/${valeur}.png`)
+    import(`../assets/${val}.png`)
       .then((image) => {
         setImagePath(image.default);
       })
       .catch((error) => {
-        console.error("Erreur de chargement de l'image :", error);
+        //console.error("Erreur de chargement de l'image :", error);
       });
   }, [valeur]);
 
@@ -52,7 +53,7 @@ export function Card({ valeur }) {
   const handleCardClick = (event) => {
     // Si la card de la pioche
     if (!event.currentTarget.closest('.lastcard')) {
-      console.log("t'es une pute");
+      console.log("boulot");
     } else {
       console.log("hehehehe")
     }

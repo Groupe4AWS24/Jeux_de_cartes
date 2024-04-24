@@ -43,6 +43,7 @@ function Page1() {
         if (socket) {
             socket.on("SendInfo", (data) => {
                 console.log(data)
+                setPlayers(data);
             })
         }
 
@@ -79,7 +80,7 @@ function Page1() {
                 </>
                 } </div> : 
                 <div className='hands'>
-                    {/*<PlayersHands playersHand={playersHand} currentUser={username} currentColor={currentColor} lastCard={fosse}/>*/}
+                    {<PlayersHands players={players} currentUser={username} currentColor={currentColor} lastCard={fosse}/>}
                 </div>
             }
         </div>

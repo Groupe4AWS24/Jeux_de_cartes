@@ -1,7 +1,7 @@
 import React from 'react';
 import { BackCard, Card } from '../components/card';
 
-export function PlayersHands({playersHand, currentUser, currentColor, lastCard}) {
+export function PlayersHands({players, currentUser, currentColor, lastCard}) {
 
     /**
      * Une fonction qui génére des divs permettant la séparation de l'écran en 3 parties (en colonne), dont la partie du milieu sera divisé en 3 autres divs(en ligne).
@@ -12,16 +12,19 @@ export function PlayersHands({playersHand, currentUser, currentColor, lastCard})
     const Section = () => {
 
         const mains = Hands();
-        const {length} = mains;
+        console.log(mains)
+        console.log(mains.otherPlayers[0])
+        const {length} = mains.otherPlayers;
+        console.log(length)
         return (
             <div className="flex-container">
                 <div className='container_otherplayer'>
                     <div className="divlefttest divs">
-                        {length >= 2 && mains[1]}
+                        {length >= 2 && mains.otherPlayers[1]}
                     </div>
                     <div className="divmidtest divs">
                         <div className='divtoptest divs'>
-                            {length >= 3 && mains[2]}
+                            {length >= 1 && mains.otherPlayers[0]}
                         </div>
                         <div className='divbottomtest divs'>
                             <div className="draw">{
@@ -37,11 +40,11 @@ export function PlayersHands({playersHand, currentUser, currentColor, lastCard})
                         </div>
                     </div>
                     <div className="divrighttest divs">
-                        {length >= 4 && mains[3]}
+                        {length >= 3 && mains.otherPlayers[2]}
                     </div>
                 </div>
                 <div className='container_player'>
-                    {length >= 1 && mains[0]}
+                    {mains.userHand}
                 </div> 
             </div>
         )
@@ -56,25 +59,30 @@ export function PlayersHands({playersHand, currentUser, currentColor, lastCard})
      * @return {array} Liste de composant React de la main de chaque joueur.
      */
     const Hands = () => {
-        console.log(playersHand)
+        console.log(players)
         const listhands = [];
-        Object.entries(playersHand).map(([player_name,main],i) => (
-            listhands.push(
-                <div key={i} className={`hand_${i}`}>
-                    {player_name === currentUser ? (
-                        <>  {console.log(`hand_${i}`)}
-                            {main.map((carte,j) => (<Card key={j} valeur={carte}/>))}                     
-                        </>  
-                    ) : (
-                        <>  
-                            {console.log(`hand_${i}`)}
-                            {main.map((carte,j) => (<BackCard key={j} joueur={i}/>))}
-                        </>
-                    )}
+        const hands = {
+            userHand : [],
+            otherPlayers : listhands,
+        }
+        let i = 1;
+        players.map((player) => (
+            console.log(player.hand),
+            //console.log(player.username, currentUser    ),
+            player.username === currentUser ? (
+                hands.userHand = 
+                <div key={i} className={`hand_0`}>
+                    {player.hand.map((carte,j) => (<Card key={j} valeur={carte}/>))}                     
                 </div>
+                //console.log(hands.userHand)
+                )
+            : ( listhands.push(<div key={i} className={`hand_${i}`}>  
+                            {player.hand.map((carte,j) => (<BackCard key={j} joueur={i}/>))}
+                        </div>),i += 1
+            ) 
             )
-          ))
-        return listhands
+          )
+        return hands
     }
 
     // Retourne un composant contenant l'appel de la const Section.
