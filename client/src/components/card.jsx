@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import back from "../assets/back.png";
-import back_left from "../assets/back left.png";
+import back from "../assets/cartes/back.png";
+import back_left from "../assets/cartes/back left.png";
 import purple from "../assets/purple_1.png";
 
 /**
@@ -32,10 +32,11 @@ export function BackCard(props) {
  * @return {JSX.Element} La face de la carte. On retourne une balise image.
  */
 export function Card({ valeur }) {
-  const val = "purple_1";
+  console.log(valeur);
   const [imagePath, setImagePath] = useState("");
   useEffect(() => {
-    import(`../assets/${val}.png`)
+    console.log("we")
+    import(`../assets/cartes/${valeur.color}_${valeur.value}.png`)
       .then((image) => {
         setImagePath(image.default);
       })
