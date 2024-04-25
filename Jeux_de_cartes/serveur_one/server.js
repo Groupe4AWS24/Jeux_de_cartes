@@ -1,31 +1,168 @@
 const http = require('http');
 const express = require('express');
 const socketIo = require('socket.io');
-const jwt = require('jsonwebtoken');
-const cookie = require('cookie');
+const path = require('path');
+const cors = require('cors');
+
+
 const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
 const ManageGame = require('../src/ManageGame');
 const Player = require('../src/Player');
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+//const io = socketIo(server);
+const MusicController = require('./MusicController');
+
+// Configuration CORS pour accepter les requêtes du client
+app.use(cors({
+  origin: ['http://localhost:3000'], 
+  credentials: true,
+  methods: ["GET", "POST"]
+}));
+
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 
-require('dotenv').config({ path: '../../../server/.env' });//dépend de l'emplacement de.env
-
-const jwtSecret = process.env.JWT_SECRET;//dans les variables d'environment
-
-
-// Structure pour suivre les rooms et les jeux associés
-const rooms = {};
-const games = {};
-const playerDetails = {};//va stocker les details sur les joueurs connectés
-
-app.use(express.static('src'));//Remplacer par index.html
 app.get('/', (req, res) => {
    res.send('Bienvenue sur notre jeu Uno');//remplacer par l'emplacemet du front
 });
-// Middleware pour vérifier les tokens JWT des connexions Socket.IO
+// Chemin vers le dossier public contenant les fichiers audio
+const audioPath = path.join(__dirname, '..', '..', 'test-music-player', 'public', 'audio');//Thanu devra ajuster les chemins
+
+// Utilisation de express.static pour servir les fichiers audio
+app.use('/audio', express.static(audioPath));
+
+
+// Structure pour suivre les rooms et les jeux associés
+let roomId = 1;
+const rooms = {};
+const playerDetails = {};//va stocker les details sur les joueurs connectés
+// Serve les fichiers statiques depuis le dossier public, ce qui inclut les fichiers audio
+//app.use('/audio', express.static(path.join(__dirname, '../../../test-music-player/public/audio')));
+// Serve les fichiers statiques depuis le dossier public
+//app.use('/audio', express.static(path.join(__dirname, 'public', 'audio')));
+
+
+io.on("connection", (socket) => {
+  console.log(`Nouveau joueur connecté: ${socket.id}`);
+
+  socket.on("authenticate", (username) => {
+    if (username) {
+      socket.user = { username: username, id: socket.id };
+      io.emit("authenticated", "Authentification réussie");
+    }
+  });
+
+  socket.on("createRoom", ({ maxPlayers }) => {
+    const newRoom = {
+      id: roomId,
+      owner: socket.user,
+      players: [socket.user],
+      maxPlayers,
+      gamestarted: false,
+      game: null,
+    };
+
+    rooms[roomId] = newRoom;
+    playerDetails[socket.id] = {
+      roomId,
+      player: new Player(socket.user.username),
+    };
+
+    socket.join(roomId);
+    socket.emit("roomCreated", { roomId });
+    roomId += 1;
+  });
+
+  socket.on("joinRoom", ({ roomId }) => {
+    const room = rooms[roomId];
+    if (!room) {
+      socket.emit("error", "Room not exists");
+      return;
+    }
+
+    if (room.players.length >= room.maxPlayers) {
+      socket.emit("error", "Room is full");
+      return;
+    }
+
+    if (room.gamestarted) {
+      socket.emit("error", "Game already started");
+      return;
+    }
+
+    room.players.push(socket.user);
+    playerDetails[socket.id] = {
+      roomId: parseInt(roomId),
+      player: new Player(socket.user.username),
+    };
+
+    socket.join(room.id);
+    socket.emit("roomJoined");
+    io.to(room.id).emit("playerJoined", socket.user.username);
+  });
+
+  socket.on("disconnect", () => {
+    const details = playerDetails[socket.id];
+    if (details) {
+      const room = rooms[details.roomId];
+      if (room) {
+        room.players = room.players.filter(p => p.id !== socket.user.id);
+        if (room.players.length === 0) {
+          delete rooms[details.roomId];
+        } else {
+          io.to(details.roomId).emit("playerDisconnected", socket.user.username);
+        }
+      }
+      delete playerDetails[socket.id];
+    }
+  });
+
+  socket.on("startGame", ({ roomId }) => {
+    const room = rooms[roomId];
+    if (!room || room.owner.id !== socket.user.id) {
+      socket.emit("error", "Only the room creator can start the game");
+      return;
+    }
+
+    if (room.players.length < room.maxPlayers) {
+      socket.emit("error", "Not enough players");
+      return;
+    }
+
+    room.gamestarted = true;
+    const game = new ManageGame(room.players.map(p => playerDetails[p.id].player));
+    room.game = game;
+    game.GameStart();
+    io.to(room.id).emit("gameStarted");
+  });
+});
+
+function endGame(roomId) {
+  const room = rooms[roomId];
+  if (room) {
+    // Supprimer les joueurs de la liste des détails des joueurs
+    room.players.forEach(player => {
+      delete playerDetails[player.id];
+    });
+    // Supprimer la room
+    delete rooms[roomId];
+    // Informer les clients que le jeu est terminé
+    io.to(roomId).emit('gameEnded');
+  }
+}
+
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+/*
+
 io.use((socket, next) => {
   const cookies = socket.handshake.headers.cookie;
   if (cookies) {
@@ -40,12 +177,15 @@ io.use((socket, next) => {
               next();
           });
       } else {
-          next(new Error('Authentication error: No token provided'));
+          // Allow connections without token during testing
+          next();
       }
   } else {
-      next(new Error('Authentication error: No cookies found'));
+      // Allow connections without token during testing
+      next();
   }
 });
+
 
 io.on('connection', (socket) => {
   console.log(`Nouveau joueur connecté: ${socket.id}`);
@@ -245,30 +385,9 @@ socket.on('drawCards', (data) => {
   }
 });
 
-socket.on('disconnect', () => {
-  const details = playerDetails[socket.id];
-  if (details) {
-    // Marquer le joueur comme déconnecté
-    details.isDisconnected = true;
-
-    // Informer les autres joueurs de la déconnexion
-    const room = rooms[details.roomId];
-    if (room) {
-      io.to(details.roomId).emit('playerDisconnected', { playerId: details.player.id, username: details.player.name });
-      if (room.players.length === 0) {
-        // Supprime la room si elle est vide
-        delete rooms[roomId];
-    } else {
-        io.to(roomId).emit('playerDisconnected', details.player.id);
-    }
-}
-delete playerDetails[socket.id];
-  
-    
-  }
-});
 
 
+/*
 socket.on('reconnectPlayer', ({ userId, roomId }) => {
   // Trouver le joueur déconnecté correspondant
   const disconnectedPlayerDetails = Object.values(playerDetails).find(details => details.player.id === userId && details.roomId === roomId && details.isDisconnected);
@@ -301,3 +420,4 @@ socket.on('reconnectPlayer', ({ userId, roomId }) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Serveur lancé sur le port ${PORT}`));
+*/
