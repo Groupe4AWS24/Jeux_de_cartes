@@ -1,0 +1,14 @@
+.music-control button {
+  font-size: 24px; /* Taille de l'emoji */
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.control-bar {
+  margin-top: 10px;
+  background-color: #f0f0f0; /* Fond légèrement gris pour la barre de contrôle */
+  padding: 10px;
+  border-radius: 5px;
+}
