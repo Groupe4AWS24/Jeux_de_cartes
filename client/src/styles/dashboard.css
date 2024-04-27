@@ -1,0 +1,215 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  
+  
+  
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .screendash {
+    margin: 0;
+    display: flex;
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: #F2BCD9;
+  }
+
+  .LeftPart {
+    display : flex;
+    flex: 1;
+    border-radius: 2.3rem;
+    min-width : 315px;
+    box-shadow: 0px 0px 15px 0px;
+  }
+  
+  .RightPart {
+    display : flex;
+    flex-direction: column;
+    flex: 1;
+    border-radius: 2.3rem;
+    box-shadow: 0px 0px 15px 0px;    
+  }
+
+  .containerdash {   
+    display: flex;
+    place-items: center;
+    text-align: center;
+    max-width: 90vw;
+    min-width: 630px;
+    min-height: 510px;
+  }
+  
+  .Sidedash {
+    background-color: #ffffff;
+  }
+  
+  .CreateRoom {
+    flex: 2;
+    border-radius: 2.3rem 0 0 2.3rem;
+    padding-bottom: 2rem;
+    min-width : 315px;
+  }
+  
+  .JoinRoom {
+    flex: 2;
+    border-radius: 0 2.3rem 2.3rem 0;
+    padding-bottom: 2rem;
+    background-size: cover; /* Pour couvrir toute la surface du conteneur */
+    background-position: center;
+    min-width : 315px;
+  }
+  
+  
+  .text-center {
+    font-size: 2.7rem;
+    font-family: 'Inter';
+    text-align: center;
+    margin: 2rem;
+  }
+  
+  .choice-group {
+    margin-top: 0.80rem;
+  }
+  
+  .bot-group {
+    margin-top: 0.80rem;
+  }
+
+  .input-group {
+    margin-top: 0.80rem;
+  }
+  
+  .label {
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 18px;
+  }
+  
+  .checkbox {
+    margin: 0.85rem auto 0;
+  }
+  
+  .input {
+    appearance: none;
+    display: block;
+    color: #333;
+    border: 1px solid black;
+    background-color: rgb(239, 195, 229);
+    padding: 1rem;
+    border-radius: 0.65rem;
+    width: 88%;
+    height: 5px;
+    margin: 0.85rem auto 0;
+  }
+  
+  .input.input-error {
+    border: 1px solid red;
+  }
+  
+  .input.input-error:focus {
+    border: 1px solid red;
+  }
+  
+  .input:focus {
+    outline: none;
+    border: 1px solid  #462852;
+    background-clip: padding-box;
+  }
+  
+  .BarrePwd {
+    display: flex;
+    width: 88%;
+  }
+  
+  #password {
+    width: 84%;
+    margin: 0.65rem auto 0.65rem;
+  }
+  
+  .eye {
+    cursor: pointer;
+    width: 25px;
+    height: 25px;
+    align-self: center;
+  }
+  
+  .error-message {
+    display: block;
+    height: 0.95rem;
+    margin: 0.6rem;
+    font-size: 0.85rem;
+    font-family: 'Inter';
+    color: red;
+  }
+  
+  .button {
+    background-color: #F2C6DE;
+    font-family: 'Inter';
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    color: #ffffff;
+    width: 88%;
+    border: 2px solid #E5AECC;
+    border-radius: 0.45rem;
+    padding: 1rem;
+    cursor: pointer;
+  }
+
+  .button {
+    appearance: none;
+  }
+
+
+  .button2 {
+    appearance: none;
+  }
+
+  .button3 {
+    appearance: none;
+  }
+
+  .button4 {
+    appearance: none;
+  }
+
+  
+  .link {
+    margin: 0.85rem;
+    display: flex;
+    justify-content: center;
+    color: #B844FF;
+  }
+  
+  hr{
+    border: none;
+    height: 1px;
+    width: 90%;
+    background-color: #BEBEBE;
+  }
+  
+  @media screen and (max-width: 600px) {
+  
+    .container {
+      min-width: 315px;
+    }
+  
+    .side {
+      border-radius: 2.3rem;
+    }
+  }
+  
+  @media screen and (min-width: 1000px) {
+    .container {
+      max-width: 1000px;
+    }
+  }
