@@ -322,6 +322,13 @@ module.exports = class ManageGame {
         }
     }
 
+    draw() {
+        this.UnoDeck.dealCards([this.currentPlayer], 1);
+        this.moveToNextPlayer();
+    }
+
+
+
     /**
      * skipNextPlayer - Handles the effect of playing a Skip card in the Uno game.
      * Skips the next player's turn, informs them, and moves to the player after.

@@ -39,14 +39,14 @@
 }
 
 .container_otherplayer {
-  background-color: red;
+  /* background-color: red; */
   flex: 4;
   display: flex;
 }
 
 .container_player {
   flex: 3;
-  background: aquamarine;
+  /* background: aquamarine; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -55,7 +55,7 @@
 
 .divlefttest {
   flex: 1;
-  background-color: beige;
+  /* background-color: beige; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -63,14 +63,14 @@
 
 .divmidtest {
   flex: 5;
-  background-color: violet;
+  /* background-color: violet; */
   display: flex;
   flex-direction: column;
 }
 
 .divrighttest {
   flex: 1;
-  background-color: forestgreen;
+  /* background-color: forestgreen; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -79,7 +79,7 @@
 
 .divtoptest {
   flex: 2;
-  background-color: brown;
+  /* background-color: brown; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -87,7 +87,7 @@
 
 .divbottomtest {
   flex: 5;
-  background-color: darkviolet;
+  /* background-color: darkviolet; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -183,6 +183,12 @@
 }
 
 .draw {
+  width: 106px;
+  height: 167px;
+}
+
+.draw:hover {
+  cursor: pointer;
 }
 
 /*Sera mit dans le fichier card.css*/
@@ -192,8 +198,8 @@
 }
 
 .drawcard {
-  width: 102px;
-  height: auto;
+  width: 106px;
+  height: 167px;
 }
 
 .leftside {
@@ -211,21 +217,63 @@
   width: auto;
 }
 
+
 .card {
   margin-right: -50px;
   margin-bottom: -80px;
   transition: transform 0.2s ease;
+  z-index: 0;
 }
 
+.cannotPlay {
+  filter: brightness(60%);
+}
 .card:hover:not(.lastcard .card) {
   cursor: pointer;
   transform: translateY(-20px);
+  z-index: 1;
 }
 
-.circle {
+.color {
   width: 60px;
   height: 60px;
-  background-color: #c8b3dd;
   border-radius: 50%;
   border: 4px solid black;
+}
+
+.violet {
+  background-color: #c8b3dd;
+}
+
+.rose {
+  background-color: #F2C6DE;
+}
+
+.bleu {
+  background-color: #ACCBE8;
+}
+
+.vert {
+  background-color: #BBE1B1;
+}
+
+.playerName {
+  color: white;
+  font-weight: bold;
+  width: 90%;
+  margin: 0;
+}
+
+.linePlayer {
+  max-width: 500px;
+  height: 2px;
+  background-color: #ffffff;
+}
+
+.cantPlay {
+  color: black
+}
+
+.cantPlayl {
+  background-color: black
 }

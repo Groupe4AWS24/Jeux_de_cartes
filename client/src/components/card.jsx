@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import back from "../assets/cartes/back.png";
 import back_left from "../assets/cartes/back left.png";
-import purple from "../assets/purple_1.png";
+import { useParams } from "react-router-dom";
+import { UserContext } from "../../context/userContext";
+
 
 /**
  * Crée la face d'une carte. Sera utilisé pour génerer les cartes des adversaires selon la vue du joueur.
@@ -21,7 +23,9 @@ export function BackCard(props) {
       return <img className="back rightside" src={back_left} />;
 
     default:
-      return <img className="back drawcard" src={back} />;
+      return (
+        <img className="back drawcard" src={back}/>
+      );
   }
 }
 
@@ -31,11 +35,23 @@ export function BackCard(props) {
  *
  * @return {JSX.Element} La face de la carte. On retourne une balise image.
  */
-export function Card({ valeur }) {
-  console.log(valeur);
+export function Card({ valeur, playableCard }) {
+  const { socket } = useContext(UserContext);
+  const { roomId } = useParams();
   const [imagePath, setImagePath] = useState("");
+  let playable = "";
+  if (playableCard !== undefined && playableCard !== null) {
+    // if lenght = 0 => no playable card
+    for (const card of playableCard) {
+      if (card.color === valeur.color && card.value === valeur.value) {
+        playable = "";
+        break;
+      } else {
+        playable = "cannotPlay";
+      }
+    }
+  }
   useEffect(() => {
-    console.log("we")
     import(`../assets/cartes/${valeur.color}_${valeur.value}.png`)
       .then((image) => {
         setImagePath(image.default);
@@ -52,14 +68,22 @@ export function Card({ valeur }) {
    *
    */
   const handleCardClick = (event) => {
-    // Si la card de la pioche
-    if (!event.currentTarget.closest('.lastcard')) {
+    if (
+      event.currentTarget.parentElement.className !== "lastcard" &&
+      event.currentTarget.classList.value == "card " &&
+      !event.currentTarget.parentElement.className.includes("cannotPlay")
+    ) {
       console.log("boulot");
-    } else {
-      console.log("hehehehe")
+      socket.emit('playCard', {cardPlayed: valeur});    
     }
   };
 
   // Valeur de la carte pour l'affichage, contenant sa couleur et la valeur, ex: "purple_1"
-  return <img className="card" src={imagePath} onClick={handleCardClick} />;
+  return (
+    <img
+      className={`card ${playable}`}
+      src={imagePath}
+      onClick={handleCardClick}
+    />
+  );
 }

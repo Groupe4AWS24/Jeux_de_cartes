@@ -17,11 +17,12 @@ export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [socket, setSocket] = useState(null);
   useEffect(() => {
+    console.log(user)
     if (!user) {
       axios.get("/profile").then(({ data }) => {
         setUser(data);
         // Si pas de token sera toujours renvoyé a la page d'accueil
-        if (data && location.pathname !== '/chat' && !location.pathname.startsWith('/room/')) {
+        if (data && location.pathname !== '/chat' && !location.pathname.startsWith('/room/') && !location.pathname.startsWith('/game/')) {
           navigate("/dashboard");
         } else if (!data){
           navigate("/");
@@ -32,7 +33,7 @@ export function UserContextProvider({ children }) {
     }
   }, []);
   return (
-    <UserContext.Provider value={{user, setUser, socket, setSocket}}>
+    <UserContext.Provider value={{user, setUser, socket, setSocket}} >
       {children}
     </UserContext.Provider>
   );

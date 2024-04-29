@@ -126,6 +126,7 @@ function setupSocket(server) {
     });
 
     socket.on("startGame", ({ roomId }) => {
+      console.log(socket.user.username);
       const room = rooms[roomId];
 
       // Vérifiez si l'utilisateur est le créateur de la room
@@ -148,11 +149,11 @@ function setupSocket(server) {
       room.game = game;
       game.GameStart();
 
-      console.log("Jeu commence: ", rooms);
-      console.log("Jeu commence: Players :", room.players);
-      console.log("Jeu commence: Game :", room.game);
-      console.log("Jeu commence: Players :", room.game.players);
-      console.log("Jeu commence: Deck :", room.game.UnoDeck);
+      // console.log("Jeu commence: ", rooms);
+      // console.log("Jeu commence: Players :", room.players);
+      // console.log("Jeu commence: Game :", room.game);
+      // console.log("Jeu commence: Players :", room.game.players);
+      // console.log("Jeu commence: Deck :", room.game.UnoDeck);
       io.to(room.id).emit("gameStarted");
     });
 
@@ -163,18 +164,161 @@ function setupSocket(server) {
           const findplayer = room.game.players.find(
             (item) => item.name === player.username
           );
-          if (findplayer) {
+          if (findplayer.name === socket.user.username) {
             return {
               username: findplayer.name,
               id: player.id,
               hand: findplayer.hand,
             };
           } else {
-            return null;
+            return {
+              username: findplayer.name,
+              id: player.id,
+              hand: findplayer.hand.map((_) => null),
+            };
           }
-        }).filter((item) => item !== null);
-        socket.emit("SendInfo", start)
+        });
+        const currentColor =
+          room.game.lastCard.color !== "allcolors" &&
+          room.game.lastCard.color !== "withoutcolor"
+            ? room.game.lastCard.color
+            : room.game.lastColor;
+        const currentTurn = room.game.currentPlayer.name;
+        const playableCards =
+          socket.user.username === currentTurn
+            ? room.game.getPlayableCards()
+            : null;
+        console.log(playableCards);
+        socket.emit("SendInfo", {
+          players: start,
+          lastCard: room.game.lastCard,
+          currentColor: currentColor,
+          currentTurn: currentTurn,
+          playableCards: playableCards,
+        });
       }
+    });
+
+    //un joueur pioche des cartes
+    socket.on("drawCards", ({ roomId }) => {
+      const room = rooms[roomId];
+      if (room.game) {
+        const current = room.game.currentPlayer.name;
+        room.game.draw();
+        console.log(room.game);
+        console.log("Jeu commence: Players :", room.game.players);
+        console.log(room.game.currentPlayer.name);
+        const { hand } = room.game.players.filter(
+          (player) => player.name === current
+        )[0];
+        console.log(
+          "wewe",
+          room.game.players.filter((player) => player.name === current)
+        );
+        //const player = rooms[socket.id];
+        // Logique pour faire piocher les cartes au joueur
+        // Après avoir mis à jour la main du joueur, redistribuer ses cartes
+        room.players.forEach((player) => {
+          io.to(player.id).emit("updateDraw", {
+            hand: {
+              player: current,
+              newhand: hand.map((carte) => {
+                if (player.username === current) {
+                  return carte;
+                } else {
+                  return null;
+                }
+              }),
+            },
+            currentTurn: room.game.currentPlayer.name,
+            playableCards:
+              player.username === room.game.currentPlayer.name
+                ? room.game.getPlayableCards()
+                : null,
+          });
+        });
+      }
+    });
+
+    socket.on("playCard", ({ cardPlayed }) => {
+      // Identifier le joueur et la partie à partir des informations de la socket
+      const player = playerDetails[socket.id];
+      const room = rooms[playerDetails[socket.id].roomId];
+      if (!player) {
+        socket.emit("error", { message: "Joueur non trouvé." });
+        return;
+      }
+
+      const { game } = room;
+      if (!game) {
+        socket.emit("error", { message: "Partie non trouvée." });
+        return;
+      }
+
+      // Vérifier si c'est le tour du joueur
+      if (game.currentPlayer.name !== socket.user.username) {
+        socket.emit("error", { message: "Ce n'est pas votre tour." });
+        return;
+      }
+
+      // Trouver la carte dans la main du joueur
+      const cardIndex = game.currentPlayer.hand.findIndex(
+        (card) =>
+          card.color === cardPlayed.color && card.value === cardPlayed.value
+      );
+      if (cardIndex === -1) {
+        socket.emit("error", { message: "Carte non trouvée dans votre main." });
+        return;
+      }
+
+      const playedCard = game.currentPlayer.hand[cardIndex];
+      console.log(
+        "Carte trouvée",
+        cardIndex,
+        game.currentPlayer,
+        game.currentPlayer.hand[cardIndex]
+      );
+
+      // Vérifier si la carte peut être jouée
+      if (!game.canPlayOn(playedCard)) {
+        socket.emit("error", { message: "Mouvement invalide." });
+        return;
+      }
+      const current = game.currentPlayer.name;
+      game.play([playedCard]);
+      const { hand } = room.game.players.filter(
+        (player) => player.name === current
+      )[0];
+      const currentColor =
+        room.game.lastCard.color !== "allcolors" &&
+        room.game.lastCard.color !== "withoutcolor"
+          ? room.game.lastCard.color
+          : room.game.lastColor;
+
+      room.players.forEach((player) => {
+        io.to(player.id).emit("hasPlayed", {
+          hand: {
+            player: current,
+            newhand: hand.map((carte) => {
+              if (player.username === current) {
+                return carte;
+              } else {
+                return null;
+              }
+            }),
+          },
+          lastCard: room.game.lastCard,
+          currentColor: currentColor,
+          currentTurn: room.game.currentPlayer.name,
+          playableCards:
+            player.username === room.game.currentPlayer.name
+              ? room.game.getPlayableCards()
+              : null,
+        });
+      });
+      // Jouer la carte et l'appliquer à la logique du jeu
+      console.log(game.currentPlayer, game);
+      console.log(game.currentPlayer.nextPlayer);
     });
   });
 }
