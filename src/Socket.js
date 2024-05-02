@@ -155,9 +155,12 @@ io.on('connection', (socket) => {
 
     socket.on('unoClicked', () => {
         const playerId = socket.id;
-        if (playerDetails[playerId].player.cards.length <= 2) {
+        if (playerDetails[playerId].player.getPlayerHand().length <= 2) {
             // Le joueur a annoncé "Uno"
             io.emit('unoAnnounced', playerId);
+        } else {
+            // Le joueur a trop de cartes pour annoncer "Uno"
+            socket.emit('tooManyCards', "Vous avez trop de cartes pour annoncer 'Uno'.");
         }
     });
 
