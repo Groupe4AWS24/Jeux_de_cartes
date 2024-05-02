@@ -17,6 +17,8 @@ const playerDetails = {};
 
 io.on('connection', (socket) => {
     console.log(`Nouveau joueur connecté: ${socket.id}`);
+    
+    
     socket.on('authenticate', (token) => {
       jwt.verify(token, jwtSecret, (err, decoded) => {
           if (!err) {
@@ -29,12 +31,10 @@ io.on('connection', (socket) => {
           }
       });
   });
-});  
 
-
-// Utilisation du middleware pour l'événement 'createRoom'
-socket.on('createRoom', (data) => {
-    authMiddleware(socket, (err) => {
+        // Utilisation du middleware pour l'événement 'createRoom'
+    socket.on('createRoom', (data) => {
+        authMiddleware(socket, (err) => {
         if (err) {
             // Gérer l'erreur d'authentification
             socket.emit('authenticationFailed', err.message);
@@ -58,12 +58,12 @@ socket.on('createRoom', (data) => {
             socket.join(roomId);
             socket.emit('roomCreated', { roomId });
         }
+        });
     });
-});
 
-// Utilisation du middleware pour l'événement 'joinRoom'
-socket.on('joinRoom', (data) => {
-    authMiddleware(socket, (err) => {
+    // Utilisation du middleware pour l'événement 'joinRoom'
+    socket.on('joinRoom', (data) => {
+        authMiddleware(socket, (err) => {
         if (err) {
             // Gérer l'erreur d'authentification
             socket.emit('authenticationFailed', err.message);
@@ -91,12 +91,12 @@ socket.on('joinRoom', (data) => {
             socket.emit('roomJoined', roomId);
             socket.to(roomId).emit('playerJoined', userId);
         }
+        });
     });
-});
 
 
-socket.on('startGame', (data) => {
-    authMiddleware(socket, (err) => {
+    socket.on('startGame', (data) => {
+        authMiddleware(socket, (err) => {
         if (err) {
             // Gérer l'erreur d'authentification
             socket.emit('authenticationFailed', err.message);
@@ -132,27 +132,42 @@ socket.on('startGame', (data) => {
   
             io.to(roomId).emit('gameStarted');
         }
+        });
     });
-});
 
-socket.on('disconnect', () => {
-    const details = playerDetails[socket.id];
-    if (details) {
-        const { roomId } = details;
-        const room = rooms[roomId];
-        if (room) {
-            room.players = room.players.filter(id => id !== details.player.id);
-            if (room.players.length === 0) {
-                // Supprime la room si elle est vide
-                delete rooms[roomId];
-            } else {
-                io.to(roomId).emit('playerDisconnected', details.player.id);
-            }
+    socket.on('disconnect', () => {
+        const details = playerDetails[socket.id];
+        if (details) {
+            const { roomId } = details;
+            const room = rooms[roomId];
+            if (room) {
+                room.players = room.players.filter(id => id !== details.player.id);
+                if (room.players.length === 0) {
+                    // Supprime la room si elle est vide
+                    delete rooms[roomId];
+                } else {
+                    io.to(roomId).emit('playerDisconnected', details.player.id);
+                }
         }
         delete playerDetails[socket.id];
-    }
-  });
+        }
+    });
 
+    socket.on('unoClicked', () => {
+        const playerId = socket.id;
+        if (playerDetails[playerId].player.cards.length <= 2) {
+            // Le joueur a annoncé "Uno"
+            io.emit('unoAnnounced', playerId);
+        }
+    });
+
+});  
+
+
+
+
+
+  
 
 
 
