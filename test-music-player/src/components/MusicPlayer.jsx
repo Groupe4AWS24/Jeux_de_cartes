@@ -10,7 +10,7 @@ function MusicPlayer({ roomId, style, className }) {// rajout de props pour perm
     { name: 'Lofi sad', src: '/audio/Lofi sad.mp3' },
     { name: 'Nintendo', src: '/audio/Nintendo.mp3' },
     { name: 'The promised neverland', src: '/audio/The promised neverland.mp3' }
-  ]);  // Liste des pistes disponibles
+  ]); 
   
   
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);  // Index de la piste actuelle

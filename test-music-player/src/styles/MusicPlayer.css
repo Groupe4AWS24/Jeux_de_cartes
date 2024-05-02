@@ -1,21 +1,41 @@
 /* MusicPlayer.css */
 .audioPlayer {
   background: #c1b6bc;
-  padding: 1.25rem; /* Équivalent à 20px si la taille de base de la police est 16px */
+  padding: 0.8rem 0.75rem; /* Réduisez le padding pour diminuer la taille globale */
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 4px;
   color: #333;
   position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
+  left: 80%;
+  right: 70%;
+  bottom: 350px;
+  transform: translateX(-50%);
+  width: 25%; 
   box-sizing: border-box;
-  z-index: 100; 
-  opacity: 0.8; 
+  z-index: 100;
+  opacity: 0.8;
   background-color: rgba(193, 182, 188, 0.7);
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-music-player-button {
+  position: fixed;
+  top: 20px;      
+  right: 20px;    
+  font-size: 2rem;
+  z-index: 101;
+  background: none;
+  border: none;
+  cursor: pointer;
+  
+}
+
+.toggle-music-player-button:hover {
+  opacity: 0.7; 
 }
 
 
@@ -30,19 +50,20 @@
 .controlButton {
   background-color: transparent;
   border: none;
-  font-size: 1.5rem; /* Équivalent à 24px */
+  font-size: 1.3rem; /* Équivalent à 24px */
   cursor: pointer;
-  color: #61dafb;
+  color: #bd658a;
 }
 
 .controlButton:hover {
-  color: #21a1f1;
+  color: #bd658a;
 }
 
 
 .trackInfo {
-  font-size: 1rem; /* Équivalent à 16px */
+  font-size: 0.8rem; /* Équivalent à 16px */
   text-align: center;
+  width: 100%;
   margin-bottom: 0.625rem; /* Équivalent à 10px */
 }
 
@@ -51,33 +72,34 @@
   background-color: #e1e1e1;
   border-radius: 5px;
   position: relative;
-  height: 8px;
+  height: 6px;
 }
 
 .progressBar {
   background-color: #61dafb;
   height: 100%;
   border-radius: 5px;
-  width: 0%; /* La largeur sera mise à jour par React */
+  width: 0%;
 }
 
 
 .progressTime {
   display: flex;
   justify-content: space-between;
-  font-size: 0.75rem; /* Équivalent à 12px */
+  width: 100%;
+  font-size: 0.75rem;
   margin-top: 5px;
 }
 
 .volumeControls {
   display: flex;
-  gap: 10px;
+  gap: 5px;
   align-items: center;
-  margin-top: 0.625rem; /* Équivalent à 10px */
+  margin-top: 0.625rem; 
 }
 
 .volumeIcon {
-  font-size: 1.5rem; /* Équivalent à 24px */
+  font-size: 1.5rem; 
 }
 
 .volumeSlider {
@@ -112,47 +134,55 @@
 /* Responsive  */
 @media (max-width: 768px) {
   .audioPlayer {
-    padding: 1rem; /*  réduit pour les petits écrans */
+    width:45%;
+    padding: 0.75rem; 
   }
 
   .controlButton {
-    font-size: 1.2rem; /* Un peu plus petit sur les écrans étroits */
+    font-size: 1.2rem; 
   }
 
-  .controlButton.active.one { color: #ff9800; } /* Couleur pour répétition d'une chanson */
-  .controlButton.active.all { color: #ffcc00; } /* Couleur pour répétition de la playlist */
+  .controlButton.active.one { color: #ff9800; } 
+  .controlButton.active.all { color: #ffcc00; }
 
   .speaker-button {
     position: absolute;
-    top: 10px;  /* Ajustez ces valeurs pour positionner le bouton */
+    top: 10px;  
     right: 10px;
-    /* Ajoutez d'autres styles ici pour la mise en forme */
+  
+  }
+  .toggle-music-player-button {
+    font-size: 1.5rem; 
+    top: 10px; 
+    right: 10px; 
   }
   
-
-.toggle-music-player-button {
-  position: fixed; /* Assurez-vous que le bouton reste en place lors du défilement */
-  top: 20px; /* Ajustez selon les besoins pour une meilleure visibilité */
-  right: 20px; /* Placez le bouton sur le côté droit de l'écran */
-  font-size: 2rem;
-  z-index: 101; /* Assurez-vous qu'il est visible au-dessus d'autres éléments */
-  background: none;
-  border: none;
-  cursor: pointer;
 }
 
-
-.toggle-music-player-button:hover {
-  opacity: 0.7; /* Légère transparence lors du survol pour l'interaction utilisateur */
+.hoverTimeLabel {
+  font-size: 0.7rem; 
+  color: #fff; 
+  position: absolute; 
+  top: -20px; 
+  background-color: rgba(151, 65, 118, 0.7);
+  padding: 2px 5px; 
+  border-radius: 3px; 
+  white-space: nowrap; 
+  display: none;
 }
+
+.progressContainer:hover .hoverTimeLabel {
+  display: block; /* Montrer la label quand la souris est sur la progress bar */
+}
+
 
 .trackInfo {
-  font-size: 1.0rem; /* Augmentez la taille du texte */
+  font-size: 1.0rem; 
   text-align: center;
   margin-bottom: 10px; 
   font-weight: bold; 
-  color: #333; /* Couleur du texte bleu */
+  color: #333; 
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Ombre du texte pour plus de profondeur */
 }
 
-}
+
