@@ -17,7 +17,7 @@ function Page1() {
   // stocke toutes les mains
   const [playableCard, setPlayableCard] = useState([]);
   const [currentColor, setCurrentColor] = useState("");
-  //const [showColorSelector, setShowColorSelector] = useState(false);
+  const [showColorSelector, setShowColorSelector] = useState(false);
   const [choice, setChoice] = useState({});
   // tour de quel joueur
   const [turn, setTurn] = useState(0);
@@ -126,7 +126,8 @@ function Page1() {
         </div>
       ) : (
         <React.Fragment>
-        <colorSelector setChoice={setChoice} />
+        {showColorSelector &&(
+        <colorSelector setChoice={setChoice} />)}
         <div className="hands">
           {
             <PlayersHands
@@ -136,6 +137,8 @@ function Page1() {
               lastCard={fosse}
               turn={turn}
               playableCard={playableCard}
+              setShowColorSelector={setShowColorSelector}
+              choice = {choice}
             />
           }
         </div>

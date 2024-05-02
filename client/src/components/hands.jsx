@@ -10,6 +10,8 @@ export function PlayersHands({
   lastCard,
   turn,
   playableCard,
+  setShowColorSelector,
+  choice,
 }) {
   /**
    * Une fonction qui génére des divs permettant la séparation de l'écran en 3 parties (en colonne), dont la partie du milieu sera divisé en 3 autres divs(en ligne).
@@ -92,7 +94,7 @@ export function PlayersHands({
                   }`}
                 >
                   {player.hand.map((carte, j) => (
-                    <Card key={j} valeur={carte} playableCard={playableCard} />
+                    <Card key={j} valeur={carte} playableCard={playableCard} setShowColorSelector={setShowColorSelector} choice={choice}/>
                   ))}
                 </div>
               </React.Fragment>
