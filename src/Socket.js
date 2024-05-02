@@ -167,8 +167,11 @@ io.on('connection', (socket) => {
 
     // Gérer le clic sur le bouton "Contre Uno"
     socket.on('counterUnoClicked', () => {
-        const playerId = socket.id;
-        const adversaire = getAdversaireId(playerId);
+        let playerId = socket.id;
+        
+        // récupération du dernier joueur qui a joué
+        let adversaire = game.getLastPlayerPlay();
+        
         if (playerDetails[playerId].player.getPlayerHand().length < 2) {
             // Le joueur a cliqué sur "Contre Uno" et l'adversaire n'a pas annoncé "Uno"
             game.getUnoDeck().dealCards(adversaire, 2);

@@ -43,6 +43,8 @@ module.exports = class ManageGame {
         this.sumPinition = 0;
 
         this.lastColor = null;
+
+        this.lastPlayerPlay = null;
     }
     
     /**
@@ -400,6 +402,9 @@ module.exports = class ManageGame {
             // Inform the player about the dealt card
             console.log(`Tu as pioché une carte: ${this.currentPlayer.hand[this.currentPlayer.hand.length - 1]}`);
 
+            //sauvegarder le dernier joueur qui a joué 
+            this.lastPlayerPlay = this.currentPlayer;
+            
             // Move to the next player
             this.moveToNextPlayer();
         }
@@ -598,6 +603,10 @@ module.exports = class ManageGame {
 
     getUnoDeck() {
         return this.UnoDeck;
+    }
+
+    getLastPlayerPlay() {
+        return this.lastPlayerPlay();
     }
 
 
