@@ -3,7 +3,8 @@ const socketIo = require('socket.io');
 const http = require("http");
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
-const {authMiddleware} = require("./Middleware/Middleware.js")
+const {authMiddleware} = require("./Middleware/Middleware.js");
+const UnoDeck = require('./UnoDeck.js');
 
 
 const app = express();
@@ -163,6 +164,20 @@ io.on('connection', (socket) => {
             socket.emit('tooManyCards', "Vous avez trop de cartes pour annoncer 'Uno'.");
         }
     });
+
+    // Gérer le clic sur le bouton "Contre Uno"
+    socket.on('counterUnoClicked', () => {
+        const playerId = socket.id;
+        const adversaire = getAdversaireId(playerId);
+        if (playerDetails[playerId].player.getPlayerHand().length < 2) {
+            // Le joueur a cliqué sur "Contre Uno" et l'adversaire n'a pas annoncé "Uno"
+            game.getUnoDeck().dealCards(adversaire, 2);
+        } else {
+            game.getUnoDeck().dealCards(playerDetails[playerId].player, 2);
+        }
+    });
+
+    
 
 });  
 

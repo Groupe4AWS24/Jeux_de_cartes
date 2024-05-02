@@ -596,7 +596,11 @@ module.exports = class ManageGame {
         
     }
 
-    
+    getUnoDeck() {
+        return this.UnoDeck;
+    }
+
+
 
 }
 

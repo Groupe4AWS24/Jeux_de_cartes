@@ -112,7 +112,9 @@ module.exports = class UnoDeck {
         }
     }
 
-
+    getUnoDeck() {
+        return this.cards;
+    }
    
 
 }
