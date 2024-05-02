@@ -272,12 +272,12 @@ function setupSocket(server) {
       }
 
       const playedCard = game.currentPlayer.hand[cardIndex];
-      console.log(
-        "Carte trouvée",
-        cardIndex,
-        game.currentPlayer,
-        game.currentPlayer.hand[cardIndex]
-      );
+      // console.log(
+      //   "Carte trouvée",
+      //   cardIndex,
+      //   game.currentPlayer,
+      //   game.currentPlayer.hand[cardIndex]
+      // );
 
       // Vérifier si la carte peut être jouée
       if (!game.canPlayOn(playedCard)) {
@@ -317,8 +317,8 @@ function setupSocket(server) {
         });
       });
       // Jouer la carte et l'appliquer à la logique du jeu
-      console.log(game.currentPlayer, game);
-      console.log(game.currentPlayer.nextPlayer);
+      //console.log(game.currentPlayer, game);
+      //console.log(game.currentPlayer.nextPlayer);
     });
   });
 }

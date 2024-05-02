@@ -208,6 +208,10 @@ module.exports = class ManageGame {
                 this.skipNextPlayer();
             } else {
                 if(this.lastCard.isReverseCard()) {
+                    console.log(this.players.length, this.players)
+                    if (this.players.length == 2) {
+                        this.moveToNextPlayer();
+                    }
                     this.reverseGameDirection();
                 } else if(this.lastCard.isPlus4Card()) {
                     let color = await this.getColorChoice();

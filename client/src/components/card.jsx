@@ -4,7 +4,6 @@ import back_left from "../assets/cartes/back left.png";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
-
 /**
  * Crée la face d'une carte. Sera utilisé pour génerer les cartes des adversaires selon la vue du joueur.
  *
@@ -23,9 +22,7 @@ export function BackCard(props) {
       return <img className="back rightside" src={back_left} />;
 
     default:
-      return (
-        <img className="back drawcard" src={back}/>
-      );
+      return <img className="back drawcard" src={back} />;
   }
 }
 
@@ -42,12 +39,16 @@ export function Card({ valeur, playableCard }) {
   let playable = "";
   if (playableCard !== undefined && playableCard !== null) {
     // if lenght = 0 => no playable card
-    for (const card of playableCard) {
-      if (card.color === valeur.color && card.value === valeur.value) {
-        playable = "";
-        break;
-      } else {
-        playable = "cannotPlay";
+    if (playableCard.length === 0) {
+      playable = "cannotPlay";
+    } else {
+      for (const card of playableCard) {
+        if (card.color === valeur.color && card.value === valeur.value) {
+          playable = "";
+          break;
+        } else {
+          playable = "cannotPlay";
+        }
       }
     }
   }
@@ -74,7 +75,7 @@ export function Card({ valeur, playableCard }) {
       !event.currentTarget.parentElement.className.includes("cannotPlay")
     ) {
       console.log("boulot");
-      socket.emit('playCard', {cardPlayed: valeur});    
+      socket.emit("playCard", { cardPlayed: valeur });
     }
   };
 
