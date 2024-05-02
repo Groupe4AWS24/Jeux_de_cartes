@@ -537,13 +537,8 @@ module.exports = class ManageGame {
     async decideAndPlay(playableCards, cardAnalysis) {
         if (this.currentPlayer.getPlayerHand().length === playableCards.length && cardAnalysis.hasSameValue) {
             await this.play(playableCards);
-        } else if (this.currentPlayer.nextPlayer.stayCardHasSamevalue() || this.currentPlayer.nextPlayer.getPlayerHand().length === 1) {
-            await this.decideForNextPlayer(playableCards, cardAnalysis);
         } else {
-           
-            /*
-               if (colors.length != 0)
-            */   
+
             let cardsToPlay = [];
             if (cardAnalysis.hasPlus4card) {
                 cardsToPlay = playableCards.filter(card => card.isPlus4Card());
@@ -553,13 +548,7 @@ module.exports = class ManageGame {
                 await this.play(cardsToPlay);
             } else {
                 cardsToPlay = this.findBestNumberCardsToPlay(playableCards);
-                let colors = this.getColorWichBothasAndDontHasNextPlayer(cardsToPlay);
-                /*if(colors.length == 0) {
-                    await this.play(cardsToPlay);
-                } else {
-                    
-                }*/
-                   
+                await this.play(cardsToPlay); 
             }
         }
     }
@@ -588,7 +577,7 @@ module.exports = class ManageGame {
 
     findBestNumberCardsToPlay(playableCards) {
         let groups = this.identifyCardGroups(playableCards);
-        const bestGroup = groups[0];
+        let bestGroup = groups[0];
         for(let group of groups) {
             if(group.length > bestGroup.length && !group[0].isSpecialCard()) {
                 bestGroup = group;
@@ -597,91 +586,15 @@ module.exports = class ManageGame {
         return bestGroup;
     }
 
-
-
-
-
-
-
-    async decideForNextPlayer(cardAnalysis) {
-        if (cardAnalysis.hasPlus4card) {
-            let cardsToPlay = playableCards.filter(card => card.isPlus4Card());
-            await this.play(cardsToPlay);
-        } else if (cardAnalysis.hasPlus2card) {
-            let cardsToPlay = playableCards.filter(card => card.isPlus2Card());
-            await this.play(cardsToPlay);
-        } else if (cardAnalysis.hasChangeColorCard && !this.isNextplayerHasAllColors && !this.isNextplayerHasChangeColorCard) {
-            let cardsToPlay = playableCards.filter(card => card.isChangeColorCard());
-            await this.play(cardsToPlay[0]);
-        }
-    }
-
     
     getColorChoiceBot() {
-        // Obtenez la main du prochain joueur
-        const nextPlayerHand = this.nextPlayer.getPlayerHand();
-    
-        // Extrayez les couleurs des cartes de sa main
-        const colorsNextPlayer = nextPlayerHand.map(card => card.getColor());
-    
         const colors = ['bleu', 'violet', 'rose', 'vert'];
-    
-        const colorsNotInHand = colors.filter(color => !colorsNextPlayer.includes(color));
-    
-        if (colorsNotInHand.length === 1) {
-            return colorsNotInHand[0];
-        } else {
-            // Générez un index aléatoire pour choisir une couleur parmi celles qui ne sont pas dans la main
-            const randomIndex = Math.floor(Math.random() * colorsNotInHand.length);
-            return colorsNotInHand[randomIndex];
-        }
-    }
-
-
-        
-    getColorWichBothasAndDontHasNextPlayer(playableCards) {
-        // Obtenez la main du prochain joueur
-        const nextPlayerHand = this.nextPlayer.getPlayerHand();
-    
-        // Extrayez les couleurs des cartes de sa main
-        const colorsNextPlayer = nextPlayerHand.map(card => card.getColor());
-    
-        // Extrayez les couleurs des cartes jouables
-        const colorsBotCanPlay = playableCards.map(card => card.getColor());
-    
-        // Filtrer les couleurs que le joueur suivant ne possède pas
-        const colorsNotInHand = colorsBotCanPlay.filter(color => !colorsNextPlayer.includes(color));
             
-        return colorsNotInHand;
+        // Générez un index aléatoire pour choisir une couleur parmi celles qui ne sont pas dans la main
+        const randomIndex = Math.floor(Math.random() * colorsNotInHand.length);
+        return colors[randomIndex];
+        
     }
-    
-
-    isNextplayerHasAllColors() {
-         // Obtenez la main du prochain joueur
-         const nextPlayerHand = this.nextPlayer.getPlayerHand();
-    
-         // Extrayez les couleurs des cartes de sa main
-         const colorsNextPlayer = nextPlayerHand.map(card => card.getColor());
-     
-         const colors = ['bleu', 'violet', 'rose', 'vert'];
-
-         // Vérifiez si toutes les couleurs sont présentes dans la main du joueur suivant
-        const hasAllColors = colors.every(color => colorsNextPlayer.includes(color));
-
-        return hasAllColors;
-    }
-    
-    isNextplayerHasChangeColorCard() {
-        // Obtenez la main du prochain joueur
-        const nextPlayerHand = this.nextPlayer.getPlayerHand();
-
-        for (let card of nextPlayerHand) {
-            if(card.isChangeColorCard) {
-                return true;
-            }
-        }
-        return false;
-    }    
 
 }
 
