@@ -172,7 +172,7 @@
 }
 
 .progressContainer:hover .hoverTimeLabel {
-  display: block; /* Montrer la label quand la souris est sur la progress bar */
+  display: block; 
 }
 
 
