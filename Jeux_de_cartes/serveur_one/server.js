@@ -1,15 +1,21 @@
 const http = require('http');
 const express = require('express');
 const socketIo = require('socket.io');
+<<<<<<< HEAD
 const path = require('path');
 const cors = require('cors');
 
 
+=======
+const jwt = require('jsonwebtoken');
+const cookie = require('cookie');
+>>>>>>> 93bf8eb6f3b7f7d633b34324a1f63df694dfa4d1
 const { v4: uuidv4 } = require('uuid'); // Génère des id uniques pour les rooms
 const ManageGame = require('../src/ManageGame');
 const Player = require('../src/Player');
 const app = express();
 const server = http.createServer(app);
+<<<<<<< HEAD
 //const io = socketIo(server);
 //const MusicController = require('./MusicController');
 
@@ -163,6 +169,26 @@ server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 /*
 
+=======
+const io = socketIo(server);
+
+
+require('dotenv').config({ path: '../../../server/.env' });//dépend de l'emplacement de.env
+
+const jwtSecret = process.env.JWT_SECRET;//dans les variables d'environment
+
+
+// Structure pour suivre les rooms et les jeux associés
+const rooms = {};
+const games = {};
+const playerDetails = {};//va stocker les details sur les joueurs connectés
+
+app.use(express.static('src'));//Remplacer par index.html
+app.get('/', (req, res) => {
+   res.send('Bienvenue sur notre jeu Uno');//remplacer par l'emplacemet du front
+});
+// Middleware pour vérifier les tokens JWT des connexions Socket.IO
+>>>>>>> 93bf8eb6f3b7f7d633b34324a1f63df694dfa4d1
 io.use((socket, next) => {
   const cookies = socket.handshake.headers.cookie;
   if (cookies) {
@@ -177,6 +203,7 @@ io.use((socket, next) => {
               next();
           });
       } else {
+<<<<<<< HEAD
           // Allow connections without token during testing
           next();
       }
@@ -187,6 +214,15 @@ io.use((socket, next) => {
 });
 
 
+=======
+          next(new Error('Authentication error: No token provided'));
+      }
+  } else {
+      next(new Error('Authentication error: No cookies found'));
+  }
+});
+
+>>>>>>> 93bf8eb6f3b7f7d633b34324a1f63df694dfa4d1
 io.on('connection', (socket) => {
   console.log(`Nouveau joueur connecté: ${socket.id}`);
 
@@ -385,9 +421,36 @@ socket.on('drawCards', (data) => {
   }
 });
 
+<<<<<<< HEAD
 
 
 /*
+=======
+socket.on('disconnect', () => {
+  const details = playerDetails[socket.id];
+  if (details) {
+    // Marquer le joueur comme déconnecté
+    details.isDisconnected = true;
+
+    // Informer les autres joueurs de la déconnexion
+    const room = rooms[details.roomId];
+    if (room) {
+      io.to(details.roomId).emit('playerDisconnected', { playerId: details.player.id, username: details.player.name });
+      if (room.players.length === 0) {
+        // Supprime la room si elle est vide
+        delete rooms[roomId];
+    } else {
+        io.to(roomId).emit('playerDisconnected', details.player.id);
+    }
+}
+delete playerDetails[socket.id];
+  
+    
+  }
+});
+
+
+>>>>>>> 93bf8eb6f3b7f7d633b34324a1f63df694dfa4d1
 socket.on('reconnectPlayer', ({ userId, roomId }) => {
   // Trouver le joueur déconnecté correspondant
   const disconnectedPlayerDetails = Object.values(playerDetails).find(details => details.player.id === userId && details.roomId === roomId && details.isDisconnected);
@@ -420,4 +483,7 @@ socket.on('reconnectPlayer', ({ userId, roomId }) => {
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => console.log(`Serveur lancé sur le port ${PORT}`));
+<<<<<<< HEAD
 */
+=======
+>>>>>>> 93bf8eb6f3b7f7d633b34324a1f63df694dfa4d1
