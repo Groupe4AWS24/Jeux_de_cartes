@@ -1,13 +1,13 @@
 /* MusicPlayer.css */
 .audioPlayer {
-  background: #c1b6bc;
+  background: #c8b2bd;
   padding: 0.8rem 0.75rem; /* Réduisez le padding pour diminuer la taille globale */
   border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 6px rgba(155, 34, 34, 0.1);
   display: flex;
   flex-direction: column;
   gap: 4px;
-  color: #333;
+  color: #611616;
   position: fixed;
   left: 80%;
   right: 70%;
@@ -17,7 +17,7 @@
   box-sizing: border-box;
   z-index: 100;
   opacity: 0.8;
-  background-color: rgba(193, 182, 188, 0.7);
+  background-color: rgba(53, 48, 50, 0.7);
   align-items: center;
   justify-content: center;
 }
@@ -52,11 +52,12 @@
   border: none;
   font-size: 1.3rem; /* Équivalent à 24px */
   cursor: pointer;
-  color: #bd658a;
+  color: #791818;
+  
 }
 
 .controlButton:hover {
-  color: #bd658a;
+  color: #bd658a
 }
 
 
@@ -181,8 +182,8 @@
   text-align: center;
   margin-bottom: 10px; 
   font-weight: bold; 
-  color: #333; 
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Ombre du texte pour plus de profondeur */
+  color: #611616; 
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.811); 
 }
 
 
