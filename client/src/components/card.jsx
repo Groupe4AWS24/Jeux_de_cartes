@@ -32,7 +32,7 @@ export function BackCard(props) {
  *
  * @return {JSX.Element} La face de la carte. On retourne une balise image.
  */
-export function Card({ valeur, playableCard }) {
+export function Card({ valeur, playableCard, setShow, choice }) {
   const { socket } = useContext(UserContext);
   const { roomId } = useParams();
   const [imagePath, setImagePath] = useState("");
@@ -55,9 +55,11 @@ export function Card({ valeur, playableCard }) {
   useEffect(() => {
     import(`../assets/cartes/${valeur.color}_${valeur.value}.png`)
       .then((image) => {
+        //console.log(valeur, `${valeur.color}_${valeur.value}.png`);
         setImagePath(image.default);
       })
       .catch((error) => {
+        //console.log("wee", valeur, `${valeur.color}_${valeur.value}.png`);
         //console.error("Erreur de chargement de l'image :", error);
       });
   }, [valeur]);
@@ -74,9 +76,37 @@ export function Card({ valeur, playableCard }) {
       event.currentTarget.classList.value == "card " &&
       !event.currentTarget.parentElement.className.includes("cannotPlay")
     ) {
+      if (valeur.color === "withoutColor" || valeur.color === "allColors") {
+        console.log("en petitetenue");
+        setShow(true);
+        waitForChoice().then((selectedColor) => {
+          // Ici, vous pouvez faire ce que vous voulez avec la couleur sélectionnée
+          console.log("Couleur sélectionnée :", selectedColor);
+          // Mettez ici le code que vous souhaitez exécuter une fois que la couleur est sélectionnée
+          setShow(false); // Cachez le sélecteur de couleur après que l'utilisateur a fait son choix
+        });
+        //while(choice==="") {console.log(choice)};
+        //setShow(false);
+        console.log(choice);
+      }
       console.log("boulot");
       socket.emit("playCard", { cardPlayed: valeur });
     }
+  };
+
+  // Ajoutez cette fonction à l'intérieur de Page1.js
+  const waitForChoice = () => {
+    return new Promise((resolve, reject) => {
+      console.log("Couleur :", choice);
+      const interval = setInterval(() => {
+        console.log("Couleur sélectionnée :", choice);
+        if (choice !== "") {
+          clearInterval(interval);
+          resolve(choice);
+        }
+      }, 100000); // Vérifiez si le choix a été fait toutes les 100 millisecondes
+      interval;
+    });
   };
 
   // Valeur de la carte pour l'affichage, contenant sa couleur et la valeur, ex: "purple_1"

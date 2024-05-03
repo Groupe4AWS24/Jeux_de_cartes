@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./one_page.css";
 import { PlayersHands } from "../components/hands";
-import { colorSelector } from "../components/colorSelector";
+import ColorSelector from "../components/colorSelector";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
@@ -18,7 +18,7 @@ function Page1() {
   const [playableCard, setPlayableCard] = useState([]);
   const [currentColor, setCurrentColor] = useState("");
   const [showColorSelector, setShowColorSelector] = useState(false);
-  const [choice, setChoice] = useState({});
+  const [choice, setChoice] = useState("");
   // tour de quel joueur
   const [turn, setTurn] = useState(0);
   // lastcard
@@ -127,7 +127,7 @@ function Page1() {
       ) : (
         <React.Fragment>
         {showColorSelector &&(
-        <colorSelector setChoice={setChoice} />)}
+        <ColorSelector setChoice={setChoice} />)}
         <div className="hands">
           {
             <PlayersHands

@@ -1,6 +1,6 @@
 .board {
   height: 100vh;
-  background-image: url("src/assets/board/Fond.png");
+  background-image: url("http://localhost:5173/src/assets/board/Fond.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -217,7 +217,6 @@
   width: auto;
 }
 
-
 .card {
   margin-right: -50px;
   margin-bottom: -80px;
@@ -246,15 +245,15 @@
 }
 
 .rose {
-  background-color: #F2C6DE;
+  background-color: #f2c6de;
 }
 
 .bleu {
-  background-color: #ACCBE8;
+  background-color: #accbe8;
 }
 
 .vert {
-  background-color: #BBE1B1;
+  background-color: #bbe1b1;
 }
 
 .playerName {
@@ -271,9 +270,54 @@
 }
 
 .cantPlay {
-  color: black
+  color: black;
 }
 
 .cantPlayl {
-  background-color: black
+  background-color: black;
+}
+
+.background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.colorSelector {
+  height: 175px;
+  width: 175px;
+  border-radius: 50%;
+  outline: 7px solid black;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.part {
+  width: 50%;
+  height: 50%;
+}
+
+.colorContainer {
+  height: 255px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000d1;
+  border-radius: 50px;
+  gap: 20px;
+}
+
+.askColor {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  font-family: "Inter";
 }

@@ -41,7 +41,7 @@ export function PlayersHands({
               </div>
               <div className={`color ${currentColor}`} />
               <div className="lastcard">
-                {<Card key={99} valeur={lastCard} val={99} />}
+                {<Card key={99} valeur={lastCard} val={99} setShow={setShowColorSelector} choice={choice} />}
               </div>
             </div>
           </div>
@@ -94,7 +94,7 @@ export function PlayersHands({
                   }`}
                 >
                   {player.hand.map((carte, j) => (
-                    <Card key={j} valeur={carte} playableCard={playableCard} setShowColorSelector={setShowColorSelector} choice={choice}/>
+                    <Card key={j} valeur={carte} playableCard={playableCard} setShow={setShowColorSelector} choice={choice}/>
                   ))}
                 </div>
               </React.Fragment>
