@@ -1,7 +1,7 @@
 /* MusicPlayer.css */
 .audioPlayer {
   background: #c8b2bd;
-  padding: 0.8rem 0.75rem; /* Réduisez le padding pour diminuer la taille globale */
+  padding: 0.3rem 2rem; /* Réduisez le padding pour diminuer la taille globale */
   border-radius: 8px;
   box-shadow: 0 3px 6px rgba(87, 4, 50, 0.1);
   display: flex;
@@ -11,7 +11,7 @@
   position: fixed;
   left: 80%;
   right: 70%;
-  bottom: 350px;
+  bottom: 360px;
   transform: translateX(-50%);
   width: 25%; 
   box-sizing: border-box;
@@ -43,14 +43,14 @@
 .controlsWrapper {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap; 
 }
 
 .controlButton {
   background-color: transparent;
   border: none;
-  font-size: 1.3rem; 
+  font-size: 1.2rem; 
   cursor: pointer;
   color: rgb(255, 0, 238);
   
@@ -141,8 +141,8 @@
 /* Responsive  */
 @media (max-width: 768px) {
   .audioPlayer {
-    width:45%;
-    padding: 0.75rem; 
+    width:35%;
+    padding: 0.45rem; 
   }
 
   .controlButton {
@@ -186,7 +186,7 @@
 .trackInfo {
   font-size: 0.9rem; 
   text-align: center;
-  margin-bottom: 10px; 
+  margin-bottom: 9px; 
   font-weight: bold; 
   color: #87146a; 
   text-shadow: 2px 2px 4px rgba(104, 182, 221, 0.811);
