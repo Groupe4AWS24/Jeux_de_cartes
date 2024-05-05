@@ -286,7 +286,7 @@ module.exports = class ManageGame {
         } else {
             // If the player has no playable cards
             // Deal 4 cards from the Uno deck to the next player
-            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition);
+            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition, this.lastCard);
 
             console.log("tu as pioché " + this.sumPinition + "cartes");
 
@@ -323,7 +323,7 @@ module.exports = class ManageGame {
         } else {
             // If the player has no playable cards
             // Deal 2 cards from the Uno deck to the next player
-            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition);
+            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition, this.lastCard);
     
             // Reset the total penalty to zero
             this.sumPinition = 0;
@@ -397,7 +397,7 @@ module.exports = class ManageGame {
         } else {
             // If the player has no playable cards
             // Deal cards from the Uno deck to the current player
-            this.UnoDeck.dealCards([this.currentPlayer], 1);
+            this.UnoDeck.dealCards([this.currentPlayer], 1, this.lastCard);
 
             // Inform the player about the dealt card
             console.log(`Tu as pioché une carte: ${this.currentPlayer.hand[this.currentPlayer.hand.length - 1]}`);
