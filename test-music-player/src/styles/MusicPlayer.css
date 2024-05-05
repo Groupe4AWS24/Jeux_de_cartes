@@ -3,11 +3,11 @@
   background: #c8b2bd;
   padding: 0.8rem 0.75rem; /* Réduisez le padding pour diminuer la taille globale */
   border-radius: 8px;
-  box-shadow: 0 3px 6px rgba(155, 34, 34, 0.1);
+  box-shadow: 0 3px 6px rgba(87, 4, 50, 0.1);
   display: flex;
   flex-direction: column;
   gap: 4px;
-  color: #611616;
+  color: #370a74;
   position: fixed;
   left: 80%;
   right: 70%;
@@ -50,9 +50,9 @@
 .controlButton {
   background-color: transparent;
   border: none;
-  font-size: 1.3rem; /* Équivalent à 24px */
+  font-size: 1.3rem; 
   cursor: pointer;
-  color: #791818;
+  color: rgb(255, 0, 238);
   
 }
 
@@ -62,11 +62,17 @@
 
 
 .trackInfo {
-  font-size: 0.8rem; /* Équivalent à 16px */
+  font-size: 1.0rem; /* Équivalent à 16px */
   text-align: center;
-  width: 100%;
-  margin-bottom: 0.625rem; /* Équivalent à 10px */
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: transparent; /* La couleur du texte est transparente pour laisser apparaître le gradient */
+  background-image: linear-gradient(to right, #2196F3, #E91E63); /* Gradient de bleu (#2196F3) à rose (#E91E63) */
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.811);
 }
+
 
 .progressContainer {
   width: 100%;
@@ -165,7 +171,7 @@
   color: #fff; 
   position: absolute; 
   top: -20px; 
-  background-color: rgba(151, 65, 118, 0.7);
+  background-color: rgba(207, 17, 144, 0.7);
   padding: 2px 5px; 
   border-radius: 3px; 
   white-space: nowrap; 
@@ -178,12 +184,13 @@
 
 
 .trackInfo {
-  font-size: 1.0rem; 
+  font-size: 0.9rem; 
   text-align: center;
   margin-bottom: 10px; 
   font-weight: bold; 
-  color: #611616; 
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.811); 
+  color: #87146a; 
+  text-shadow: 2px 2px 4px rgba(104, 182, 221, 0.811);
+  text-decoration: overline black; /* Ajout de overline en noir */
 }
 
 

@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 //import io from 'socket.io-client';
+//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+//import { faPlay, faPause, faStepForward, faStepBackward, faSyncAlt, faRandom } from '@fortawesome/free-solid-svg-icons';
 import '../styles/MusicPlayer.css';  // Assurez-vous que le chemin est correct
 
 // Connexion au serveur socket.io
