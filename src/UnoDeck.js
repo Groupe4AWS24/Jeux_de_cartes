@@ -1,6 +1,6 @@
 const Card = require ("./Card");
 const Player = require("./Player");
-//const ManageGame = require("./ManageGame");
+
 
 /**
  * Module exports an UnoDeck class representing the deck of Uno cards.
@@ -82,7 +82,7 @@ module.exports = class UnoDeck {
      * @param {Array} players - An array of Player instances to whom the cards will be dealt.
      * @param {number} numCards - The number of cards to deal to each player.
     */
-    dealCards(players, numCards) {
+    dealCards(players, numCards, lastCard) {
         // Loop through the number of cards to be dealt
         for (let i = 0; i < numCards; i++) {
             // Iterate through each player
@@ -97,10 +97,10 @@ module.exports = class UnoDeck {
                     let index;
                     this.generateCards();
                     this.shuffle();
-                    if(ManageGame.lastCard.isChangeColorCard) {
+                    if(lastCard.isChangeColorCard) {
                         index = this.cards.findIndex(card => card.isChangeColorCard());
                     } else {
-                        index = this.cards.findIndex(card => card.color === ManageGame.lastCard.color && card.value === ManageGame.lastCard.value);
+                        index = this.cards.findIndex(card => card.color === lastCard.color && card.value === lastCard.value);
                     }
                     if (index !== -1) {
                         this.cards.splice(index, 1);
