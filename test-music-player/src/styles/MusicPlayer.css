@@ -78,7 +78,7 @@
 
 
 .progressContainer {
-  width: 100%;
+  width: 130%;
   background-color: #e1e1e1;
   border-radius: 5px;
   position: relative;
@@ -97,7 +97,7 @@
 .progressTime {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 140%;
   font-size: 0.75rem;
   margin-top:1px;
 }

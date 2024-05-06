@@ -218,10 +218,10 @@ const getNextTrackIndex = () => {
       {isMusicPlayerVisible && (
         <div className={`audioPlayer ${className || ''}`} style={style}>
           <div className="controlsWrapper">
-            <button onClick={() => changeTrack(false)} className="controlButton"><FaStepBackward style={{ fontSize: '20px' }} /></button>
-            <button onClick={togglePlayPause} className="controlButton">{isPlaying ? <FaPause style={{ fontSize: '16px' }}/> : <FaPlay style={{ fontSize: '16px' }}/>}</button>
-            <button onClick={() => changeTrack(true)} className="controlButton"><FaStepForward style={{ fontSize: '20px' }} /></button>
-            <button onClick={toggleRepeat} className={`controlButton ${repeatMode !== 1 ? 'active' : ''}`}>{repeatMode === 1 ? <PiRepeatOnceBold style={{ fontSize: '24px' }}/> : <PiRepeatBold style={{ fontSize: '24px' }} /> }</button>
+            <button onClick={() => changeTrack(false)} className="controlButton"><FaStepBackward style={{ fontSize: '18px' }} /></button>
+            <button onClick={togglePlayPause} className="controlButton">{isPlaying ? <FaPause style={{ fontSize: '15px' }}/> : <FaPlay style={{ fontSize: '15px' }}/>}</button>
+            <button onClick={() => changeTrack(true)} className="controlButton"><FaStepForward style={{ fontSize: '18px' }} /></button>
+            <button onClick={toggleRepeat} className={`controlButton ${repeatMode !== 1 ? 'active' : ''}`}>{repeatMode === 1 ? <PiRepeatOnceBold style={{ fontSize: '22px' }}/> : <PiRepeatBold style={{ fontSize: '22px' }} /> }</button>
           </div>
           <div className="trackInfo">{tracks[currentTrackIndex]?.name}</div>
           <div className="progressContainer" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} onClick={handleProgressClick}>
