@@ -7,7 +7,7 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  color: #370a74;
+  color: #19181b;
   position: fixed;
   left: 80%;
   right: 70%;
@@ -40,7 +40,6 @@
 
 
 
-
 .controlsWrapper {
   display: flex;
   justify-content: center;
@@ -65,12 +64,12 @@
 
 
 .trackInfo {
-  font-size: 1.0rem; /* Équivalent à 16px */
+  font-size: 1.0rem; 
   text-align: center;
   margin-bottom: 10px;
   font-weight: bold;
   color: transparent; /* La couleur du texte est transparente pour laisser apparaître le gradient */
-  background-image: linear-gradient(to right, #2196F3, #E91E63); /* Gradient de bleu (#2196F3) à rose (#E91E63) */
+  background-image: linear-gradient(to right, #0c0e0f, #1f1d1e); /* Gradient de bleu (#2196F3) à rose (#E91E63) */
   -webkit-background-clip: text;
   background-clip: text;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.811);
@@ -91,8 +90,22 @@
   height: 100%;
   border-radius: 5px;
   width: 0%;
+  position: relative;
+  
 }
 
+.progressBar::after {
+  content: ""; 
+  position: absolute;
+  right: 0; 
+  top: 50%; 
+  transform: translate(50%, -50%); 
+  width: 8px;
+  height: 8px; 
+  background-color: #61dafb; 
+  border-radius: 50%;
+  border: 2px solid #ffffff; /*  ajoute une bordure blanche au rond */
+}
 
 .progressTime {
   display: flex;
@@ -148,6 +161,14 @@
     width:35%;
     padding: 0.45rem; 
   }
+  .progressContainer {
+    width: 100%; /* Ajustement pour petits écrans pour ne pas déborder */
+
+  }
+  .progressTime {
+    width: 100%;
+  }
+
 
   .controlButton {
     font-size: 1.2rem; 
@@ -175,7 +196,7 @@
   color: #fff; 
   position: absolute; 
   top: -20px; 
-  background-color: rgba(207, 17, 144, 0.7);
+  background-color: rgba(77, 72, 75, 0.7);
   padding: 2px 5px; 
   border-radius: 3px; 
   white-space: nowrap; 
@@ -194,7 +215,7 @@
   font-weight: bold; 
   color: #87146a; 
   text-shadow: 2px 2px 4px rgba(104, 182, 221, 0.811);
-  text-decoration: overline black; /* Ajout de overline en noir */
+  /*text-decoration: overline black;  Ajout de overline en noir */
 }
 
 
