@@ -1,9 +1,15 @@
-import React from "react";
-import {memo} from "react";
-const ColorSelector = ({ setChoice }) => {
+import React, { useContext } from "react";
+import { memo } from "react";
+import { UserContext } from "../../context/userContext";
+const ColorSelector = ({ card, one}) => {
+  const { socket } = useContext(UserContext);
   const handleClick = (color) => {
-    setChoice(color);
-    console.log(color)
+    console.log(color);
+    console.log(card);
+    if (one) {
+        console.log("t'as pas clické")
+    }
+    socket.emit("playCard", { cardPlayed: card, color: color });
   };
 
   return (

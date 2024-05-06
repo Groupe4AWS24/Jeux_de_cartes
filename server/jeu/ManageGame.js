@@ -42,6 +42,8 @@ module.exports = class ManageGame {
         this.sumPinition = 0;
 
         this.lastColor = null;
+
+        this.end = false;
     }
     
     /**
@@ -80,7 +82,7 @@ module.exports = class ManageGame {
         this.initializePlayerReferences();
 
         // Deal 7 cards to each player from the Uno deck
-        this.UnoDeck.dealCards(this.players, 7);
+        this.UnoDeck.dealCards(this.players, 7, this.lastCard);
     
         // Display a message indicating the start of the Uno game
         console.log('Le jeu Uno commence!');
@@ -117,23 +119,35 @@ module.exports = class ManageGame {
      * @returns {boolean} - True if the card can be played, false otherwise.
      */
     canPlayOn(card) {
-        return (
-            // Check if the color of the card matches the color of the last played card
-            card.color == this.lastCard.color && this.sumPinition == 0 || 
-        
-            // Check if the value of the card matches the value of the last played card
-            card.value === this.lastCard.value || 
-              
-            // Check if the card is a Change Color card and the last card is not +4 or +2 and no one was pioched yet
-            (card.isChangeColorCard() && this.sumPinition == 0 ) ||      // attention sur le cas de ChangeColor sur +4 carte
-        
-            // Check if the card is a Plus 4 card 
-            (card.isPlus4Card() ) ||
+        if (this.currentPlayer.hand.length > 1) {
+            return (
+                // Check if the color of the card matches the color of the last played card
+                (card.color == this.lastCard.color && this.sumPinition == 0) || 
+            
+                // Check if the value of the card matches the value of the last played card
+                card.value === this.lastCard.value || 
+                
+                // Check if the card is a Change Color card and the last card is not +4 or +2 and no one was pioched yet
+                (card.isChangeColorCard() && this.sumPinition == 0 ) ||      // attention sur le cas de ChangeColor sur +4 carte
+            
+                // Check if the card is a Plus 4 card 
+                (card.isPlus4Card() ) ||
 
-            (this.lastCard.isPlus4Card && card.color === this.lastColor) ||
+                (this.lastCard.isPlus4Card() && card.color === this.lastColor && this.sumPinition == 0) ||
 
-            (this.lastCard.isChangeColorCard && card.color === this.lastColor)
-        ); 
+                (this.lastCard.isChangeColorCard() && card.color === this.lastColor) ||
+
+                (this.lastCard.isPlus4Card() && card.isPlus2Card() && this.sumPinition !== 0)
+            );
+        } else {
+            return (
+                ((card.color == this.lastCard.color && this.sumPinition == 0) ||
+                card.value === this.lastCard.value ||
+                (card.isChangeColorCard() && this.sumPinition == 0 ) ) &&
+                !(card.isPlus4Card()) &&
+                !(card.isPlus2Card())
+            )
+        }
     }
 
     /**
@@ -141,7 +155,7 @@ module.exports = class ManageGame {
      * Checks if the selected cards are playable, applies card effects, and updates game state accordingly.
      * @param {Card[]} cards - An array of cards the player is attempting to play.
     */
-    async play(cards) {
+    async play(cards, color) {
         // Retrieve the array of playable cards for the current player
         let playableCards = this.getPlayableCards();        
 
@@ -154,7 +168,7 @@ module.exports = class ManageGame {
             let isPlayableCard = playableCards.some(playableCard => (playableCard.color === card.color && playableCard.value === card.value));
             if (isPlayableCard) {
                 // Check conditions for playing a card with the same color
-                if (!playedSameValue && card.getColor() == this.lastCard.color && card.getValue() != this.lastCard.value) {
+                if (!playedSameValue && ((card.getColor() == this.lastCard.color && card.getValue() != this.lastCard.value) || (card.getColor() == this.lastColor && card.getValue() != this.lastCard.value))) {
                     if (card.isPlus2Card()) {
                         this.sumPinition += 2;
                     }
@@ -165,10 +179,10 @@ module.exports = class ManageGame {
                 } else {
                     // Check conditions for playing special cards
                     if (!playedSameValue && card.isChangeColorCard()) {
-                            this.currentPlayer.removeFromHand(card);
-                            this.lastCard = card;
-                            playedSameValue = true;
-                            break;   
+                        this.currentPlayer.removeFromHand(card);
+                        this.lastCard = card;
+                        playedSameValue = true;
+                        break;   
                     } else {
                         if (!playedSameValue && card.isPlus4Card()) {
                             this.currentPlayer.removeFromHand(card);
@@ -177,7 +191,7 @@ module.exports = class ManageGame {
                             playedSameValue = true;
                         } else {
                             // Check conditions for playing a card with the same value
-                            if (card.getValue() === this.lastCard.value) {
+                            if (card.getValue() === this.lastCard.value || (card.isPlus2Card() && this.lastCard.isPlus4Card())) {
                                 if (card.isPlus4Card()) {
                                     this.sumPinition += 4;
                                 } else if(card.isPlus2Card() ) {
@@ -197,7 +211,9 @@ module.exports = class ManageGame {
                 //this.playTurn();
             }
         }
-
+        if (this.currentPlayer.hand.length == 0) {
+            this.end = true;
+        }
         // Check if the last played card is not a special card
         if(!this.lastCard.isSpecialCard()) {
             // Move to the next player
@@ -208,19 +224,18 @@ module.exports = class ManageGame {
                 this.skipNextPlayer();
             } else {
                 if(this.lastCard.isReverseCard()) {
-                    console.log(this.players.length, this.players)
                     if (this.players.length == 2) {
-                        this.moveToNextPlayer();
+                        this.moveToNextPlayer();    
                     }
                     this.reverseGameDirection();
                 } else if(this.lastCard.isPlus4Card()) {
-                    let color = await this.getColorChoice();
+                    //let color = await this.getColorChoice();
                     this.changeColor(color);
                     this.plus4Card();
                 } else if(this.lastCard.isPlus2Card()) {
                     this.plus2Card();
                 } else if(this.lastCard.isChangeColorCard()) {
-                    let color = await this.getColorChoice();
+                    //let color = await this.getColorChoice();
                     this.changeColor(color);
                 }
             }
@@ -258,8 +273,6 @@ module.exports = class ManageGame {
      * If the player has no playable cards, deal 2 cards from the Uno deck to the next player, reset the penalty to zero, and move to the next player.
      */
     async plus4Card() {
-        // Move to the next player
-        this.moveToNextPlayer();
 
         console.log(this.currentPlayer.name);
 
@@ -267,19 +280,20 @@ module.exports = class ManageGame {
         const playableCards = this.getPlayableCards();
 
         // Check if the player has playable cards
-        if (playableCards.length > 0) {
-            // Display playable cards to the player and allow them to choose
-            console.log("Playable cards: ", playableCards);
+        // if (playableCards.length > 0) {
+        //     // Display playable cards to the player and allow them to choose
+        //     console.log("Playable cards: ", playableCards);
 
-            // Here, we have to add logic to allow the player to choose cards to play
-            const cardsToPlay = await this.getCardsToPlay();
-
-            // Play the chosen cards, and add the logic to sum the penalty
-            await this.play(cardsToPlay);
-        } else {
+        //     // Here, we have to add logic to allow the player to choose cards to play
+        //     //const cardsToPlay = await this.getCardsToPlay();
+        //     console.log("carte possible : ", playableCards)
+        //     // Play the chosen cards, and add the logic to sum the penalty
+        //     //await this.play(cardsToPlay);
+        // } else {
+        if(playableCards.length === 0) {
             // If the player has no playable cards
             // Deal 4 cards from the Uno deck to the next player
-            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition);
+            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition, this.lastCard);
 
             console.log("tu as pioché " + this.sumPinition + "cartes");
 
@@ -290,45 +304,51 @@ module.exports = class ManageGame {
             this.moveToNextPlayer();
         }
     }
-
+    
     /**
      * plus2Card - Handles the effect of playing a Plus 2 card in the Uno game.
      * Deals 2 cards from the Uno deck to the next player in the game.
-     */
-    async plus2Card() {
+    */
+   async plus2Card() {
         // Move to the next player
         this.moveToNextPlayer();
-    
+        
         // Get playable cards for the current player
         const playableCards = this.getPlayableCards();
-    
+        
         // Check if the player has playable cards
-        if (playableCards.length > 0) {
-            // Display playable cards to the player and allow them to choose
-            console.log("Playable cards: ", playableCards);
-
-            // Here, we have to add logic to allow the player to choose cards to play
-            const cardsToPlay = await this.getCardsToPlay();
-    
-            // Play the chosen cards
-            await this.play(cardsToPlay);     
-
-        } else {
+        // if (playableCards.length > 0) {
+        //     // Display playable cards to the player and allow them to choose
+        //     console.log("Playable cards: ", playableCards);
+            
+        //     // Here, we have to add logic to allow the player to choose cards to play
+        //     //const cardsToPlay = await this.getCardsToPlay();
+            
+        //     // Play the chosen cards
+        //     //await this.play(cardsToPlay);     
+            
+        // } else {
+        if(playableCards.length === 0) {
             // If the player has no playable cards
             // Deal 2 cards from the Uno deck to the next player
-            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition);
-    
+            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition, this.lastCard);
+            
             // Reset the total penalty to zero
             this.sumPinition = 0;
-    
+            
             // Move to the next player
             this.moveToNextPlayer();
         }
     }
 
     draw() {
-        this.UnoDeck.dealCards([this.currentPlayer], 1);
-        this.moveToNextPlayer();
+        if (this.sumPinition === 0) {
+            this.UnoDeck.dealCards([this.currentPlayer], 1, this.lastCard, this.lastCard);
+            this.moveToNextPlayer();
+        } else {
+            this.UnoDeck.dealCards([this.currentPlayer], this.sumPinition, this.lastCard);
+            this.moveToNextPlayer();
+        }
     }
 
 
@@ -392,7 +412,7 @@ module.exports = class ManageGame {
         } else {
             // If the player has no playable cards
             // Deal cards from the Uno deck to the current player
-            this.UnoDeck.dealCards([this.currentPlayer], 1);
+            this.UnoDeck.dealCards([this.currentPlayer], 1, this.lastCard);
 
             // Inform the player about the dealt card
             console.log(`Tu as pioché une carte: ${this.currentPlayer.hand[this.currentPlayer.hand.length - 1]}`);

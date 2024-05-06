@@ -11,19 +11,19 @@ function Page1() {
   const username = user ? user.username : "";
   const { roomId } = useParams();
 
-  const [currentUser, setCurrentUser] = useState("");
   const [players, setPlayers] = useState([]);
-  const [end, setEnd] = useState(false);
   // stocke toutes les mains
   const [playableCard, setPlayableCard] = useState([]);
   const [currentColor, setCurrentColor] = useState("");
-  const [showColorSelector, setShowColorSelector] = useState(false);
-  const [choice, setChoice] = useState("");
+  const [items, setItems] = useState([]);
   // tour de quel joueur
   const [turn, setTurn] = useState(0);
   // lastcard
-  const [fosse, setFosse] = useState([]);
-  const [test, setTest] = useState(false);
+  const [Fausse, setFausse] = useState([]);
+  const [one, setOne] = useState(false);
+  const [end, setEnd] = useState(false);
+  const [winner, setWinner] = useState([]);
+  const [ranking, setRanking] = useState([]);
 
   useEffect(() => {
     if (username !== "" && !socket) {
@@ -44,7 +44,7 @@ function Page1() {
       socket.on("SendInfo", (data) => {
         setPlayers(data.players);
         console.log(data.players);
-        setFosse(data.lastCard);
+        setFausse(data.lastCard);
         setCurrentColor(data.currentColor);
         setTurn(data.currentTurn);
         setPlayableCard(data.playableCards);
@@ -72,7 +72,7 @@ function Page1() {
 
       socket.on("hasPlayed", (data) => {
         console.log(data);
-        setFosse(data.lastCard);
+        setFausse(data.lastCard);
         setCurrentColor(data.currentColor);
         setTurn(data.currentTurn);
         setPlayableCard(data.playableCards);
@@ -84,10 +84,40 @@ function Page1() {
           if (playerIndex !== -1) {
             updatedPlayers[playerIndex].hand = data.hand.newhand;
           }
+          if (data.hand.previousPlayer) {
+            const playerIndexPrevious = updatedPlayers.findIndex(
+              (player) => player.username === data.hand.previousPlayer.name
+            );
+            console.log(
+              "caméra :",
+              playerIndexPrevious,
+              " bidon: ",
+              data.hand.previousPlayer,
+              " d'essence: ",
+              updatedPlayers[playerIndexPrevious]
+            );
+
+            if (playerIndexPrevious !== -1) {
+              updatedPlayers[playerIndexPrevious].hand =
+                data.hand.previousPlayer.hand;
+            }
+          }
           console.log(updatedPlayers);
           return updatedPlayers;
         });
-      })
+        setItems([]);
+        setOne(false);
+        console.log(data);
+      });
+
+      socket.on("gameResults", (data) => {
+        console.log(data);
+        setWinner(data.winner);
+        console.log(data.rankings);
+        console.log(data);
+        setRanking(data.rankings);
+        setEnd(true);
+      });
     }
 
     return () => {
@@ -97,53 +127,40 @@ function Page1() {
     };
   }, [socket]);
 
-  useEffect(() => {
-    // // Vérifier si playersHand est vide
-    // if (Object.keys(playersHand).length === 0) {
-    //     // Effectuer les actions nécessaires seulement si playersHand est vide
-    //     setPlayersHand({
-    //         "thanu": ["purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1"],
-    //         "inconnu": ["purple_1", "purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1", "purple_1","purple_1" ,"purple_1", "purple_1","purple_1", "purple_1",,"purple_1", "purple_1","purple_1", "purple_1"],
-    //         "versatile": ["purple_1", "purple_1"],
-    //         "pastèque épicée": ["purple_1", "purple_1"]
-    //     });
-    //     setCurrentUser("thanu");
-    // }
-  }, [test]);
-
   return (
     // represente le board, on lui applique un effet CSS.
     <div className="board">
       {/*On regarde si la partie est fini via un opérateur ternaire, si oui on affiche le classement, 
                 sinon on execute le necessaire pour le fonctionnement de la partie*/}
-      {end ? (
-        <div>
-          {
-            <>
-              <h1>La partie est fini voici le classement</h1>
-            </>
-          }{" "}
+      {end && (
+        <div className="endPage">
+          <div className="endContainer">
+            <h1 className="endTitle">{winner} has won the game.</h1>
+            <hr></hr>
+            {console.log(ranking)}
+            {ranking.map((player, index) => (
+              <p className="rankingPlayer" key={index}>
+                {index === 0 && "👑"} {player.username} : {player.cardCount}
+              </p>
+            ))}
+          </div>
         </div>
-      ) : (
-        <React.Fragment>
-        {showColorSelector &&(
-        <ColorSelector setChoice={setChoice} />)}
-        <div className="hands">
-          {
-            <PlayersHands
-              players={players}
-              currentUser={username}
-              currentColor={currentColor}
-              lastCard={fosse}
-              turn={turn}
-              playableCard={playableCard}
-              setShowColorSelector={setShowColorSelector}
-              choice = {choice}
-            />
-          }
-        </div>
-        </React.Fragment>
       )}
+      {items}
+      <div className="hands">
+        {
+          <PlayersHands
+            players={players}
+            currentUser={username}
+            currentColor={currentColor}
+            lastCard={Fausse}
+            turn={turn}
+            playableCard={playableCard}
+            setItems={setItems}
+            one = {{one, setOne}}
+          /> 
+        }
+      </div>
     </div>
   );
 }

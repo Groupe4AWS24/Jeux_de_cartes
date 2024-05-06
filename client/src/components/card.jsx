@@ -3,6 +3,7 @@ import back from "../assets/cartes/back.png";
 import back_left from "../assets/cartes/back left.png";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
+import ColorSelector from "./colorSelector";
 
 /**
  * Crée la face d'une carte. Sera utilisé pour génerer les cartes des adversaires selon la vue du joueur.
@@ -32,8 +33,9 @@ export function BackCard(props) {
  *
  * @return {JSX.Element} La face de la carte. On retourne une balise image.
  */
-export function Card({ valeur, playableCard, setShow, choice }) {
-  const { socket } = useContext(UserContext);
+export function Card({ valeur, playableCard, setItems, players, one }) {
+  const { socket, user } = useContext(UserContext);
+  const username = user ? user.username : "";
   const { roomId } = useParams();
   const [imagePath, setImagePath] = useState("");
   let playable = "";
@@ -76,37 +78,20 @@ export function Card({ valeur, playableCard, setShow, choice }) {
       event.currentTarget.classList.value == "card " &&
       !event.currentTarget.parentElement.className.includes("cannotPlay")
     ) {
-      if (valeur.color === "withoutColor" || valeur.color === "allColors") {
-        console.log("en petitetenue");
-        setShow(true);
-        waitForChoice().then((selectedColor) => {
-          // Ici, vous pouvez faire ce que vous voulez avec la couleur sélectionnée
-          console.log("Couleur sélectionnée :", selectedColor);
-          // Mettez ici le code que vous souhaitez exécuter une fois que la couleur est sélectionnée
-          setShow(false); // Cachez le sélecteur de couleur après que l'utilisateur a fait son choix
-        });
-        //while(choice==="") {console.log(choice)};
-        //setShow(false);
-        console.log(choice);
+      let condition = false;
+      const currentUser = players.find((player) => player.username === username);
+      const userHand = currentUser.hand;
+      if (userHand.length === 2 && one === false) {
+        condition = true;
+        console.log("2 cartes et pas one fdp")
       }
-      console.log("boulot");
-      socket.emit("playCard", { cardPlayed: valeur });
+      if (valeur.color === "withoutColor" || valeur.color === "allColors") {
+        setItems([<ColorSelector key={100} card={valeur} one={condition}/>]);
+      } else {
+        console.log("boulot");
+        socket.emit("playCard", { cardPlayed: valeur });
+      }
     }
-  };
-
-  // Ajoutez cette fonction à l'intérieur de Page1.js
-  const waitForChoice = () => {
-    return new Promise((resolve, reject) => {
-      console.log("Couleur :", choice);
-      const interval = setInterval(() => {
-        console.log("Couleur sélectionnée :", choice);
-        if (choice !== "") {
-          clearInterval(interval);
-          resolve(choice);
-        }
-      }, 100000); // Vérifiez si le choix a été fait toutes les 100 millisecondes
-      interval;
-    });
   };
 
   // Valeur de la carte pour l'affichage, contenant sa couleur et la valeur, ex: "purple_1"

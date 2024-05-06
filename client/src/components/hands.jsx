@@ -10,9 +10,13 @@ export function PlayersHands({
   lastCard,
   turn,
   playableCard,
-  setShowColorSelector,
-  choice,
+  setItems,
+  one,
 }) {
+  const handleOneClick = () => {
+    one.setOne(true);
+    console.log("ami")
+  };
   /**
    * Une fonction qui génére des divs permettant la séparation de l'écran en 3 parties (en colonne), dont la partie du milieu sera divisé en 3 autres divs(en ligne).
    * Et pour chaque div, on affiche les mains des joueurs, la pioche la derniere carte joué et la carte actuelle.
@@ -24,6 +28,9 @@ export function PlayersHands({
     console.log(mains);
     console.log(mains.otherPlayers[0]);
     const { length } = mains.otherPlayers;
+    const playUser = players.find((player) => player.username === currentUser);
+    console.log(currentUser);
+    const userHand = playUser ? playUser.hand : [];
     console.log(length);
     return (
       <div className="flex-container">
@@ -37,11 +44,36 @@ export function PlayersHands({
             </div>
             <div className="divbottomtest divs">
               <div className="draw" onClick={handleDrawClick}>
-                {<BackCard className="drawcard" key={0}/>}
+                {<BackCard className="drawcard" key={0} />}
               </div>
-              <div className={`color ${currentColor}`} />
+              <div className="containerMid">
+                <button
+                  className="one"
+                  onClick={handleOneClick}
+                  disabled={!(userHand.length === 2)}
+                >
+                  ONE OUT
+                </button>
+                <div className={`color ${currentColor}`} />
+                <button
+                  className="one"
+                  onClick={handleOneClick}
+                  disabled={!(userHand.length === 2)}
+                >
+                  ONE
+                </button>
+              </div>
               <div className="lastcard">
-                {<Card key={99} valeur={lastCard} val={99} setShow={setShowColorSelector} choice={choice} />}
+                {
+                  <Card
+                    key={99}
+                    valeur={lastCard}
+                    val={99}
+                    setItems={setItems}
+                    players={players}
+                    one={one.one}
+                  />
+                }
               </div>
             </div>
           </div>
@@ -94,7 +126,14 @@ export function PlayersHands({
                   }`}
                 >
                   {player.hand.map((carte, j) => (
-                    <Card key={j} valeur={carte} playableCard={playableCard} setShow={setShowColorSelector} choice={choice}/>
+                    <Card
+                      key={j}
+                      valeur={carte}
+                      playableCard={playableCard}
+                      setItems={setItems}
+                      players={players}
+                      one={one.one}
+                    />
                   ))}
                 </div>
               </React.Fragment>
@@ -130,7 +169,7 @@ export function PlayersHands({
   const { roomId } = useParams();
   const handleDrawClick = () => {
     if (currentUser === turn) {
-        socket.emit('drawCards', { roomId: roomId});    
+      socket.emit("drawCards", { roomId: roomId });
     }
   };
 
