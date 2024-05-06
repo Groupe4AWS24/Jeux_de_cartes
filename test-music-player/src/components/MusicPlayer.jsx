@@ -3,7 +3,9 @@ import React, { useState, useRef, useEffect } from 'react';
 //import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 //import { faPlay, faPause, faStepForward, faStepBackward, faSyncAlt, faRandom } from '@fortawesome/free-solid-svg-icons';
 import '../styles/MusicPlayer.css';  // Assurez-vous que le chemin est correct
-
+import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaRepeat, FaRedo } from 'react-icons/fa';
+import { PiRepeatBold } from "react-icons/pi";
+import { PiRepeatOnceBold } from "react-icons/pi";
 // Connexion au serveur socket.io
 //const socket = io('http://localhost:3001');
 
@@ -97,12 +99,8 @@ const togglePlayPause = () => {
     if (repeatMode === 1) { // Répétition de la piste actuelle
       audioRef.current.currentTime = 0;
       audioRef.current.play();
-    } else if (repeatMode === 2) { // Répétition de la playlist
-      const nextIndex = getNextTrackIndex();
-      setCurrentTrackIndex(nextIndex);
-      setIsPlaying(true);
     } else { // Pas de répétition
-      // Passez à la piste suivante ou arrêtez la lecture selon votre logique
+      // Passez à la piste suivante ou arrêtez la lecture 
       if (currentTrackIndex < tracks.length - 1) {
         setCurrentTrackIndex(currentTrackIndex + 1);
       } else {
@@ -114,7 +112,7 @@ const togglePlayPause = () => {
   
   
   const toggleRepeat = () => {
-    setRepeatMode((prevMode) => (prevMode + 1) % 3); // Cela fera défiler les valeurs 0, 1, 2
+    setRepeatMode((prevMode) => (prevMode + 1) % 2); // Alterne entre 0 et 1
   };
   
   
@@ -220,10 +218,10 @@ const getNextTrackIndex = () => {
       {isMusicPlayerVisible && (
         <div className={`audioPlayer ${className || ''}`} style={style}>
           <div className="controlsWrapper">
-            <button onClick={() => changeTrack(false)} className="controlButton">⏮️</button>
-            <button onClick={togglePlayPause} className="controlButton">{isPlaying ? '⏸️' : '▶️'}</button>
-            <button onClick={() => changeTrack(true)} className="controlButton">⏭️</button>
-            <button onClick={toggleRepeat} className={`controlButton ${repeatMode !== 0 ? 'active' : ''}`}>{repeatMode === 1 ? '🔂' : repeatMode === 2 ? '🔁' : '🔁'}</button>
+            <button onClick={() => changeTrack(false)} className="controlButton"><FaStepBackward style={{ fontSize: '20px' }} /></button>
+            <button onClick={togglePlayPause} className="controlButton">{isPlaying ? <FaPause style={{ fontSize: '16px' }}/> : <FaPlay style={{ fontSize: '16px' }}/>}</button>
+            <button onClick={() => changeTrack(true)} className="controlButton"><FaStepForward style={{ fontSize: '20px' }} /></button>
+            <button onClick={toggleRepeat} className={`controlButton ${repeatMode !== 1 ? 'active' : ''}`}>{repeatMode === 1 ? <PiRepeatOnceBold style={{ fontSize: '24px' }}/> : <PiRepeatBold style={{ fontSize: '24px' }} /> }</button>
           </div>
           <div className="trackInfo">{tracks[currentTrackIndex]?.name}</div>
           <div className="progressContainer" onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} onClick={handleProgressClick}>
