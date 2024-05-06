@@ -14,6 +14,7 @@ import "./styles/authentication.css";
 import Chat from "./components/chat";
 import Room from "./pages/room";
 import Page1 from "./pages/one_page";
+import Test from "./pages/test";
 
 // Paramétrage pour l'envoi des requêtes
 axios.defaults.baseURL = "http://localhost:8000";
@@ -26,6 +27,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/test" element={<Test />} />
         <Route path="/login" element={<Login />} />
         <Route path="/forget" element={<Forget />} />
         <Route path="/reset_password/:token" element={<Reset />} />
