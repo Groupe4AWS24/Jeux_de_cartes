@@ -20,8 +20,11 @@ const Chat = () => {
   useEffect (() => {
     // Déconnecter le socket existant lorsque le composant est monté
     return () => {
+      connectToSocketIO();
       if (existingSocket) {
         existingSocket.disconnect();
+        connectToSocketIO();
+      } else {
       }
     };
   }, []);
