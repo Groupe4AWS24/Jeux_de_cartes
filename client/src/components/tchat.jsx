@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext";
+import "../styles/tchat.css";
 
 const Tchat = ({ roomId }) => {
   const { socket, user } = useContext(UserContext);
@@ -49,22 +50,25 @@ const Tchat = ({ roomId }) => {
   const renderMessages = () => {
     console.log("msg : ",messages);
     return messages.map((msg, index) => (
-      <div key={index}>
-        <strong>{msg.player}: </strong>
-        {msg.message}
+      <div className="message" id={username == msg.player ? "userMsg" : "otherMsg"} key={index}>
+        <p><strong>{msg.player}: </strong></p>
+        <p>
+          {msg.message}
+        </p>
+        
       </div>
     ));
   };
 
   return (
-    <div>
+    <div className="tchat">
+      <div className="allMsg">{renderMessages()}</div>
       <input
         type="text"
         value={newMsg}
         onChange={(e) => setNewMsg(e.target.value)}
       />
       <button onClick={sendMessage}>Envoyer</button>
-      <div>{renderMessages()}</div>
     </div>
   );
 };

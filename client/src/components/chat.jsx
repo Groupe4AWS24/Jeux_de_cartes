@@ -4,10 +4,13 @@ import io from "socket.io-client";
 import { resetTchat } from "./tchat";
 import { UserContext } from "../../context/userContext";
 
+
+// A asupprimer juste recup les necessaire pour le bouton
 const Chat = () => {
   // Recuperation de l'id de la room dans l'url si on utilise un lien partagé
   const navigate = useNavigate();
-  const {user} = useContext(UserContext);
+  const { user } = useContext(UserContext);
+  const username = user ? user.username : "";
   const setSocketglobal = useContext(UserContext).setSocket;
   const existingSocket = useContext(UserContext).socket;
 
@@ -17,17 +20,24 @@ const Chat = () => {
   const [valRoom, setValRoom] = useState("");
   const [errorJoin, setErrorJoin] = useState("");
 
-  useEffect (() => {
+  useEffect(() => {
     // Déconnecter le socket existant lorsque le composant est monté
     return () => {
-      connectToSocketIO();
       if (existingSocket) {
         existingSocket.disconnect();
-        connectToSocketIO();
-      } else {
+        //connectToSocketIO();
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (username !== "") {
+      const socket = io("http://localhost:8000");
+      socket.emit("authenticate", user.username);
+      setSocketglobal(socket);
+      console.log(socket);
+    }
+  }, [username]);
 
   /**
    * Définit le nouveau socket et s'authentifie avec Socket.IO.
@@ -45,7 +55,7 @@ const Chat = () => {
    * @param {string} username - Le nom d'utilisateur pour l'authentification.
    */
   const authenticateWithSocketIO = (socket) => {
-    console.log("userrrrrrrr",user.username)
+    console.log("userrrrrrrr", user.username);
     socket.emit("authenticate", user.username);
     socket.on("authenticated", (data) => {
       //console.log(data);
