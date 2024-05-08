@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 //import io from 'socket.io-client';
-//import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-//import { faPlay, faPause, faStepForward, faStepBackward, faSyncAlt, faRandom } from '@fortawesome/free-solid-svg-icons';
-import '../styles/MusicPlayer.css';  // Assurez-vous que le chemin est correct
-import { FaPlay, FaPause, FaStepForward, FaStepBackward, FaRepeat, FaRedo } from 'react-icons/fa';
+
+
+import '../styles/MusicPlayer.css';  
+import { FaPlay, FaPause, FaStepForward, FaStepBackward,  } from 'react-icons/fa';
 import { PiRepeatBold } from "react-icons/pi";
 import { PiRepeatOnceBold } from "react-icons/pi";
 // Connexion au serveur socket.io
@@ -11,9 +11,11 @@ import { PiRepeatOnceBold } from "react-icons/pi";
 
 function MusicPlayer({ roomId, style, className }) {// rajout de props pour permettre à thanu de gérer la taille de la barre depuis le room.jsx
   const [tracks, setTracks] = useState([
-    { name: 'Lofi sad', src: '/audio/Lofi sad.mp3' },
-    { name: 'Nintendo', src: '/audio/Nintendo.mp3' },
-    { name: 'The promised neverland', src: '/audio/The promised neverland.mp3' }
+    { name: "Threatenin' Zeppelin", src: '/audio/1)Threatenin\' Zeppelin.mp3'},
+    { name: 'Undertale', src: '/audio/2)Undertale.mp3'},
+    { name: 'The promised neverland', src: '/audio/3)The promised neverland.mp3'},
+    { name: 'Lofi sad', src:'/audio/4)Lofi sad.mp3' }
+    
   ]); 
   
   
