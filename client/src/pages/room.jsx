@@ -18,6 +18,7 @@ const Room = () => {
   console.log(owner);
 
   const [showCountdown, setshowCountdown] = useState(false);
+  const [players, setPlayers] = useState([]);
 
   useEffect(() => {
     if (username !== "" && !socket) {
@@ -40,6 +41,7 @@ const Room = () => {
   useEffect(() => {
     if (socket) {
       const handleJoinRoom = (data) => {
+        setPlayers(data);
         console.log("playerJoined: ", data);
       };
 
@@ -77,11 +79,42 @@ const Room = () => {
   };
 
   return (
-    <div>
-      <h2>{`Room n°${roomId}`}</h2>
-      {owner == true && <button onClick={startGame}>Start Game</button>}
-      {showCountdown && <h1>Game Started</h1>}
-      {<Tchat roomId={roomId} />}
+    <div className="screen" id="RoomPage">
+      <div className="screendashBlue" />
+      <div className="screendashPink" />
+      <div className="screenWhite" id="whiteRoom" />
+      <div className="pageContent">
+        <div className="right" id="rightRoom">
+          <div className="blockRoom" id="blockPlayer">
+            <h2 className="textCenterRoom" id="wait">Who are we waiting for?</h2>
+            <div className="containerPlayerlist">
+              {(players && players.players) && players.players.map((player, index) => (
+                <p className={`playerNameInList`} key={index}>{`#${player.username} ${player.username === players.owner.username ? "👑":""}`}</p>
+              ))
+                
+                /*players && players.players ? players.players.map((player, index) => (
+                <p className={`playerNameInList`} key={index}>
+                  {player}
+                </p>
+              )): null*/}
+            </div>
+          </div>
+        </div>
+        <div className="left" id="leftRoom">
+          <div className="blockRoom" id ="blockRoom1">
+            <h1 className="textCenterRoom">{`Room n°${roomId}`}</h1>
+            <div className="containerRoom">
+              {showCountdown && <h1>Game Started</h1>}
+              {owner == true && (
+                <button className="button" id="start" onClick={startGame}>
+                  Start Game
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+        {<Tchat roomId={roomId} />}
+      </div>
     </div>
   );
 };

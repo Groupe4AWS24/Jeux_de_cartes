@@ -241,6 +241,11 @@
   border: 0px solid;
 }
 
+.one:hover {
+  cursor: pointer;
+  filter: brightness(150%);
+}
+
 .violet {
   background-color: #c8b3dd;
 }

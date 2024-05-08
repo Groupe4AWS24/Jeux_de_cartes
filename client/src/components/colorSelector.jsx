@@ -6,10 +6,11 @@ const ColorSelector = ({ card, one}) => {
   const handleClick = (color) => {
     console.log(color);
     console.log(card);
-    if (one) {
-        console.log("t'as pas clické")
-    }
     socket.emit("playCard", { cardPlayed: card, color: color });
+    if (one) {
+      console.log("t'as pas clické");
+      socket.emit("One", roomId);
+    }
   };
 
   return (

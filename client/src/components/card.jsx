@@ -9,30 +9,30 @@ import ColorSelector from "./colorSelector";
  * Crée la face d'une carte. Sera utilisé pour génerer les cartes des adversaires selon la vue du joueur.
  *
  * @return {JSX.Element} La face de la carte.
- */
+*/
 export function BackCard(props) {
   const { joueur } = props;
   switch (joueur) {
     case 1:
       return <img className="back topside" src={back} />;
-
-    case 2:
-      return <img className="back leftside" src={back_left} />;
-
-    case 3:
-      return <img className="back rightside" src={back_left} />;
-
-    default:
-      return <img className="back drawcard" src={back} />;
-  }
+      
+      case 2:
+        return <img className="back leftside" src={back_left} />;
+        
+        case 3:
+          return <img className="back rightside" src={back_left} />;
+          
+          default:
+            return <img className="back drawcard" src={back} />;
+          }
 }
 
 /**
  * Crée la carte avec sa couleur et sa valeur. Sera utilisé pour génerer les cartes du joueur.
  * Les cartes sont cliquables, ce qui permet de lancer une fonction handleCardClick. Nécessaire pour l'intégration visuel du jeu.
- *
- * @return {JSX.Element} La face de la carte. On retourne une balise image.
- */
+*
+* @return {JSX.Element} La face de la carte. On retourne une balise image.
+*/
 export function Card({ valeur, playableCard, setItems, players, one }) {
   const { socket, user } = useContext(UserContext);
   const username = user ? user.username : "";
@@ -83,13 +83,20 @@ export function Card({ valeur, playableCard, setItems, players, one }) {
       const userHand = currentUser.hand;
       if (userHand.length === 2 && one === false) {
         condition = true;
-        console.log("2 cartes et pas one fdp")
+        console.log("2 cartes et pas one fdp",parseInt(roomId))
+      }
+      if (one === true) {
+        console.log("et we petit con")
       }
       if (valeur.color === "withoutColor" || valeur.color === "allColors") {
         setItems([<ColorSelector key={100} card={valeur} one={condition}/>]);
       } else {
         console.log("boulot");
         socket.emit("playCard", { cardPlayed: valeur });
+        if (condition === true) {
+          console.log('he hoh',typeof roomId)
+          socket.emit("One", parseInt(roomId));
+        }
       }
     }
   };

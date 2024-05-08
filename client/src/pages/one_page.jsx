@@ -21,6 +21,7 @@ function Page1() {
   // lastcard
   const [Fausse, setFausse] = useState([]);
   const [one, setOne] = useState(false);
+  const [oneOut, setOneOut] = useState(false);
   const [end, setEnd] = useState(false);
   const [winner, setWinner] = useState([]);
   const [ranking, setRanking] = useState([]);
@@ -43,18 +44,15 @@ function Page1() {
     if (socket) {
       socket.on("SendInfo", (data) => {
         setPlayers(data.players);
-        console.log(data.players);
         setFausse(data.lastCard);
         setCurrentColor(data.currentColor);
         setTurn(data.currentTurn);
         setPlayableCard(data.playableCards);
-        console.log("data", data.playableCards);
+        console.log(players)
       });
 
       socket.on("updateDraw", (data) => {
-        console.log("data", data);
         setTurn(data.currentTurn);
-        console.log(players);
         setPlayers((prevPlayers) => {
           const updatedPlayers = [...prevPlayers];
           const playerIndex = updatedPlayers.findIndex(
@@ -66,12 +64,10 @@ function Page1() {
           console.log(updatedPlayers);
           return updatedPlayers;
         });
-        console.log(data.playableCards, playableCard);
         setPlayableCard(data.playableCards);
       });
 
       socket.on("hasPlayed", (data) => {
-        console.log(data);
         setFausse(data.lastCard);
         setCurrentColor(data.currentColor);
         setTurn(data.currentTurn);
@@ -88,35 +84,39 @@ function Page1() {
             const playerIndexPrevious = updatedPlayers.findIndex(
               (player) => player.username === data.hand.previousPlayer.name
             );
-            console.log(
-              "caméra :",
-              playerIndexPrevious,
-              " bidon: ",
-              data.hand.previousPlayer,
-              " d'essence: ",
-              updatedPlayers[playerIndexPrevious]
-            );
-
             if (playerIndexPrevious !== -1) {
               updatedPlayers[playerIndexPrevious].hand =
                 data.hand.previousPlayer.hand;
             }
           }
-          console.log(updatedPlayers);
           return updatedPlayers;
         });
         setItems([]);
         setOne(false);
-        console.log(data);
+        setOneOut(false);
       });
 
       socket.on("gameResults", (data) => {
-        console.log(data);
         setWinner(data.winner);
-        console.log(data.rankings);
-        console.log(data);
         setRanking(data.rankings);
         setEnd(true);
+      });
+      
+      socket.on("OneOutPossible", () => {
+        console.log("one out possible");
+        setOneOut(true);
+      });
+      
+      socket.on("updateOne", (data) => {
+        console.log(data);
+        const updatedPlayers = [...prevPlayers];
+          const playerIndex = updatedPlayers.findIndex(
+            (player) => player.username === data.name
+          );
+          if (playerIndex !== -1) {
+            updatedPlayers[playerIndex].hand = data.hand;
+            setPlayableCard(data.playableCards);
+          }
       });
     }
 
@@ -135,7 +135,7 @@ function Page1() {
       {end && (
         <div className="endPage">
           <div className="endContainer">
-            <h1 className="endTitle">{winner} has won the game.</h1>
+            <h1 className="endTitle">{winner} has won the game!</h1>
             <hr></hr>
             {console.log(ranking)}
             {ranking.map((player, index) => (
@@ -158,6 +158,7 @@ function Page1() {
             playableCard={playableCard}
             setItems={setItems}
             one = {{one, setOne}}
+            oneOut = {{oneOut, setOneOut}}
           /> 
         }
       </div>

@@ -19,7 +19,6 @@ function Dashboard() {
   const [valRoom, setValRoom] = useState("");
   const [errorJoin, setErrorJoin] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-  const [select, setSelect] = useState(0);
 
   useEffect(() => {
     // Déconnecter le socket existant lorsque le composant est monté
