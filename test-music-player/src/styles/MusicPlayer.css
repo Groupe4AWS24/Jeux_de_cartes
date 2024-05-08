@@ -162,7 +162,7 @@
 .volumeSlider::-moz-range-thumb {
   width: 15px;
   height: 15px;
-  border-radius: 50%;
+  border-radius: 50%;    
   background: #61dafb;
   cursor: pointer;
 }

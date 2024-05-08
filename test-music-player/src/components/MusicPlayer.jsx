@@ -16,7 +16,7 @@ function MusicPlayer({ roomId, style, className }) {// rajout de props pour perm
     { name: 'The promised neverland', src: '/audio/3)The promised neverland.mp3'},
     { name: 'Lofi sad', src:'/audio/4)Lofi sad.mp3' }
     
-  ]); 
+  ]);
   
   
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);  // Index de la piste actuelle
@@ -200,7 +200,7 @@ const togglePlayPause = () => {
 
   // Utilisez cette fonction pour passer à la piste suivante
 const getNextTrackIndex = () => {
-  let nextIndex = currentTrackIndex + 1;
+  let nextIndex = currentTrackIndex + 1; 
   if (nextIndex >= tracks.length) {
     nextIndex = 0; // Retour au début si on est à la fin de la liste
   }
