@@ -109,7 +109,8 @@ function Page1() {
       
       socket.on("updateOne", (data) => {
         console.log(data);
-        const updatedPlayers = [...prevPlayers];
+        setPlayers((prevPlayers) => {
+          const updatedPlayers = [...prevPlayers];
           const playerIndex = updatedPlayers.findIndex(
             (player) => player.username === data.name
           );
@@ -117,6 +118,8 @@ function Page1() {
             updatedPlayers[playerIndex].hand = data.hand;
             setPlayableCard(data.playableCards);
           }
+          return updatedPlayers;
+        })
       });
     }
 
