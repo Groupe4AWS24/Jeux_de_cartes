@@ -3,7 +3,7 @@ import Tchat from "../components/tchat";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext";
 import { io } from "socket.io-client";
-import "../styles/room.css"
+import "../styles/room.css";
 
 const Room = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ const Room = () => {
 
   useEffect(() => {
     if (username !== "" && !socket) {
-      const socket = io("http://localhost:8000");
+      const socket = io("https://oneserv-e5f2e755d43a.herokuapp.com/");
       socket.emit("authenticate", user.username);
       setSocket(socket);
       socket.emit("joinRoom", { roomId });

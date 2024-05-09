@@ -139,6 +139,8 @@ function Page1() {
       <div className="screendashBlue" id="gamescreen" />
       <div className="screendashPink" id="gamescreen"/>
     <div className="board">
+      {/*On regarde si la partie est fini via un opérateur ternaire, si oui on affiche le classement, 
+                sinon on execute le necessaire pour le fonctionnement de la partie*/}
       {end && (
         <div className="endPage">
           <div className="endContainer">

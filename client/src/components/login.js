@@ -14,13 +14,13 @@ class Signin {
     // Verifie en continue si les paramètres du constructeur sont valides.
     this.validateonSubmit();
   }
-  
+
   /**
    * Fonction asynchrone vérifiant en continue la validité des paramètres du constructeur.
    * Si ils sont bons, envoie une requête au serveur avec les valeurs pour vérifier
    * qu'ils sont dans la base de données.
-  */
- async validateonSubmit() {
+   */
+  async validateonSubmit() {
     let self = this;
     let error = 0;
     if (error == 0) {
@@ -30,6 +30,7 @@ class Signin {
         const { data } = await axios.post("/login", { username, password });
         if (!data.error) {
           const user = {email: data.user.email, username: data.user.username}
+          console.log(user)
           this.setUser(user);
           this.navigate("/dashboard");
         } else {
