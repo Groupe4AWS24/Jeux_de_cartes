@@ -11,6 +11,8 @@ function Dashboard() {
   const navigate = useNavigate();
   const { socket, user, setSocket } = useContext(UserContext);
   const username = user ? user.username : "";
+  console.log('username', username)
+  console.log('username', user)
   const setSocketglobal = useContext(UserContext).setSocket;
   const existingSocket = useContext(UserContext).socket;
 
@@ -19,7 +21,6 @@ function Dashboard() {
   const [valRoom, setValRoom] = useState("");
   const [errorJoin, setErrorJoin] = useState("");
   const [isChecked, setIsChecked] = useState(false);
-
   useEffect(() => {
     // Déconnecter le socket existant lorsque le composant est monté
     return () => {
@@ -29,8 +30,9 @@ function Dashboard() {
       }
     };
   }, []);
-
+  
   useEffect(() => {
+    console.log('heureka')
     if (username !== "") {
       const socket = io("http://localhost:8000");
       socket.emit("authenticate", user.username);

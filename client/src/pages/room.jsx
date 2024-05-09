@@ -3,6 +3,7 @@ import Tchat from "../components/tchat";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext";
 import { io } from "socket.io-client";
+import "../styles/room.css"
 
 const Room = () => {
   const navigate = useNavigate();

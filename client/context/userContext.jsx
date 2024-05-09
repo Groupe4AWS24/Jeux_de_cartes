@@ -17,12 +17,12 @@ export function UserContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [socket, setSocket] = useState(null);
   useEffect(() => {
-    console.log(user)
     if (!user) {
       axios.get("/profile").then(({ data }) => {
-        setUser(data);
         // Si pas de token sera toujours renvoyé a la page d'accueil
         if (data && location.pathname !== '/chat' && !location.pathname.startsWith('/room/') && !location.pathname.startsWith('/game/') && location.pathname !== '/test') {
+          const { email, username } = data;
+          setUser({email : email, username : username});
           navigate("/dashboard");
         } else if (!data){
           navigate("/");

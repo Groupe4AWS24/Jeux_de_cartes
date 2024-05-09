@@ -1,9 +1,25 @@
+.containerimage {
+  position: absolute;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.boxlogo {
+  position: absolute;
+  height: 600px;
+}
+
+.gamescreen {
+  z-index: 2;
+}
+
 .board {
   height: 100vh;
-  background-image: url("http://localhost:5173/src/assets/board/Fond.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  width: 100vw;
+  z-index: 3;
 }
 
 .hands {

@@ -4,6 +4,7 @@ import { PlayersHands } from "../components/hands";
 import ColorSelector from "../components/colorSelector";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
+import logo from "../assets/logo.png";
 
 function Page1() {
   //const navigate = useNavigate();
@@ -131,10 +132,13 @@ function Page1() {
   }, [socket]);
 
   return (
-    // represente le board, on lui applique un effet CSS.
+    <div className="screen">
+      <div className="containerimage">
+        <img className="boxlogo" src={logo}></img>
+      </div>
+      <div className="screendashBlue" id="gamescreen" />
+      <div className="screendashPink" id="gamescreen"/>
     <div className="board">
-      {/*On regarde si la partie est fini via un opérateur ternaire, si oui on affiche le classement, 
-                sinon on execute le necessaire pour le fonctionnement de la partie*/}
       {end && (
         <div className="endPage">
           <div className="endContainer">
@@ -165,6 +169,7 @@ function Page1() {
           /> 
         }
       </div>
+    </div>
     </div>
   );
 }

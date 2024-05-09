@@ -71,7 +71,8 @@ h6 {
   align-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #feefff;
+  background: linear-gradient(0deg, rgba(172, 203, 232, 1) 0%, rgba(224, 192, 255, 1) 47%, rgba(235, 157, 199, 1) 100%);
+  background-attachment: fixed;
 }
 
 .container {
