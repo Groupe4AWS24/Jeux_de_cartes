@@ -12,11 +12,11 @@ const {
   getToken,
 } = require("../controle/controleacces");
 
-// Paramétrage du serveur,
+// Paramétrage du serveur, pour l'instant en local
 router.use(
   cors({
     credentials: true,
-    origin: "https://onegame.vercel.app",
+    origin: "http://localhost:5173",
   })
 );
 
@@ -25,7 +25,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/profile", getProfile);
 router.post("/disconnect", (req, res) => {
-  res.clearCookie("token", { secure: true, httpOnly: true, sameSite: 'None' });;
+  res.clearCookie("token");
   return res.json(null);
 });
 router.post('/forgotpassword', forgotPassword);
