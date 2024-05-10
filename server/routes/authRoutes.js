@@ -16,7 +16,7 @@ const {
 router.use(
   cors({
     credentials: true,
-    origin: origin: process.env.SERV_TCHAT,
+    origin: process.env.SERV_TCHAT,
   })
 );
 
