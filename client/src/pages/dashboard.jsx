@@ -4,38 +4,42 @@ import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import { UserContext } from "../../context/userContext";
 import axios from "axios";
+import { ButtonContext } from "../../context/buttonContext";
 
 
 function Dashboard() {
   // Recuperation de l'id de la room dans l'url si on utilise un lien partagé
   const navigate = useNavigate();
   const { socket, user, setSocket } = useContext(UserContext);
+  const { setInGame, setDontShow, setInRoom, setTchat } = useContext(ButtonContext);
   const username = user ? user.username : "";
   const setSocketglobal = useContext(UserContext).setSocket;
   const existingSocket = useContext(UserContext).socket;
 
   // Différentes variables utilisées dans l'application, pour gérer l'état coté client.
   const [maxPlayer, setMaxPlayer] = useState(0);
+  const [isChecked, setIsChecked] = useState(false);
   const [valRoom, setValRoom] = useState("");
   const [errorJoin, setErrorJoin] = useState("");
-  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
+    setInGame(false);
+    setDontShow(false);
+    setInRoom(false);
+    setTchat(true);
     // Déconnecter le socket existant lorsque le composant est monté
     return () => {
       if (existingSocket) {
         existingSocket.disconnect();
-        //connectToSocketIO();
       }
     };
   }, []);
 
   useEffect(() => {
     if (username !== "") {
-      const socket = io("https://oneserv-e5f2e755d43a.herokuapp.com");
+      const socket = io("http://localhost:8000");
       socket.emit("authenticate", user.username);
       setSocketglobal(socket);
-      console.log(socket);
     }
   }, [username]);
 
@@ -58,9 +62,7 @@ function Dashboard() {
    * Rejointe une room, tant que cette dernière existe et pas pleine.
    */
   const join = () => {
-    console.log("room: ", valRoom);
     if (socket) {
-
       socket.emit("joinRoom", { roomId: valRoom });
       socket.on("roomJoined", () => {
         setErrorJoin("");
@@ -72,14 +74,6 @@ function Dashboard() {
       });
     }
   };
-
-
-  // Pas utilisé pour le bouton
-  const disconnect = async () => {
-    await axios.post("/disconnect");
-    navigate("/");
-  };
-
 
   // Rendu
   return (

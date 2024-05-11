@@ -5,6 +5,7 @@ const dotenv = require("dotenv").config();
 const { mongoose } = require("mongoose");
 const cookieParser = require("cookie-parser");
 const http = require("http");
+const path = require('path');
 const { setupSocket } = require("./chat/tchat");
 
 // Créer l'instance de l'application

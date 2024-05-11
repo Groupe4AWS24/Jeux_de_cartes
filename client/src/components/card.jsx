@@ -83,18 +83,12 @@ export function Card({ valeur, playableCard, setItems, players, one }) {
       const userHand = currentUser.hand;
       if (userHand.length === 2 && one === false) {
         condition = true;
-        console.log("2 cartes et pas one fdp",parseInt(roomId))
-      }
-      if (one === true) {
-        console.log("et we petit con")
       }
       if (valeur.color === "withoutColor" || valeur.color === "allColors") {
         setItems([<ColorSelector key={100} card={valeur} one={condition}/>]);
       } else {
-        console.log("boulot");
         socket.emit("playCard", { cardPlayed: valeur });
         if (condition === true) {
-          console.log('he hoh',typeof roomId)
           socket.emit("One", parseInt(roomId));
         }
       }

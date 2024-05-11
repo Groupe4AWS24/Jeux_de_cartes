@@ -5,10 +5,14 @@ import ColorSelector from "../components/colorSelector";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 import logo from "../assets/logo.png";
+import { ButtonContext } from "../../context/buttonContext";
 
 function Page1() {
-  //const navigate = useNavigate();
-  const { socket, user, setSocket } = useContext(UserContext);
+  const navigate = useNavigate();
+  const { socket, user, setSocket} =
+    useContext(UserContext);
+
+  const {setInGame, setDontShow } = useContext(ButtonContext)
   const username = user ? user.username : "";
   const { roomId } = useParams();
 
@@ -35,6 +39,8 @@ function Page1() {
   }, [username]);
 
   useEffect(() => {
+    setInGame(true);
+    setDontShow(false);
     if (username !== "" && socket) {
       // Ce code ne sera exécuté qu'une seule fois au montage du composant
       socket.emit("GameHasStarted", { roomId, username });
@@ -49,7 +55,7 @@ function Page1() {
         setCurrentColor(data.currentColor);
         setTurn(data.currentTurn);
         setPlayableCard(data.playableCards);
-        console.log(players)
+        console.log(players);
       });
 
       socket.on("updateDraw", (data) => {
@@ -102,12 +108,12 @@ function Page1() {
         setRanking(data.rankings);
         setEnd(true);
       });
-      
+
       socket.on("OneOutPossible", () => {
         console.log("one out possible");
         setOneOut(true);
       });
-      
+
       socket.on("updateOne", (data) => {
         console.log(data);
         setPlayers((prevPlayers) => {
@@ -120,7 +126,7 @@ function Page1() {
             setPlayableCard(data.playableCards);
           }
           return updatedPlayers;
-        })
+        });
       });
     }
 
@@ -131,47 +137,63 @@ function Page1() {
     };
   }, [socket]);
 
+  const leave = () => {
+    if (socket) {
+      socket.disconnect();
+    }    
+    setSocket(null);
+    setInGame(false);
+    navigate("/dashboard");
+  };
+
   return (
     <div className="screen">
       <div className="containerimage">
         <img className="boxlogo" src={logo}></img>
       </div>
       <div className="screendashBlue" id="gamescreen" />
-      <div className="screendashPink" id="gamescreen"/>
-    <div className="board">
-      {/*On regarde si la partie est fini via un opérateur ternaire, si oui on affiche le classement, 
+      <div className="screendashPink" id="gamescreen" />
+      <div className="board">
+        {/*On regarde si la partie est fini via un opérateur ternaire, si oui on affiche le classement, 
                 sinon on execute le necessaire pour le fonctionnement de la partie*/}
-      {end && (
-        <div className="endPage">
-          <div className="endContainer">
-            <h1 className="endTitle">{winner} has won the game!</h1>
-            <hr></hr>
-            {console.log(ranking)}
-            {ranking.map((player, index) => (
-              <p className="rankingPlayer" key={index}>
-                {index === 0 && "👑"} {player.username} : {player.cardCount}
-              </p>
-            ))}
+        {end && (
+          <div className="endPage">
+            <div className="endContainer">
+              <h1 className="endTitle">{winner} has won the game!</h1>
+              <hr></hr>
+              {console.log(ranking)}
+              {ranking.map((player, index) => (
+                <p className="rankingPlayer" key={index}>
+                  {index === 0 && "👑"} {player.username} : {player.cardCount}
+                </p>
+              ))}
+              <button
+                className="itemMenu"
+                id="endButton"
+                onClick={leave}
+              >
+                Leave
+              </button>
+            </div>
           </div>
+        )}
+        {items}
+        <div className="hands" style={end ? { filter: "blur(5px)" } : {}}>
+          {
+            <PlayersHands
+              players={players}
+              currentUser={username}
+              currentColor={currentColor}
+              lastCard={Fausse}
+              turn={turn}
+              playableCard={playableCard}
+              setItems={setItems}
+              one={{ one, setOne }}
+              oneOut={{ oneOut, setOneOut }}
+            />
+          }
         </div>
-      )}
-      {items}
-      <div className="hands">
-        {
-          <PlayersHands
-            players={players}
-            currentUser={username}
-            currentColor={currentColor}
-            lastCard={Fausse}
-            turn={turn}
-            playableCard={playableCard}
-            setItems={setItems}
-            one = {{one, setOne}}
-            oneOut = {{oneOut, setOneOut}}
-          /> 
-        }
       </div>
-    </div>
     </div>
   );
 }

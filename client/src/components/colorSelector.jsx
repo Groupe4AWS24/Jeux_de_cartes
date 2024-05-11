@@ -4,11 +4,8 @@ import { UserContext } from "../../context/userContext";
 const ColorSelector = ({ card, one}) => {
   const { socket } = useContext(UserContext);
   const handleClick = (color) => {
-    console.log(color);
-    console.log(card);
     socket.emit("playCard", { cardPlayed: card, color: color });
     if (one) {
-      console.log("t'as pas clické");
       socket.emit("One", roomId);
     }
   };
