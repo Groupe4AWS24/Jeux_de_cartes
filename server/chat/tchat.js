@@ -5,7 +5,7 @@ function setupSocket(server) {
   // Paramétrage socket.io pour le serveur hebergé en local
   const io = socketIo(server, {
     cors: {
-      origin: process.env.SERV_TCHAT,
+      origin: "http://localhost:5173",
       methods: ["GET", "POST"],
     },
   });

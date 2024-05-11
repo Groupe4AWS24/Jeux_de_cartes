@@ -12,7 +12,7 @@ const {
   getToken,
 } = require("../controle/controleacces");
 
-// Paramétrage du serveur,
+// Paramétrage du serveur
 router.use(
   cors({
     credentials: true,
