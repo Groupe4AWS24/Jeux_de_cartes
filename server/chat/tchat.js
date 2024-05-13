@@ -437,10 +437,13 @@ function setupSocket(server) {
       room.game.decideAndPlay(botCards, analyze, botColor);
       setTimeout(() => {
         sendAfterPlay(room, currentBot);
+        if (room.game.end === true) {
+          endGame(room.id);
+        }
         if (room.game.isBot()) {
           botPlay(room);
       }
-      }, 1000);
+      }, 2000);
       
     }
   }
