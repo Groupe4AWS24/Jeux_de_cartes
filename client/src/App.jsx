@@ -17,6 +17,7 @@ import Settings from "./components/settings";
 import { UserContextProvider } from "../context/userContext";
 import { ButtonContextProvider } from "../context/buttonContext";
 import MusicPlayer from "./components/MusicPlayer";
+import { GameContextProvider } from "../context/gameContext";
 
 // Paramétrage pour l'envoi des requêtes
 axios.defaults.baseURL = "http://localhost:8000";
@@ -26,19 +27,21 @@ function App() {
   return (
     <UserContextProvider>
       <ButtonContextProvider>
-        <Settings />
-        <MusicPlayer />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/forget" element={<Forget />} />
-          <Route path="/reset_password/:token" element={<Reset />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/room/:roomId" element={<Room />} />
-          <Route path="/game/:roomId" element={<Page1 />} />
-        </Routes>
+        <GameContextProvider>
+          <Settings />
+          <MusicPlayer />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/forget" element={<Forget />} />
+            <Route path="/reset_password/:token" element={<Reset />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/room/:roomId" element={<Room />} />
+            <Route path="/game/:roomId" element={<Page1 />} />
+          </Routes>
+        </GameContextProvider>
       </ButtonContextProvider>
     </UserContextProvider>
   );

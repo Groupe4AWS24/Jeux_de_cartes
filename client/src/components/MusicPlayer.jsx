@@ -8,7 +8,7 @@ import { PiRepeatOnceBold } from "react-icons/pi";
 import { ButtonContext } from "../../context/buttonContext";
 import audio from "../assets/icones/audio.png";
 
-function MusicPlayer({ roomId, style, className }) {
+function MusicPlayer({ style, className }) {
   // rajout de props pour permettre à thanu de gérer la taille de la barre depuis le room.jsx
   const [tracks, setTracks] = useState([
     { name: "Threatenin' Zeppelin", src: "/audio/1)Threatenin_Zeppelin.mp3" },
@@ -113,10 +113,6 @@ function MusicPlayer({ roomId, style, className }) {
     setRepeatMode((prevMode) => (prevMode + 1) % 2); // Alterne entre 0 et 1
   };
 
-  /*const toggleShuffle = () => {
-    setIsShuffling(!isShuffling);
-  };*/
-
   const handleTimeUpdate = () => {
     const {currentTime} = audioRef.current;
     setProgress(currentTime);
@@ -191,15 +187,6 @@ function MusicPlayer({ roomId, style, className }) {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
-
-  // Utilisez cette fonction pour passer à la piste suivante
-  const getNextTrackIndex = () => {
-    let nextIndex = currentTrackIndex + 1;
-    if (nextIndex >= tracks.length) {
-      nextIndex = 0; // Retour au début si on est à la fin de la liste
-    }
-    return nextIndex;
   };
 
   return (

@@ -15,6 +15,7 @@ function Dashboard() {
   const username = user ? user.username : "";
   const setSocketglobal = useContext(UserContext).setSocket;
   const existingSocket = useContext(UserContext).socket;
+  console.log(user)
 
   // Différentes variables utilisées dans l'application, pour gérer l'état coté client.
   const [maxPlayer, setMaxPlayer] = useState(0);
@@ -27,12 +28,7 @@ function Dashboard() {
     setDontShow(false);
     setInRoom(false);
     setTchat(true);
-    // Déconnecter le socket existant lorsque le composant est monté
-    return () => {
-      if (existingSocket) {
-        existingSocket.disconnect();
-      }
-    };
+  
   }, []);
 
   useEffect(() => {
@@ -40,6 +36,9 @@ function Dashboard() {
       const socket = io("http://localhost:8000");
       socket.emit("authenticate", user.username);
       setSocketglobal(socket);
+    } else { 
+      console.log(username, "nom vide");
+      console.log(user)
     }
   }, [username]);
 
@@ -48,8 +47,9 @@ function Dashboard() {
   };
 
   const createRoom = () => {
-    if (maxPlayer <= 4 && socket) {
-      socket.emit("createRoom", { maxPlayers: maxPlayer });
+    console.log(socket)
+    if (socket) {
+      socket.emit("createRoom", { maxPlayers: maxPlayer, bot: isChecked });
       socket.on("roomCreated", (data) => {
         setValRoom(data.roomId);
         navigate(`/room/${data.roomId}?owner=${true}`);

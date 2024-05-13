@@ -165,7 +165,6 @@ function Settings() {
           </div>
         </div>
       ) : null}
-      {console.log(inGame)}
       {inGame && <Tchat roomId={roomId} hidden={tchat} />}
     </React.Fragment>
   );

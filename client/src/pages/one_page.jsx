@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 import logo from "../assets/logo.png";
 import { ButtonContext } from "../../context/buttonContext";
+import { GameContext } from "../../context/gameContext";
 
 function Page1() {
   const navigate = useNavigate();
@@ -30,6 +31,9 @@ function Page1() {
   const [end, setEnd] = useState(false);
   const [winner, setWinner] = useState([]);
   const [ranking, setRanking] = useState([]);
+  const {setSelected} = useContext(GameContext);
+  const {setSameValueCard} = useContext(GameContext);
+
 
   useEffect(() => {
     if (username !== "" && !socket) {
@@ -75,6 +79,7 @@ function Page1() {
       });
 
       socket.on("hasPlayed", (data) => {
+        console.log("hasPlayed", data)
         setFausse(data.lastCard);
         setCurrentColor(data.currentColor);
         setTurn(data.currentTurn);
@@ -101,6 +106,8 @@ function Page1() {
         setItems([]);
         setOne(false);
         setOneOut(false);
+        setSelected([]);
+        setSameValueCard([]);
       });
 
       socket.on("gameResults", (data) => {
